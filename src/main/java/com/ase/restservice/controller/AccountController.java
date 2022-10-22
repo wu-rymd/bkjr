@@ -1,9 +1,15 @@
 package com.ase.restservice.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.model.Asset;
 import com.ase.restservice.repository.AccountRepository;
+import com.ase.restservice.repository.AssetRepository;
+import com.ase.restservice.service.AssetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +25,10 @@ import com.ase.restservice.model.Account;
 public class AccountController {
     @Autowired
     private AccountRepository accountRepository;
-
+    @Autowired
+    private AssetRepository assetRepository;
+    @Autowired
+    private AssetService assetService;
     @PostMapping("/accounts")
     public Account createAccount(@Valid @RequestBody Account account) {
         // TODO: Throw exception if account already exists
@@ -40,5 +49,10 @@ public class AccountController {
         account.setBalance(account.getBalance() + Float.parseFloat(amount));
         final Account updatedAccount = accountRepository.save(account);
         return updatedAccount;
+    }
+
+    @GetMapping("/accounts/{accountId}/portfolio_value")   // TODO: Come up with a better name for this endpoint
+    public Float getAccountAssetsValue(@PathVariable(value="accountId") String accountId) {
+        return assetService.getAccountPortfolioValue(accountId);
     }
 }
