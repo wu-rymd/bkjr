@@ -21,9 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class AssetServiceTest {
@@ -109,4 +110,86 @@ public class AssetServiceTest {
         assertEquals(retAsset, retAssetTruth);
     }
 
+    @DisplayName("JUnit test for buyAsset when stock id does not exist")
+    @Test
+    public void invalidBuyAsset() {
+        String stockId = stocks.get(0).getStockId();
+        Float buyAmount = 12.34f;
+
+        // buyAsset() will update the asset in the database
+        // need to mock this behavior
+        given(assetRepository.save(any()))
+                .willReturn(null);
+        Asset retAssetTruth = new Asset(
+                accountId,
+                stockId,
+                buyAmount);
+        given(assetRepository.findById(any()))
+                .willReturn(Optional.empty());
+        Asset retAsset = assetService.buyAsset(accountId, stockId, buyAmount);
+        assertEquals(retAsset, retAssetTruth);
+    }
+
+    @DisplayName("JUnit test for sellAsset when asset exists for user & user is not selling all of the asset")
+    @Test
+    public void sellPartialAsset() throws Exception {
+        Stock stock = stocks.get(0);
+        Asset asset = assets.get(0);
+        Float sellAmount = .9f;
+        Asset updatedAssetTruth = new Asset(accountId, stock.getStockId(), (asset.getNumShares()-sellAmount));
+
+        given(assetRepository.findById(new AssetId(accountId, stock.getStockId())))
+                .willReturn(Optional.of(asset));
+
+        Optional<Asset> updatedAsset = assetService.sellAsset(accountId, stock.getStockId(), sellAmount);
+        assertEquals(updatedAsset.get(), updatedAssetTruth);
+    }
+
+    @DisplayName("JUnit test for sellAsset when asset exists for user and user is selling ALL OF the asset")
+    @Test
+    public void sellAllAsset() throws Exception {
+        Stock stock = stocks.get(0);
+        Asset asset = assets.get(0);
+        Float sellAmount = asset.getNumShares();
+
+        given(assetRepository.findById(new AssetId(accountId, stock.getStockId())))
+                .willReturn(Optional.of(asset));
+        Optional<Asset> updatedAsset = assetService.sellAsset(accountId, stock.getStockId(), sellAmount);
+        // Expected behavior is that sellAsset returns null when the asset is deleted
+        assertFalse(updatedAsset.isPresent());
+        // Confirm that deleteById was called
+        verify(assetRepository).deleteById(new AssetId(accountId, stock.getStockId()));
+    }
+    @DisplayName("JUnit test for sellAsset when an account tries to sell more of the asset than they own")
+    @Test
+    public void sellAssetInvalidAmount()  {
+        Stock stock = stocks.get(0);
+        Asset asset = assets.get(0);
+        Float sellAmount = 100f;    // an amount of shares > then stock.numShares()
+
+        given(assetRepository.findById(new AssetId(accountId, stock.getStockId())))
+                .willReturn(Optional.of(asset));
+
+        Exception exception = assertThrows(Exception.class, () ->{
+            assetService.sellAsset(accountId, stock.getStockId(), sellAmount);
+        });
+        String expectedMessage = "INVALID SELL ORDER";
+        String actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @DisplayName("JUnit test for sellAsset when an account tries to sell an asst that they do not own")
+    @Test
+    public void invalidSellAsset() {
+        Stock stock = stocks.get(0);
+        Float sellAmount = 1.23f;
+        given(assetRepository.findById(new AssetId(accountId, stock.getStockId())))
+                .willReturn(Optional.empty());
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->{
+            assetService.sellAsset(accountId, stock.getStockId(), sellAmount);
+        });
+        String expectedMessage = "Asset " + stock.getStockId() + " does not exist for user " + accountId;
+        String actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
 }

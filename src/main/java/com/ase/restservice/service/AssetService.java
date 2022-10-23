@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -60,6 +61,29 @@ public class AssetService {
             Asset new_asset = new Asset(accountId, stockId, numShares);
             assetRepository.save(new_asset);
             return new_asset;
+        }
+    }
+    public Optional<Asset> sellAsset(String accountId, String stockId, Float numShares) throws Exception {
+        Optional<Asset> asset = assetRepository.findById(new AssetId(accountId, stockId));
+        if (asset.isPresent()) {
+            // Check whether user is selling all of their asset
+            Asset userAsset = asset.get();
+            if (Objects.equals(userAsset.getNumShares(), numShares)) {
+                // Delete the asset
+                assetRepository.deleteById(new AssetId(accountId, stockId));
+                return Optional.empty();
+            }
+            if (userAsset.getNumShares() < numShares) {
+                throw new Exception("INVALID SELL ORDER");
+            }
+            else {
+                userAsset.setNumShares(userAsset.getNumShares() - numShares);
+                assetRepository.save(userAsset);
+                return Optional.of(userAsset);
+            }
+        }
+        else {
+            throw new ResourceNotFoundException("Asset " + stockId + " does not exist for user " + accountId);
         }
     }
 }
