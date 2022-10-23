@@ -25,12 +25,14 @@ public class AssetService {
     public List<Asset> getAssetsByAccountId(String accountId) {
         return assetRepository.findAllAssetsByAccountId(accountId);
     }
-    public Float getAccountPortfolioValue(String accountId) {
+    public Float getAccountPortfolioValue(String accountId) throws ResourceNotFoundException{
         List<Asset> userAssets = this.getAssetsByAccountId(accountId);
         float total = 0f;
         for (Asset asset: userAssets) {
             // Total value of a given asset is the current share price * the # of shares the account owns
-            total+= stockRepository.findById(asset.getStockId()).orElseThrow().getPrice() * asset.getNumShares();
+            total+= stockRepository.findById(asset.getStockId()).orElseThrow(() ->
+                            new ResourceNotFoundException("Stock not found for stock id ::" + asset.getStockId()))
+                    .getPrice() * asset.getNumShares();
         }
         return total;
     }

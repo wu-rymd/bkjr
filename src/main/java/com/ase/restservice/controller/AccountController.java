@@ -51,8 +51,8 @@ public class AccountController {
         return updatedAccount;
     }
 
-    @GetMapping("/accounts/{accountId}/portfolio_value")   // TODO: Come up with a better name for this endpoint
-    public Float getAccountAssetsValue(@PathVariable(value="accountId") String accountId) {
+    @GetMapping("/accounts/{accountId}/portfolio_value")
+    public Float getAccountAssetsValue(@PathVariable(value="accountId") String accountId) throws ResourceNotFoundException {
         return assetService.getAccountPortfolioValue(accountId);
     }
 }

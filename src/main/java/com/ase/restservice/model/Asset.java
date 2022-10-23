@@ -21,7 +21,7 @@ public class Asset {
     }
     public String getStockId() { return assetId.getStockId();}
 
-    @Column(name = "numShares", nullable = false)
+    @Column(name = "num_shares", nullable = false)
     public Float getNumShares() {
         return numShares;
     }
