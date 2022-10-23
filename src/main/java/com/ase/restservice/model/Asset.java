@@ -2,6 +2,7 @@ package com.ase.restservice.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name="asset")
@@ -26,5 +27,16 @@ public class Asset {
     }
     public void setNumShares(Float numShares) {
         this.numShares = numShares;
+    }
+
+    @Override
+    public boolean equals (Object o) {
+        if (o == this)  return true;
+        if (!(o instanceof Asset)) return false;
+        Asset c = (Asset) o;
+        return Objects.equals(this.getAccountId(), c.getAccountId())
+                && Objects.equals(this.getStockId(), c.getStockId())
+                && Objects.equals(this.getNumShares(), c.getNumShares());
+
     }
 }
