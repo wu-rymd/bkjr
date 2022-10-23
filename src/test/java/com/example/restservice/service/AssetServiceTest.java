@@ -5,6 +5,7 @@ import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Account;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Stock;
+import com.ase.restservice.repository.AccountRepository;
 import com.ase.restservice.repository.AssetRepository;
 import com.ase.restservice.repository.StockRepository;
 import com.ase.restservice.service.AssetService;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,7 +33,8 @@ public class AssetServiceTest {
     private AssetRepository assetRepository;
     @Mock
     private StockRepository stockRepository;
-
+    @Mock
+    private AccountRepository accountRepository;
     @InjectMocks
     private AssetService assetService;
     List<Asset> assets =  new ArrayList<>();
@@ -84,11 +88,12 @@ public class AssetServiceTest {
     @DisplayName("JUnit test for getAccountTotalValue")
     @Test
     public void testAccountTotalValue() throws ResourceNotFoundException {//throws here is weird
+
+
         given(assetRepository.findAllAssetsByAccountId(accountId))
                 .willReturn(assets);
-
-//        given(accountRepository.findById(accountId))
-//                .willReturn(assets); //some mistakes here
+        given(accountRepository.findById(accountId))
+                .willReturn(Optional.ofNullable(user));
 
         Float totalValue = assetService.getAccountTotalValue(accountId);
 
@@ -99,8 +104,9 @@ public class AssetServiceTest {
     public void testAccountPnl() throws ResourceNotFoundException {//throws here is weird
         given(assetRepository.findAllAssetsByAccountId(accountId))
                 .willReturn(assets);
-//        given(assetRepository.findById(accountId))
-//                .willReturn(assets);
+
+        given(accountRepository.findById(accountId))
+                .willReturn(Optional.ofNullable(user));
 
         Float pnl = assetService.getAccountPnl(accountId);
         assertEquals(pnl, pnlTruth);
