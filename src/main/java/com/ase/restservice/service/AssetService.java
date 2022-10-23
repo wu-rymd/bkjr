@@ -7,6 +7,7 @@ import com.ase.restservice.repository.AccountRepository;
 import com.ase.restservice.repository.AssetRepository;
 import com.ase.restservice.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +19,8 @@ public class AssetService {
     private AssetRepository assetRepository;
     @Autowired
     private StockRepository stockRepository;    // call the service instead when it's created?
-    
+    @Autowired
+    private AccountRepository accountRepository;
     public List<Asset> getAssetsByAccountId(String accountId) {
         return assetRepository.findAllAssetsByAccountId(accountId);
     }
@@ -30,5 +32,21 @@ public class AssetService {
             total+= stockRepository.findById(asset.getStockId()).orElseThrow().getPrice() * asset.getNumShares();
         }
         return total;
+    }
+
+    public Float getAccountTotalValue(String accountId) throws ResourceNotFoundException {
+        Account account = accountRepository.findById(accountId).orElseThrow();
+        Float portfolioValue = getAccountPortfolioValue(accountId);
+        Float currentBalance = account.getBalance();//TODO I can use Account controller methods here!
+
+
+        return currentBalance + portfolioValue;
+    }
+    public Float getAccountPnl(String accountId) throws ResourceNotFoundException {
+        Account account = accountRepository.findById(accountId).orElseThrow();
+        Float accountValue = getAccountTotalValue(accountId);
+        Float starting_balance = account.getStartingBalance();
+
+        return (accountValue - starting_balance) / starting_balance;
     }
 }

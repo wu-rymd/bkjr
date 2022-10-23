@@ -1,5 +1,8 @@
 package com.example.restservice.service;
 
+import com.ase.restservice.controller.AccountController;
+import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.model.Account;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.repository.AssetRepository;
@@ -27,12 +30,19 @@ public class AssetServiceTest {
     private AssetRepository assetRepository;
     @Mock
     private StockRepository stockRepository;
+
     @InjectMocks
     private AssetService assetService;
     List<Asset> assets =  new ArrayList<>();
     List<Stock> stocks = new ArrayList<>();
     String accountId;
     Float portfolioValueTruth;
+    Float startingBalance;
+    Float endingBalance;
+    Float totalValueTruth;
+    Float pnlTruth;
+
+    Account user;
     @BeforeEach
     // Generate fake stock data, fake asset data
     public void setup(){
@@ -47,6 +57,12 @@ public class AssetServiceTest {
 
         portfolioValueTruth = (103.11f*10f) + (111.03f*1.5f) + (132.00f*10.3f);
 
+        user = new Account("kutaykarakas",50f,100f);
+        endingBalance = 50f;
+        startingBalance = 100f;
+
+        totalValueTruth = endingBalance + portfolioValueTruth;
+        pnlTruth = (totalValueTruth - startingBalance)/startingBalance;
         for (Stock stock : stocks) {
             given(stockRepository.findById(stock.getStockId()))
                     .willReturn(Optional.of(stock));
@@ -64,5 +80,29 @@ public class AssetServiceTest {
                 .willReturn(assets);
         Float portfolioValue = assetService.getAccountPortfolioValue(accountId);
         assertEquals(portfolioValue, portfolioValueTruth);
+    }
+    @DisplayName("JUnit test for getAccountTotalValue")
+    @Test
+    public void testAccountTotalValue() throws ResourceNotFoundException {//throws here is weird
+        given(assetRepository.findAllAssetsByAccountId(accountId))
+                .willReturn(assets);
+
+//        given(accountRepository.findById(accountId))
+//                .willReturn(assets); //some mistakes here
+
+        Float totalValue = assetService.getAccountTotalValue(accountId);
+
+        assertEquals(totalValue, totalValueTruth);
+    }
+    @DisplayName("JUnit test for getAccountPnl")
+    @Test
+    public void testAccountPnl() throws ResourceNotFoundException {//throws here is weird
+        given(assetRepository.findAllAssetsByAccountId(accountId))
+                .willReturn(assets);
+//        given(assetRepository.findById(accountId))
+//                .willReturn(assets);
+
+        Float pnl = assetService.getAccountPnl(accountId);
+        assertEquals(pnl, pnlTruth);
     }
 }

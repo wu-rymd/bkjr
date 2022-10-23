@@ -55,4 +55,9 @@ public class AccountController {
     public Float getAccountAssetsValue(@PathVariable(value="accountId") String accountId) {
         return assetService.getAccountPortfolioValue(accountId);
     }
+    @GetMapping("/accounts/{accountId}/pnl")
+    public Float getAccountPnl(@PathVariable(value="accountId") String accountId) throws ResourceNotFoundException {
+        return assetService.getAccountPnl(accountId);
+
+    }
 }

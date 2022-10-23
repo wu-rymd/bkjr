@@ -13,14 +13,16 @@ public class Account {
 
     private String accountId;
     private Float balance;
+    private Float starting_balance;
 
     public Account() {
 
     }
 
-    public Account(String accountId, Float balance) {
+    public Account(String accountId, Float balance,Float starting_balance) {
         this.accountId = accountId;
         this.balance = balance;
+        this.starting_balance = starting_balance;
     }
 
     @Id
@@ -39,6 +41,14 @@ public class Account {
         this.balance = balance;
     }
 
+    @Column(name = "starting_balance", nullable = false)
+    public Float getStartingBalance() {
+        return starting_balance;
+    }
+    //Not sure if this should exist.
+    public void setStartingBalance(Float startingBalance) {
+        this.starting_balance = startingBalance;
+    }
     @Override
     public String toString() {
         return "Account [accountId=" + accountId + ", balance=" + balance + "]";
