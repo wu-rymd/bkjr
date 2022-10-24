@@ -15,5 +15,5 @@ public interface AccountServiceI {
 
   Account getAccountById(String accountId) throws ResourceNotFoundException;
 
-  Float updateAccountBalance(String accountId, String amount) throws ResourceNotFoundException;
+  Account updateAccountBalance(String accountId, Float amount) throws ResourceNotFoundException;
 }

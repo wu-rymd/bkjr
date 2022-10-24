@@ -65,8 +65,8 @@ public class AccountController {
    */
   @Operation(summary = "update balance of account with given accountId")
   @PutMapping("/accounts/{accountId}/balance")
-  public Float updateAccountBalance(@PathVariable(value = "accountId") String accountId,
-      @RequestParam(value = "amount", defaultValue = "0") String amount)
+  public Account updateAccountBalance(@PathVariable(value = "accountId") String accountId,
+      @RequestParam(value = "amount", defaultValue = "0") Float amount)
       throws ResourceNotFoundException {
     return accountService.updateAccountBalance(accountId, amount);
   }

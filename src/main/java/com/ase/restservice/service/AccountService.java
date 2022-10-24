@@ -63,19 +63,23 @@ public class AccountService implements AccountServiceI {
   }
 
   /**
-   * Updates the balance of an account.
+   * Method to increase or decrease a user's account balance.
    *
-   * @param accountId AccountID
-   * @param amount Value that will be summed with balance
-   * @return Updated balance
-   * @throws ResourceNotFoundException if account does not exist in the database
+   * @param accountId Primary key of account
+   * @param amount dollar amount to change account balance by. If negative, will decrease the
+   *               account balance.
+   * @return Returns the account with the updated balance
+   * @throws ResourceNotFoundException when account does not exist
    */
-  public Float updateAccountBalance(String accountId, String amount)
+  public Account updateAccountBalance(String accountId, Float amount)
       throws ResourceNotFoundException {
-    Account account = this.getAccountById(accountId);
-    account.setBalance(account.getBalance() + Float.parseFloat(amount));
-    final Account updatedAccount = this.updateAccount(account);
-    return updatedAccount.getBalance();
+    Account account = accountRepository.findById(accountId)
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "Account not found for accountId :: " + accountId
+        ));
+    account.setBalance(account.getBalance() + amount);
+    accountRepository.save(account);
+    return account;
   }
 
 }
