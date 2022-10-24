@@ -1,8 +1,9 @@
 package com.ase.restservice.controller;
 
+import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.AssetId;
-import com.ase.restservice.repository.AssetRepository;
+import com.ase.restservice.service.AssetService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,25 +11,27 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-
+/**
+ * Controller for /assets endpoints.
+ */
 @RestController
 public class AssetController {
   @Autowired
-  private AssetRepository assetRepository;
+  private AssetService assetService;
 
   @GetMapping("/assets")
   public List<Asset> getAllAssets() {
-    return assetRepository.findAll();
+    return assetService.findAll();
   }
 
   @GetMapping("/assets/{accountId}")
-  public List<Asset> getAssetsByUserId(@PathVariable(value = "accountId") String accountId) {
-    return assetRepository.findAllAssetsByAccountId(accountId);
+  public List<Asset> getAssetsByAccountId(@PathVariable(value = "accountId") String accountId) {
+    return assetService.findAllAssetsByAccountId(accountId);
   }
 
   @GetMapping("/assets/{accountId}/{stockId}")
-  public Optional<Asset> getAsset(@PathVariable(value = "accountId") String accountId,
-                                  @PathVariable(value = "stockId") String stockId) {
-    return assetRepository.findById(new AssetId(accountId, stockId));
+  public Asset getAsset(@PathVariable(value = "accountId") String accountId,
+      @PathVariable(value = "stockId") String stockId) throws ResourceNotFoundException {
+    return assetService.findById(new AssetId(accountId, stockId));
   }
 }

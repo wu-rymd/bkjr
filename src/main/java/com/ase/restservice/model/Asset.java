@@ -6,6 +6,9 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * Represents Asset table.
+ */
 @Entity
 @Table(name = "asset")
 public class Asset {

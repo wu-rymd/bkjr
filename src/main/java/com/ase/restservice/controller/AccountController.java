@@ -2,7 +2,7 @@ package com.ase.restservice.controller;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Account;
-import com.ase.restservice.repository.AccountRepository;
+import com.ase.restservice.service.AccountService;
 import com.ase.restservice.service.AssetService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
 
   @Autowired
-  private AccountRepository accountRepository;
+  private AccountService accountService;
   @Autowired
   private AssetService assetService;
 
@@ -34,8 +34,7 @@ public class AccountController {
    */
   @PostMapping("/accounts")
   public Account createAccount(@Valid @RequestBody Account account) {
-    // TODO: Throw exception if account already exists
-    return accountRepository.save(account);
+    return accountService.save(account);
   }
 
   /**
@@ -46,33 +45,27 @@ public class AccountController {
    * @throws ResourceNotFoundException if account does not exist in the database
    */
   @GetMapping("/accounts/{accountId}/balance")
-  public Account getAccountBalance(@PathVariable(value = "accountId")
-      String accountId) throws ResourceNotFoundException {
-    Account account = accountRepository.findById(accountId)
-        .orElseThrow(() -> new ResourceNotFoundException(
-            "Account not found for this id :: " + accountId
-        ));
-    return account;
+  public Float getAccountBalance(@PathVariable(value = "accountId") String accountId)
+      throws ResourceNotFoundException {
+    Account account = accountService.findById(accountId);
+    return account.getBalance();
   }
 
   /**
    * Update account balance.
    *
    * @param accountId AccountID
-   * @param amount    Value that will be summed with balance
-   * @return Updated account.
+   * @param amount Value that will be summed with balance
+   * @return Updated account
    * @throws ResourceNotFoundException if account does not exist in the database
    */
   @PutMapping("/accounts/{accountId}/balance")
-  public Account updateAccountBalance(@PathVariable(value = "accountId")
-      String accountId, @RequestParam(value = "amount", defaultValue = "0") String amount)
+  public Account updateAccountBalance(@PathVariable(value = "accountId") String accountId,
+      @RequestParam(value = "amount", defaultValue = "0") String amount)
       throws ResourceNotFoundException {
-    Account account = accountRepository.findById(accountId)
-        .orElseThrow(() -> new ResourceNotFoundException(
-            "Account not found for this id :: " + accountId
-        ));
+    Account account = accountService.findById(accountId);
     account.setBalance(account.getBalance() + Float.parseFloat(amount));
-    final Account updatedAccount = accountRepository.save(account);
+    final Account updatedAccount = accountService.save(account);
     return updatedAccount;
   }
 

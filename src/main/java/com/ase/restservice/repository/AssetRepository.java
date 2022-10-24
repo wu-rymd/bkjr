@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Interface for querying the Asset table.
+ */
 @Repository
 public interface AssetRepository extends JpaRepository<Asset, AssetId> {
 

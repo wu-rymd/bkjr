@@ -3,6 +3,9 @@ package com.ase.restservice.model;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Represents (account_id, stock_id) composite key.
+ */
 public class AssetId implements Serializable {
 
   private String accountId;
