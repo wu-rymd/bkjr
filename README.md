@@ -7,6 +7,9 @@ Team repo for Advanced Software Engineering (COMS W4156) / Fall 2022 / team Kais
 - Run `./mvnw spring-boot:run`
 - Go to `http://localhost:8080/accounts/<ACCOUNT_ID>/balance`
 
+## Swagger API Documentation
+- Visit [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html) after running the service
+
 ## Style checker
 
 - We use the _checkstyle_ plugin from Maven to enforce a consistent style.

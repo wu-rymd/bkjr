@@ -36,6 +36,15 @@ public class AssetService {
   }
 
   /**
+   * Deletes an asset to the database.
+   *
+   * @param assetId AssetID
+   */
+  public void deleteById(AssetId assetId) {
+    assetRepository.deleteById(assetId);
+  }
+
+  /**
    * Gets an asset by assetId.
    *
    * @param assetId AssetID
@@ -136,14 +145,14 @@ public class AssetService {
       Asset userAsset = asset.get();
       if (Objects.equals(userAsset.getNumShares(), numShares)) {
         // Delete the asset
-        assetRepository.deleteById(new AssetId(accountId, stockId));
+        this.deleteById(new AssetId(accountId, stockId));
         return Optional.empty();
       }
       if (userAsset.getNumShares() < numShares) {
         throw new Exception("INVALID SELL ORDER");
       } else {
         userAsset.setNumShares(userAsset.getNumShares() - numShares);
-        assetRepository.save(userAsset);
+        this.save(userAsset);
         return Optional.of(userAsset);
       }
     } else {
