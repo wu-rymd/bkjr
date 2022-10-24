@@ -14,9 +14,6 @@ Team repo for Advanced Software Engineering (COMS W4156) / Fall 2022 / team Kais
   - **A report is generated at [/target/site/checkstyle.html](https://github.com/wu-rymd/kaiserschmarrn/blob/main/checkstyle/checkstyle.html)**
   - A report was copied to a new `/checkstyle/` directory for T3 requirements compliance, since the `/target` directory is git-ignored.
 
-## Documentation
-- Go to `http://localhost:8080/swagger-ui/index.html` to see a list of all available API endpoints
-
 ## Useful Links
 
 [https://spring.io/guides/gs/rest-service/](https://spring.io/guides/gs/rest-service/)
