@@ -34,7 +34,7 @@ public class AccountController {
    */
   @PostMapping("/accounts")
   public Account createAccount(@Valid @RequestBody Account account) {
-    return accountService.save(account);
+    return accountService.createAccount(account);
   }
 
   /**
@@ -47,7 +47,7 @@ public class AccountController {
   @GetMapping("/accounts/{accountId}/balance")
   public Float getAccountBalance(@PathVariable(value = "accountId") String accountId)
       throws ResourceNotFoundException {
-    Account account = accountService.findById(accountId);
+    Account account = accountService.getAccountById(accountId);
     return account.getBalance();
   }
 
@@ -56,21 +56,18 @@ public class AccountController {
    *
    * @param accountId AccountID
    * @param amount Value that will be summed with balance
-   * @return Updated account
+   * @return Updated balance
    * @throws ResourceNotFoundException if account does not exist in the database
    */
   @PutMapping("/accounts/{accountId}/balance")
-  public Account updateAccountBalance(@PathVariable(value = "accountId") String accountId,
+  public Float updateAccountBalance(@PathVariable(value = "accountId") String accountId,
       @RequestParam(value = "amount", defaultValue = "0") String amount)
       throws ResourceNotFoundException {
-    Account account = accountService.findById(accountId);
-    account.setBalance(account.getBalance() + Float.parseFloat(amount));
-    final Account updatedAccount = accountService.save(account);
-    return updatedAccount;
+    return accountService.updateAccountBalance(accountId, amount);
   }
 
   @GetMapping("/accounts/{accountId}/portfolio_value")
-  public Float getAccountAssetsValue(@PathVariable(value = "accountId") String accountId)
+  public Float getAccountPortfolioValue(@PathVariable(value = "accountId") String accountId)
       throws ResourceNotFoundException {
     return assetService.getAccountPortfolioValue(accountId);
   }
