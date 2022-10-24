@@ -3,6 +3,7 @@ package com.ase.restservice.controller;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Account;
 import com.ase.restservice.repository.AccountRepository;
+import com.ase.restservice.service.AssetService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class AccountController {
+
   @Autowired
   private AccountRepository accountRepository;
+  @Autowired
+  private AssetService assetService;
 
   /**
    * Create new account.
@@ -55,7 +59,7 @@ public class AccountController {
    * Update account balance.
    *
    * @param accountId AccountID
-   * @param amount Value that will be summed with balance
+   * @param amount    Value that will be summed with balance
    * @return Updated account.
    * @throws ResourceNotFoundException if account does not exist in the database
    */
@@ -70,5 +74,11 @@ public class AccountController {
     account.setBalance(account.getBalance() + Float.parseFloat(amount));
     final Account updatedAccount = accountRepository.save(account);
     return updatedAccount;
+  }
+
+  @GetMapping("/accounts/{accountId}/portfolio_value")
+  public Float getAccountAssetsValue(@PathVariable(value = "accountId") String accountId)
+      throws ResourceNotFoundException {
+    return assetService.getAccountPortfolioValue(accountId);
   }
 }
