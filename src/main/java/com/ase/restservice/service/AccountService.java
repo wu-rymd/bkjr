@@ -40,4 +40,13 @@ public class AccountService {
         ));
   }
 
+  public Account updateAccountBalance(String accountId, Float amount) throws ResourceNotFoundException{
+    Account account = accountRepository.findById(accountId)
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "Account not found for accountId :: " + accountId
+        ));
+    account.setBalance(account.getBalance()+amount);
+    accountRepository.save(account);
+    return account;
+  }
 }
