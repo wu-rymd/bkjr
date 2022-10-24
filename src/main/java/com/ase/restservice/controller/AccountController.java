@@ -3,6 +3,7 @@ package com.ase.restservice.controller;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Account;
 import com.ase.restservice.repository.AccountRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,7 @@ public class AccountController {
    * @return Updated account
    * @throws ResourceNotFoundException if account does not exist in the database
    */
+  @Operation(summary = "create an account with given id and balance")
   @PostMapping("/accounts")
   public Account createAccount(@Valid @RequestBody Account account) {
     // TODO: Throw exception if account already exists
@@ -41,6 +43,7 @@ public class AccountController {
    * @return Updated account
    * @throws ResourceNotFoundException if account does not exist in the database
    */
+  @Operation(summary = "get balance of account with given accountId")
   @GetMapping("/accounts/{accountId}/balance")
   public Account getAccountBalance(@PathVariable(value = "accountId")
       String accountId) throws ResourceNotFoundException {
@@ -59,6 +62,7 @@ public class AccountController {
    * @return Updated account.
    * @throws ResourceNotFoundException if account does not exist in the database
    */
+  @Operation(summary = "update balance of account with given accountId")
   @PutMapping("/accounts/{accountId}/balance")
   public Account updateAccountBalance(@PathVariable(value = "accountId")
       String accountId, @RequestParam(value = "amount", defaultValue = "0") String amount)
