@@ -4,6 +4,8 @@ import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Account;
 import com.ase.restservice.repository.AccountRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import com.ase.restservice.service.AccountService;
+import com.ase.restservice.service.AssetService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class AccountController {
+
   @Autowired
-  private AccountRepository accountRepository;
+  private AccountService accountService;
+  @Autowired
+  private AssetService assetService;
 
   /**
    * Create new account.
@@ -32,8 +37,7 @@ public class AccountController {
   @Operation(summary = "create an account with given id and balance")
   @PostMapping("/accounts")
   public Account createAccount(@Valid @RequestBody Account account) {
-    // TODO: Throw exception if account already exists
-    return accountRepository.save(account);
+    return accountService.createAccount(account);
   }
 
   /**
@@ -45,13 +49,10 @@ public class AccountController {
    */
   @Operation(summary = "get balance of account with given accountId")
   @GetMapping("/accounts/{accountId}/balance")
-  public Account getAccountBalance(@PathVariable(value = "accountId")
-      String accountId) throws ResourceNotFoundException {
-    Account account = accountRepository.findById(accountId)
-        .orElseThrow(() -> new ResourceNotFoundException(
-            "Account not found for this id :: " + accountId
-        ));
-    return account;
+  public Float getAccountBalance(@PathVariable(value = "accountId") String accountId)
+      throws ResourceNotFoundException {
+    Account account = accountService.getAccountById(accountId);
+    return account.getBalance();
   }
 
   /**
@@ -59,20 +60,20 @@ public class AccountController {
    *
    * @param accountId AccountID
    * @param amount Value that will be summed with balance
-   * @return Updated account.
+   * @return Updated balance
    * @throws ResourceNotFoundException if account does not exist in the database
    */
   @Operation(summary = "update balance of account with given accountId")
   @PutMapping("/accounts/{accountId}/balance")
-  public Account updateAccountBalance(@PathVariable(value = "accountId")
-      String accountId, @RequestParam(value = "amount", defaultValue = "0") String amount)
+  public Float updateAccountBalance(@PathVariable(value = "accountId") String accountId,
+      @RequestParam(value = "amount", defaultValue = "0") String amount)
       throws ResourceNotFoundException {
-    Account account = accountRepository.findById(accountId)
-        .orElseThrow(() -> new ResourceNotFoundException(
-            "Account not found for this id :: " + accountId
-        ));
-    account.setBalance(account.getBalance() + Float.parseFloat(amount));
-    final Account updatedAccount = accountRepository.save(account);
-    return updatedAccount;
+    return accountService.updateAccountBalance(accountId, amount);
+  }
+
+  @GetMapping("/accounts/{accountId}/portfolio_value")
+  public Float getAccountPortfolioValue(@PathVariable(value = "accountId") String accountId)
+      throws ResourceNotFoundException {
+    return assetService.getAccountPortfolioValue(accountId);
   }
 }

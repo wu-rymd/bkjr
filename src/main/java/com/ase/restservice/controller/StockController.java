@@ -4,6 +4,7 @@ import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.repository.StockRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import com.ase.restservice.service.StockService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class StockController {
   @Autowired
-  private StockRepository stockRepository;
+  private StockService stockService;
 
   /**
    * Create a new stock.
@@ -31,8 +32,7 @@ public class StockController {
   @Operation(summary = "add a new stock to the database with given id and price")
   @PostMapping("/stocks")
   public Stock createStock(@Valid @RequestBody Stock stock) {
-    // TODO: Throw exception if stock already exists
-    return stockRepository.save(stock);
+    return stockService.save(stock);
   }
 
   /**
@@ -44,13 +44,10 @@ public class StockController {
    */
   @Operation(summary = "get price of stock with given id")
   @GetMapping("/stocks/{stockId}/price")
-  public Stock getStockPrice(@PathVariable(value = "stockId")
-      String stockId) throws ResourceNotFoundException {
-    Stock stock = stockRepository.findById(stockId)
-        .orElseThrow(() -> new ResourceNotFoundException(
-          "Stock not found for this id :: " + stockId
-        ));
-    return stock;
+  public Float getStockPrice(@PathVariable(value = "stockId") String stockId)
+      throws ResourceNotFoundException {
+    Stock stock = stockService.findById(stockId);
+    return stock.getPrice();
   }
 
   /**
@@ -63,14 +60,11 @@ public class StockController {
    */
   @Operation(summary = "update price of stock with given id")
   @PutMapping("/stocks/{stockId}/price")
-  public Stock updateStockPrice(@PathVariable(value = "stockId")
-      String stockId, @Valid @RequestBody Stock stockDetails) throws ResourceNotFoundException {
-    Stock stock = stockRepository.findById(stockId)
-        .orElseThrow(() -> new ResourceNotFoundException(
-            "Stock not found for this id :: " + stockId
-        ));
+  public Stock updateStockPrice(@PathVariable(value = "stockId") String stockId,
+      @Valid @RequestBody Stock stockDetails) throws ResourceNotFoundException {
+    Stock stock = stockService.findById(stockId);
     stock.setPrice(stockDetails.getPrice());
-    final Stock updatedStock = stockRepository.save(stock);
+    final Stock updatedStock = stockService.save(stock);
     return updatedStock;
   }
 }
