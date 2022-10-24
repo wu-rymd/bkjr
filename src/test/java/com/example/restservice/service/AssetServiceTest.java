@@ -53,7 +53,7 @@ public class AssetServiceTest {
 
   @BeforeEach
   // Generate fake stock data, fake asset data
-  public void setup(){
+  public void setup() throws ResourceNotFoundException {
     stocks.add(new Stock("AMZN", 103.11f));
     assets.add(new Asset(accountId, "AMZN", 10f));
 
@@ -67,7 +67,6 @@ public class AssetServiceTest {
     user = new Account("kutaykarakas",50f,100f);
     endingBalance = 50f;
     startingBalance = 100f;
-
     totalValueTruth = endingBalance + portfolioValueTruth;
     pnlTruth = (totalValueTruth - startingBalance)/startingBalance;
   }
@@ -108,7 +107,11 @@ public class AssetServiceTest {
   }
   @DisplayName("JUnit test for getAccountTotalValue")
   @Test
-  public void testAccountTotalValue() throws ResourceNotFoundException { //throws here is weird
+  public void testAccountTotalValue() throws ResourceNotFoundException {
+    for (Stock stock: stocks
+    ) {
+      doReturn(stock).when(mockStockService).findById(stock.getStockId());
+    }
     given(mockAssetRepository.findAllAssetsByAccountId(accountId))
         .willReturn(assets);
     given(mockAccountRepository.findById(accountId))
@@ -120,7 +123,11 @@ public class AssetServiceTest {
   }
   @DisplayName("JUnit test for getAccountPnl")
   @Test
-  public void testAccountPnl() throws ResourceNotFoundException {//throws here is weird
+  public void testAccountPnl() throws ResourceNotFoundException {
+    for (Stock stock: stocks
+    ) {
+      doReturn(stock).when(mockStockService).findById(stock.getStockId());
+    }
     given(mockAssetRepository.findAllAssetsByAccountId(accountId))
         .willReturn(assets);
 
