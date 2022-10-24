@@ -2,6 +2,8 @@ package com.ase.restservice.controller;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Stock;
+import com.ase.restservice.repository.StockRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import com.ase.restservice.service.StockService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ public class StockController {
    * @param stock Stock
    * @return Updated stock
    */
+  @Operation(summary = "add a new stock to the database with given id and price")
   @PostMapping("/stocks")
   public Stock createStock(@Valid @RequestBody Stock stock) {
     return stockService.save(stock);
@@ -39,6 +42,7 @@ public class StockController {
    * @return Updated stock
    * @throws ResourceNotFoundException if stock does not exist in the database
    */
+  @Operation(summary = "get price of stock with given id")
   @GetMapping("/stocks/{stockId}/price")
   public Float getStockPrice(@PathVariable(value = "stockId") String stockId)
       throws ResourceNotFoundException {
@@ -54,6 +58,7 @@ public class StockController {
    * @return Updated stock
    * @throws ResourceNotFoundException if stock does not exist in the database
    */
+  @Operation(summary = "update price of stock with given id")
   @PutMapping("/stocks/{stockId}/price")
   public Stock updateStockPrice(@PathVariable(value = "stockId") String stockId,
       @Valid @RequestBody Stock stockDetails) throws ResourceNotFoundException {
