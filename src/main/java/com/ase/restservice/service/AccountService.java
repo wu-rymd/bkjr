@@ -40,12 +40,22 @@ public class AccountService {
         ));
   }
 
-  public Account updateAccountBalance(String accountId, Float amount) throws ResourceNotFoundException{
+  /**
+   * Method to increase or decrease a user's account balance.
+   *
+   * @param accountId Primary key of account
+   * @param amount dollar amount to change account balance by. If negative, will decrease the
+   *               account balance.
+   * @return Returns the account with the updated balance
+   * @throws ResourceNotFoundException when account does not exist
+   */
+  public Account updateAccountBalance(String accountId, Float amount)
+      throws ResourceNotFoundException {
     Account account = accountRepository.findById(accountId)
         .orElseThrow(() -> new ResourceNotFoundException(
             "Account not found for accountId :: " + accountId
         ));
-    account.setBalance(account.getBalance()+amount);
+    account.setBalance(account.getBalance() + amount);
     accountRepository.save(account);
     return account;
   }
