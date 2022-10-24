@@ -1,5 +1,6 @@
 package com.ase.restservice.model;
 
+import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -73,5 +74,22 @@ public class Order {
 
   public void setOrderStatus(String orderStatus) {
     this.orderStatus = orderStatus;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (!(o instanceof Order)) {
+      return false;
+    }
+    Order c = (Order) o;
+    return Objects.equals(this.getUuid(), c.getUuid())
+        && Objects.equals(this.getAccountId(), c.getAccountId())
+        && Objects.equals(this.getStockId(), c.getStockId())
+        && Objects.equals(this.getNumShares(), c.getNumShares())
+        && Objects.equals(this.getOrderType(), c.getOrderType())
+        && Objects.equals(this.getOrderStatus(), c.getOrderStatus());
   }
 }

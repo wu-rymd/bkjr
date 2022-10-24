@@ -23,8 +23,9 @@ public class OrderService {
   @Autowired
   AccountService accountService;
 
-  public void createNewOrder(Order order) {
+  public Optional<Asset> createNewOrder(Order order) throws Exception {
     orderRepository.save(order);
+    return executeOrder(order);
   }
 
   public void updateOrderStatus(Order order, String status) {

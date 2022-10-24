@@ -1,7 +1,9 @@
 package com.ase.restservice.controller;
 
+import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Order;
 import com.ase.restservice.service.OrderService;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,8 +18,8 @@ public class OrderController {
   OrderService orderService;
 
   @PostMapping("/order")
-  public void postAsset(@RequestBody Order order) {
-    orderService.createNewOrder(order);
+  public Optional<Asset> postAsset(@RequestBody Order order) throws Exception {
+    return orderService.createNewOrder(order);
   }
 
 }
