@@ -163,18 +163,37 @@ public class AssetService {
           "Asset " + stockId + " does not exist for user " + accountId);
     }
   }
-  public Float getAccountTotalValue(String accountId) throws ResourceNotFoundException {
-      Account account = accountRepository.findById(accountId).orElseThrow();
-      Float portfolioValue = getAccountPortfolioValue(accountId);
-      Float currentBalance = account.getBalance();//TODO I can use Account controller methods here!
-      return currentBalance + portfolioValue;
-  }
-  public Float getAccountPnl(String accountId) throws ResourceNotFoundException {
-      Account account = accountRepository.findById(accountId).orElseThrow();
-      Float accountValue = getAccountTotalValue(accountId);
-      Float starting_balance = account.getStartingBalance();
 
-      return (accountValue - starting_balance) / starting_balance;
+  /**
+   * Calculates account total value. Total value is total of current cash balance and
+   * portfolio value.
+   *
+   * @param accountId AccountID
+   * @return Current total value of the account
+   * @throws ResourceNotFoundException if account does not exist in the database
+   */
+  public Float getAccountTotalValue(String accountId) throws ResourceNotFoundException {
+    Account account = accountRepository.findById(accountId).orElseThrow();
+    Float portfolioValue = getAccountPortfolioValue(accountId);
+    Float currentBalance = account.getBalance(); //TODO Account controller methods could be used.
+    return currentBalance + portfolioValue;
+  }
+
+  /**
+   * Calculates account pnl. PnL, profit and loss, is ratio of profit or loss based on
+   * current account valuation. It is calculated by finding the ratio of current value and
+   * initial value of the account.
+   *
+   * @param accountId AccountID
+   * @return current pnl percentage
+   * @throws ResourceNotFoundException if account does not exist in the database
+   */
+  public Float getAccountPnl(String accountId) throws ResourceNotFoundException {
+    Account account = accountRepository.findById(accountId).orElseThrow();
+    Float accountValue = getAccountTotalValue(accountId);
+    Float startingBalance = account.getStartingBalance();
+
+    return (accountValue - startingBalance) / startingBalance;
   }
 }
 

@@ -19,6 +19,13 @@ public class Account {
 
   public Account() {}
 
+  /**
+   * Model for account.
+   *
+   * @param accountId AccountID
+   * @param balance Current cash balance for the account
+   * @param startingBalance Cash balance the account started with
+   */
   public Account(String accountId, Float balance, Float startingBalance) {
     this.accountId = accountId;
     this.balance = balance;
@@ -38,18 +45,20 @@ public class Account {
   public Float getBalance() {
     return balance;
   }
+
   @Column(name = "starting_balance", nullable = false)
   public Float getStartingBalance() {
     return startingBalance;
   }
+
   public void setBalance(Float balance) {
     this.balance = balance;
   }
 
-  //Not sure if this should exist.
   public void setStartingBalance(Float startingBalance) {
     this.startingBalance = startingBalance;
   }
+
   @Override
   public String toString() {
     return "Account [accountId=" + accountId + ", balance=" + balance + "]";

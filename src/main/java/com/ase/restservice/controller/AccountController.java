@@ -70,15 +70,17 @@ public class AccountController {
       throws ResourceNotFoundException {
     return accountService.updateAccountBalance(accountId, amount);
   }
+
   @GetMapping("/accounts/{accountId}/portfolio_value")
   public Float getAccountPortfolioValue(@PathVariable(value = "accountId") String accountId)
       throws ResourceNotFoundException {
     return assetService.getAccountPortfolioValue(accountId);
   }
-    @GetMapping("/accounts/{accountId}/pnl")
-    public Float getAccountPnl(@PathVariable(value="accountId") String accountId) throws ResourceNotFoundException {
-        return assetService.getAccountPnl(accountId);
 
-    }
+  @GetMapping("/accounts/{accountId}/pnl")
+  public Float getAccountPnl(@PathVariable(value = "accountId") String accountId)
+      throws ResourceNotFoundException {
+    return assetService.getAccountPnl(accountId);
+  }
 
 }
