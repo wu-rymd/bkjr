@@ -10,11 +10,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * Represent Order table.
+ * Represent Transaction table.
  */
 @Entity
-@Table(name = "stock_order")
-public class Order {
+@Table(name = "transaction")
+public class Transaction {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID uuid;
@@ -24,28 +24,28 @@ public class Order {
   private String stockId;
   @Column(name = "num_shares", nullable = false)
   private Float numShares;
-  @Column(name = "order_type", nullable = false)
-  private String orderType;
-  @Column(name = "order_status", nullable = false)
-  private String orderStatus;
+  @Column(name = "transaction_type", nullable = false)
+  private String transactionType;
+  @Column(name = "transaction_status", nullable = false)
+  private String transactionStatus;
 
-  public Order() {}
+  public Transaction() {}
 
   /**
-   * Constructor for Order objects, UUID is generated here.
+   * Constructor for Transaction objects, UUID is generated here.
    */
-  public Order(
+  public Transaction(
       String accountId,
       String stockId,
       Float numShares,
-      String orderType,
-      String orderStatus
+      String transactionType,
+      String transactionStatus
   ) {
     this.accountId = accountId;
     this.stockId = stockId;
     this.numShares = numShares;
-    this.orderType = orderType;
-    this.orderStatus = orderStatus;
+    this.transactionType = transactionType;
+    this.transactionStatus = transactionStatus;
   }
 
   public UUID getUuid() {
@@ -64,16 +64,16 @@ public class Order {
     return numShares;
   }
 
-  public String getOrderType() {
-    return orderType;
+  public String getTransactionType() {
+    return transactionType;
   }
 
-  public String getOrderStatus() {
-    return orderStatus;
+  public String getTransactionStatus() {
+    return transactionStatus;
   }
 
-  public void setOrderStatus(String orderStatus) {
-    this.orderStatus = orderStatus;
+  public void setTransactionStatus(String transactionStatus) {
+    this.transactionStatus = transactionStatus;
   }
 
   @Override
@@ -81,15 +81,15 @@ public class Order {
     if (o == this) {
       return true;
     }
-    if (!(o instanceof Order)) {
+    if (!(o instanceof Transaction)) {
       return false;
     }
-    Order c = (Order) o;
+    Transaction c = (Transaction) o;
     return Objects.equals(this.getUuid(), c.getUuid())
         && Objects.equals(this.getAccountId(), c.getAccountId())
         && Objects.equals(this.getStockId(), c.getStockId())
         && Objects.equals(this.getNumShares(), c.getNumShares())
-        && Objects.equals(this.getOrderType(), c.getOrderType())
-        && Objects.equals(this.getOrderStatus(), c.getOrderStatus());
+        && Objects.equals(this.getTransactionType(), c.getTransactionType())
+        && Objects.equals(this.getTransactionStatus(), c.getTransactionStatus());
   }
 }

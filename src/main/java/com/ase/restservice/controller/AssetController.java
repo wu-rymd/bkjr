@@ -21,17 +21,17 @@ public class AssetController {
 
   @GetMapping("/assets")
   public List<Asset> getAllAssets() {
-    return assetService.findAll();
+    return assetService.listAssets("");
   }
 
   @GetMapping("/assets/{accountId}")
   public List<Asset> getAssetsByAccountId(@PathVariable(value = "accountId") String accountId) {
-    return assetService.findAllAssetsByAccountId(accountId);
+    return assetService.listAssets(accountId);
   }
 
   @GetMapping("/assets/{accountId}/{stockId}")
   public Asset getAsset(@PathVariable(value = "accountId") String accountId,
       @PathVariable(value = "stockId") String stockId) throws ResourceNotFoundException {
-    return assetService.findById(new AssetId(accountId, stockId));
+    return assetService.getAssetById(new AssetId(accountId, stockId));
   }
 }

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
  * Service for Asset operations.
  */
 @Service
-public class AssetService {
+public class AssetService implements AssetServiceI {
 
   @Autowired
   private AssetRepository assetRepository;
@@ -25,22 +25,34 @@ public class AssetService {
   private StockService stockService;
 
   /**
-   * Saves an asset to the database.
+   * Creates an asset in the database.
    *
    * @param asset Asset
-   * @return Updated asset
+   * @return Created asset
    */
-  public Asset save(Asset asset) {
+  public Asset createAsset(Asset asset) {
     // TODO: Throw exception if asset already exists
     return assetRepository.save(asset);
   }
 
   /**
-   * Deletes an asset to the database.
+   * Updates an asset in the database.
+   *
+   * @param asset Asset
+   * @return Updated asset
+   */
+  public Asset updateAsset(Asset asset) {
+    // TODO: Throw exception if asset does not exist
+    return assetRepository.save(asset);
+  }
+
+  /**
+   * Deletes an asset in the database.
    *
    * @param assetId AssetID
    */
-  public void deleteById(AssetId assetId) {
+  public void deleteAssetById(AssetId assetId) {
+    // TODO: Throw exception if asset does not exist
     assetRepository.deleteById(assetId);
   }
 
@@ -51,7 +63,7 @@ public class AssetService {
    * @return Asset
    * @throws ResourceNotFoundException if asset does not exist in the database
    */
-  public Asset findById(AssetId assetId) throws ResourceNotFoundException {
+  public Asset getAssetById(AssetId assetId) throws ResourceNotFoundException {
     return assetRepository.findById(assetId)
         .orElseThrow(() -> new ResourceNotFoundException(
             "Asset not found for assetId :: " + assetId
@@ -59,21 +71,15 @@ public class AssetService {
   }
 
   /**
-   * Retrieve all assets.
-   *
-   * @return List of assets
-   */
-  public List<Asset> findAll() {
-    return assetRepository.findAll();
-  }
-
-  /**
-   * Retrieve all assets of an account.
+   * Retrieve all assets or those owned by an account.
    *
    * @param accountId AccountID
    * @return List of assets
    */
-  public List<Asset> findAllAssetsByAccountId(String accountId) {
+  public List<Asset> listAssets(String accountId) {
+    if (accountId.isEmpty()) {
+      return assetRepository.findAll();
+    }
     return assetRepository.findAllAssetsByAccountId(accountId);
   }
 
@@ -85,7 +91,7 @@ public class AssetService {
    * @throws ResourceNotFoundException if account does not exist in the database
    */
   public Float getAccountPortfolioValue(String accountId) throws ResourceNotFoundException {
-    List<Asset> userAssets = this.findAllAssetsByAccountId(accountId);
+    List<Asset> userAssets = this.listAssets(accountId);
     float total = 0f;
     String stockId;
     Stock stock;
@@ -93,9 +99,7 @@ public class AssetService {
     for (Asset asset : userAssets) {
       // Total value of a given asset is the current share price * the # of shares the account owns
       stockId = asset.getStockId();
-      System.out.println("STOCK ID " + stockId);
-      stock = stockService.findById(stockId);
-      System.out.println(stock);
+      stock = stockService.getStockById(stockId);
       price = stock.getPrice();
       total += price * asset.getNumShares();
     }
@@ -145,14 +149,14 @@ public class AssetService {
       Asset userAsset = asset.get();
       if (Objects.equals(userAsset.getNumShares(), numShares)) {
         // Delete the asset
-        this.deleteById(new AssetId(accountId, stockId));
+        this.deleteAssetById(new AssetId(accountId, stockId));
         return Optional.empty();
       }
       if (userAsset.getNumShares() < numShares) {
         throw new Exception("INVALID SELL ORDER");
       } else {
         userAsset.setNumShares(userAsset.getNumShares() - numShares);
-        this.save(userAsset);
+        this.updateAsset(userAsset);
         return Optional.of(userAsset);
       }
     } else {

@@ -67,7 +67,7 @@ public class AssetServiceTest {
   @Test
   public void getPortfolioValue() throws ResourceNotFoundException {
     for (Stock stock : stocks) {
-      doReturn(stock).when(mockStockService).findById(stock.getStockId());
+      doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
     }
     doReturn(assets).when(mockAssetRepository).findAllAssetsByAccountId(accountId);
     Float portfolioValue = assetService.getAccountPortfolioValue(accountId);
