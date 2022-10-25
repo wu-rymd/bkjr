@@ -14,9 +14,9 @@ After registering their users' accounts and by keeping buy/sell transactions up-
 - Go to [`http://localhost:8080/accounts/<ACCOUNT_ID>`](http://localhost:8080/accounts/boraelci)
 
 ## API Documentation with Swagger
-- Available at external link: [https://app.swaggerhub.com/apis-docs/BORAELCI/kaiserschmarrn/v0](https://app.swaggerhub.com/apis-docs/BORAELCI/kaiserschmarrn/v0)
+- Available at external link: [`https://app.swaggerhub.com/apis-docs/BORAELCI/kaiserschmarrn/v0`](https://app.swaggerhub.com/apis-docs/BORAELCI/kaiserschmarrn/v0)
 - Alternatively, you can visit [`http://localhost:8080/swagger-ui/index.html`](http://localhost:8080/swagger-ui/index.html) after running the service
-- Similarly, it is running at [`http://ec2-35-174-136-81.compute-1.amazonaws.com:8080/swagger-ui/index.html`](http://ec2-35-174-136-81.compute-1.amazonaws.com:8080/swagger-ui/index.html)
+- Similarly, [`http://ec2-35-174-136-81.compute-1.amazonaws.com:8080/swagger-ui/index.html`](http://ec2-35-174-136-81.compute-1.amazonaws.com:8080/swagger-ui/index.html)
 
 ## Style checker
 - We use the _checkstyle_ plugin from Maven to enforce a consistent style
