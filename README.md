@@ -25,6 +25,8 @@ After registering their users' accounts and by keeping buy/sell transactions up-
   - We copied it to [`/checkstyle/checkstyle.html`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/checkstyle/checkstyle.html) to comply with T3 requirements, since `target/` is git-ignored
 
 ## Deployment
-- We deployed the service to an AWS EC2 Instance accessible at [`http://ec2-35-174-136-81.compute-1.amazonaws.com/<ACCOUNT_ID>`](http://ec2-35-174-136-81.compute-1.amazonaws.com/accounts/boraelci)
+- We deployed the service to an AWS EC2 Instance
+  - Accessible at [`http://ec2-35-174-136-81.compute-1.amazonaws.com/<ACCOUNT_ID>`](http://ec2-35-174-136-81.compute-1.amazonaws.com/accounts/boraelci)
   - The same API endpoints are available at this address
-- We deployed the PostgreSQL database to an AWS RDS Instance with the link and credentials specified in [`src/main/resources/application.properties`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/src/main/resources/application.properties)
+- We deployed the PostgreSQL database to an AWS RDS Instance
+  - The link and credentials are specified in [`src/main/resources/application.properties`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/src/main/resources/application.properties)
