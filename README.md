@@ -1,23 +1,30 @@
-# Kaiserschmarrn
+# Team Kaiserschmarrn
+Team repo for Advanced Software Engineering (COMS W4156) / Fall 2022
 
-Team repo for Advanced Software Engineering (COMS W4156) / Fall 2022 / team Kaiserschmarrn
+## About
+This service provides an API to manage virtual stock accounts for its (future) clients that include trading apps, financial education software, and data visualization tools.
+After registering their users' accounts and by keeping buy/sell transactions up-to-date, the clients are able to gain real-time insights on:
+  - Account balance (buy power)
+  - Portfolio value (current worth of all assets owned)
+  - Profit & Loss (calculated from balance and portfolio value)
+  - and more!
 
-## Quick start
-
+## How to Run
 - Run `./mvnw spring-boot:run`
-- Go to `http://localhost:8080/accounts/<ACCOUNT_ID>/balance`
+- Go to [`http://localhost:8080/accounts/<ACCOUNT_ID>`](http://localhost:8080/accounts/boraelci)
 
-## Swagger API Documentation
-- Visit [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html) after running the service
+## API Documentation with Swagger
+- Available at external link: [https://app.swaggerhub.com/apis-docs/BORAELCI/Kaiserschmarrn/v0](https://app.swaggerhub.com/apis-docs/BORAELCI/Kaiserschmarrn/v0)
+- Alternatively, you can visit [`http://localhost:8080/swagger-ui/index.html`](http://localhost:8080/swagger-ui/index.html) after running the service
+- Similarly, it is running at [`http://ec2-35-174-136-81.compute-1.amazonaws.com/swagger-ui/index.html`](http://ec2-35-174-136-81.compute-1.amazonaws.com/swagger-ui/index.html)
 
 ## Style checker
+- We use the _checkstyle_ plugin from Maven to enforce a consistent style
+- To generate a report of style errors, run `./mvnw checkstyle:checkstyle`
+  - The report is generated at `/target/site/checkstyle.html`
+  - We copied it to [`/checkstyle/checkstyle.html`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/checkstyle/checkstyle.html) to comply with T3 requirements, since `target/` is git-ignored
 
-- We use the _checkstyle_ plugin from Maven to enforce a consistent style.
-- To generate a report of style errors, run `mvn checkstyle:checkstyle`
-  - **A report is generated at [/target/site/checkstyle.html](https://github.com/wu-rymd/kaiserschmarrn/blob/main/checkstyle/checkstyle.html)**
-  - A report was copied to a new `/checkstyle/` directory for T3 requirements compliance, since the `/target` directory is git-ignored.
-
-## Useful Links
-
-[https://spring.io/guides/gs/rest-service/](https://spring.io/guides/gs/rest-service/)
-[https://www.javaguides.net/2019/01/springboot-postgresql-jpa-hibernate-crud-restful-api-tutorial.html](https://www.javaguides.net/2019/01/springboot-postgresql-jpa-hibernate-crud-restful-api-tutorial.html)
+## Deployment
+- We deployed the service to an AWS EC2 Instance accessible at [`http://ec2-35-174-136-81.compute-1.amazonaws.com/<ACCOUNT_ID>`](http://ec2-35-174-136-81.compute-1.amazonaws.com/accounts/boraelci)
+  - The same API endpoints are available at this address
+- We deployed the PostgreSQL database to an AWS RDS Instance with the link and credentials specified in [`src/main/resources/application.properties`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/src/main/resources/application.properties)

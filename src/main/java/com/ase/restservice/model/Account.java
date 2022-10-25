@@ -16,14 +16,23 @@ public class Account {
 
   private String accountId;
   private Float balance;
+  private Float startingBalance;
 
   public Account() {
 
   }
 
-  public Account(String accountId, Float balance) {
+  /**
+   * Represents an account.
+   *
+   * @param accountId ID of an account
+   * @param balance Account balance
+   * @param startingBalance Starting balance of an account
+   */
+  public Account(String accountId, Float balance, Float startingBalance) {
     this.accountId = accountId;
     this.balance = balance;
+    this.balance = startingBalance;
   }
 
   @Id
@@ -44,8 +53,18 @@ public class Account {
     this.balance = balance;
   }
 
+  @Column(name = "starting_balance", nullable = false)
+  public Float getStartingBalance() {
+    return startingBalance;
+  }
+
+  public void setStartingBalance(Float startingBalance) {
+    this.startingBalance = startingBalance;
+  }
+
   @Override
   public String toString() {
-    return "Account [accountId=" + accountId + ", balance=" + balance + "]";
+    return "Account [accountId=" + accountId + ", balance=" + balance
+        + ", startingBalance=" + startingBalance + "]";
   }
 }

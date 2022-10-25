@@ -73,13 +73,10 @@ public class AccountService implements AccountServiceI {
    */
   public Account updateAccountBalance(String accountId, Float amount)
       throws ResourceNotFoundException {
-    Account account = accountRepository.findById(accountId)
-        .orElseThrow(() -> new ResourceNotFoundException(
-            "Account not found for accountId :: " + accountId
-        ));
+    Account account = this.getAccountById(accountId);
     account.setBalance(account.getBalance() + amount);
-    accountRepository.save(account);
-    return account;
+    final Account updatedAccount = this.updateAccount(account);
+    return updatedAccount;
   }
 
 }

@@ -29,7 +29,7 @@ public class StockController {
    * @param stock Stock
    * @return Updated stock
    */
-  @Operation(summary = "add a new stock to the database with given id and price")
+  @Operation(summary = "Create stock given Stock object")
   @PostMapping("/stocks")
   public Stock createStock(@Valid @RequestBody Stock stock) {
     return stockService.createStock(stock);
@@ -42,7 +42,7 @@ public class StockController {
    * @return Updated stock
    * @throws ResourceNotFoundException if stock does not exist in the database
    */
-  @Operation(summary = "get price of stock with given id")
+  @Operation(summary = "Get price of stock given stockId")
   @GetMapping("/stocks/{stockId}/price")
   public Float getStockPrice(@PathVariable(value = "stockId") String stockId)
       throws ResourceNotFoundException {
@@ -58,10 +58,10 @@ public class StockController {
    * @return Updated stock
    * @throws ResourceNotFoundException if stock does not exist in the database
    */
-  @Operation(summary = "update price of stock with given id")
-  @PutMapping("/stocks/{stockId}/price")
+  @Operation(summary = "Update price of stock given accountId and price")
+  @PutMapping("/stocks/{stockId}/{price}")
   public Stock updateStockPrice(@PathVariable(value = "stockId") String stockId,
-        @RequestParam(value = "price", defaultValue = "0") Float price)
+        @PathVariable(value = "price") Float price)
         throws ResourceNotFoundException {
     return stockService.updateStockPrice(stockId, price);
   }

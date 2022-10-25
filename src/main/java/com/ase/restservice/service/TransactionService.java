@@ -79,7 +79,7 @@ public class TransactionService implements TransactionServiceI {
   }
 
   /**
-   *Executes sell transaction by doing the following: Updating/deleting account asset,
+   * Executes sell transaction by doing the following: Updating/deleting account asset,
    * updating account balance, updating transaction status.
    *
    * @param transaction Transaction object to be executed, with transactionType="SELL"

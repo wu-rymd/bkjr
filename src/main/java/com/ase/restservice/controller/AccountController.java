@@ -34,25 +34,38 @@ public class AccountController {
    * @return Updated account
    * @throws ResourceNotFoundException if account does not exist in the database
    */
-  @Operation(summary = "create an account with given id and balance")
+  @Operation(summary = "Create account given Account object")
   @PostMapping("/accounts")
   public Account createAccount(@Valid @RequestBody Account account) {
     return accountService.createAccount(account);
   }
 
   /**
+   * Retrieve an account.
+   *
+   * @param accountId AccountID
+   * @return account Account
+   * @throws ResourceNotFoundException if account does not exist in the database
+   */
+  @Operation(summary = "Get account given accountId")
+  @GetMapping("/accounts/{accountId}")
+  public Account getAccount(@PathVariable(value = "accountId") String accountId)
+      throws ResourceNotFoundException {
+    return accountService.getAccountById(accountId);
+  }
+
+  /**
    * Retrieve account balance.
    *
    * @param accountId AccountID
-   * @return Updated account
+   * @return Account balance
    * @throws ResourceNotFoundException if account does not exist in the database
    */
-  @Operation(summary = "get balance of account with given accountId")
+  @Operation(summary = "Get balance of account given accountId")
   @GetMapping("/accounts/{accountId}/balance")
   public Float getAccountBalance(@PathVariable(value = "accountId") String accountId)
       throws ResourceNotFoundException {
-    Account account = accountService.getAccountById(accountId);
-    return account.getBalance();
+    return accountService.getAccountById(accountId).getBalance();
   }
 
   /**
@@ -63,7 +76,7 @@ public class AccountController {
    * @return Updated balance
    * @throws ResourceNotFoundException if account does not exist in the database
    */
-  @Operation(summary = "update balance of account with given accountId")
+  @Operation(summary = "Update balance of account given accountId")
   @PutMapping("/accounts/{accountId}/balance")
   public Account updateAccountBalance(@PathVariable(value = "accountId") String accountId,
       @RequestParam(value = "amount", defaultValue = "0") Float amount)
@@ -71,6 +84,14 @@ public class AccountController {
     return accountService.updateAccountBalance(accountId, amount);
   }
 
+  /**
+   * Get portfolio value of an account.
+   *
+   * @param accountId AccountID
+   * @return Portfolio value
+   * @throws ResourceNotFoundException if account does not exist in the database
+   */
+  @Operation(summary = "Get portfolio value of account given accountId")
   @GetMapping("/accounts/{accountId}/portfolio_value")
   public Float getAccountPortfolioValue(@PathVariable(value = "accountId") String accountId)
       throws ResourceNotFoundException {
