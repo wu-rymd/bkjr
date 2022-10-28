@@ -4,6 +4,7 @@ import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.repository.StockRepository;
 import com.ase.restservice.service.StockServiceI;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,5 +76,14 @@ public class StockService implements StockServiceI {
     stock.setPrice(price);
     final Stock updatedStock = this.updateStock(stock);
     return updatedStock;
+  }
+
+  /**
+   * Retrieve all stocks.
+   *
+   * @return List of stocks
+   */
+  public List<Stock> listStocks() {
+    return stockRepository.findAll();
   }
 }
