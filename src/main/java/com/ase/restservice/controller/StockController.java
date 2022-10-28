@@ -5,6 +5,7 @@ import com.ase.restservice.model.Stock;
 import com.ase.restservice.repository.StockRepository;
 import com.ase.restservice.service.StockService;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,12 @@ public class StockController {
   @PostMapping("/stocks")
   public Stock createStock(@Valid @RequestBody Stock stock) {
     return stockService.createStock(stock);
+  }
+
+  @Operation(summary = "List all stocks")
+  @GetMapping("/stocks")
+  public List<Stock> listStocks() {
+    return stockService.listStocks();
   }
 
   /**
