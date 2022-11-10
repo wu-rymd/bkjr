@@ -2,10 +2,13 @@ package com.ase.restservice.controller;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Account;
+import com.ase.restservice.model.Transaction;
 import com.ase.restservice.repository.AccountRepository;
 import com.ase.restservice.service.AccountService;
 import com.ase.restservice.service.AssetService;
+import com.ase.restservice.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +29,8 @@ public class AccountController {
   private AccountService accountService;
   @Autowired
   private AssetService assetService;
+  @Autowired
+  private TransactionService transactionService;
 
   /**
    * Create new account.
@@ -96,5 +101,12 @@ public class AccountController {
   public Float getAccountPortfolioValue(@PathVariable(value = "accountId") String accountId)
       throws ResourceNotFoundException {
     return assetService.getAccountPortfolioValue(accountId);
+  }
+  
+  @Operation(summary = "Get all transactions (buy/sell orders) for an account given accountId")
+  @GetMapping("/accounts/{accountId}/transactions")
+  public List<Transaction> getAccountTransactions(
+      @PathVariable(value = "accountId") String accountId) {
+    return transactionService.getAccountTransactions(accountId);
   }
 }

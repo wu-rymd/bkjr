@@ -4,8 +4,8 @@ import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.model.Transaction;
-import com.ase.restservice.repository.AccountRepository;
 import com.ase.restservice.repository.TransactionRepository;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,5 +100,9 @@ public class TransactionService implements TransactionServiceI {
     accountService.updateAccountBalance(transaction.getAccountId(), totalCost);
     updateTransactionStatus(transaction, "COMPLETED");
     return newAsset;
+  }
+
+  public List<Transaction> getAccountTransactions(String accountId) {
+    return transactionRepository.findByAccountId(accountId);
   }
 }
