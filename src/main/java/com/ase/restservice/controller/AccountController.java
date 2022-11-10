@@ -97,4 +97,12 @@ public class AccountController {
       throws ResourceNotFoundException {
     return assetService.getAccountPortfolioValue(accountId);
   }
+
+  @Operation(summary = "Get a profits/losses for an account given accountId")
+  @GetMapping("/accounts/{accountId}/pnl")
+  public Float getAccountPnl(@PathVariable(value = "accountId") String accountId)
+      throws ResourceNotFoundException {
+    return assetService.getAccountPnl(accountId);
+
+  }
 }

@@ -1,11 +1,14 @@
 package com.example.restservice.service;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.model.Account;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.AssetId;
 import com.ase.restservice.model.Stock;
+import com.ase.restservice.repository.AccountRepository;
 import com.ase.restservice.repository.AssetRepository;
 import com.ase.restservice.repository.StockRepository;
+import com.ase.restservice.service.AccountService;
 import com.ase.restservice.service.AssetService;
 import com.ase.restservice.service.StockService;
 import org.junit.jupiter.api.AfterEach;
@@ -35,7 +38,8 @@ public class AssetServiceTest {
   private AssetRepository mockAssetRepository;
   @Mock
   private StockService mockStockService;
-
+  @Mock
+  private AccountRepository mockAccountRepository;
   @InjectMocks
   private AssetService assetService;
 
@@ -43,6 +47,12 @@ public class AssetServiceTest {
   List<Stock> stocks = new ArrayList<>();
   String accountId = "testAccount";
   Float portfolioValueTruth;
+  Float startingBalance;
+  Float endingBalance;
+  Float totalValueTruth;
+  Float pnlTruth;
+
+  Account user;
 
   @BeforeEach
   // Generate fake stock data, fake asset data
@@ -57,6 +67,13 @@ public class AssetServiceTest {
     assets.add(new Asset(accountId, "META", 10.3f));
 
     portfolioValueTruth = (103.11f*10f) + (111.03f*1.5f) + (132.00f*10.3f);
+
+    user = new Account(accountId,50f,100f);
+    endingBalance = 50f;
+    startingBalance = 100f;
+
+    totalValueTruth = endingBalance + portfolioValueTruth;
+    pnlTruth = (totalValueTruth - startingBalance)/startingBalance;
   }
   @AfterEach
   public void cleanUp(){
@@ -189,5 +206,28 @@ public class AssetServiceTest {
     String expectedMessage = "Asset " + stock.getStockId() + " does not exist for user " + accountId;
     String actualMessage = exception.getMessage();
     assertTrue(actualMessage.contains(expectedMessage));
+  }
+  @DisplayName("JUnit test for getAccountTotalValue")
+  @Test
+  public void testAccountTotalValue() throws ResourceNotFoundException {
+    for (Stock stock : stocks) {
+      doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
+    }
+
+    doReturn(assets).when(mockAssetRepository).findAllAssetsByAccountId(accountId);
+    doReturn(Optional.ofNullable(user)).when(mockAccountRepository).findById(accountId);
+    Float totalValue = assetService.getAccountTotalValue(accountId);
+    assertEquals(totalValue, totalValueTruth);
+  }
+  @DisplayName("JUnit test for getAccountPnl")
+  @Test
+  public void testAccountPnl() throws ResourceNotFoundException {
+    for (Stock stock : stocks) {
+      doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
+    }
+    doReturn(assets).when(mockAssetRepository).findAllAssetsByAccountId(accountId);
+    doReturn(Optional.ofNullable(user)).when(mockAccountRepository).findById(accountId);
+    Float pnl = assetService.getAccountPnl(accountId);
+    assertEquals(pnl, pnlTruth);
   }
 }
