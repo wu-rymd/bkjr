@@ -120,7 +120,7 @@ public class AssetService implements AssetServiceI {
   public Float getAccountTotalValue(String accountId) throws ResourceNotFoundException {
     Account account = accountRepository.findById(accountId)
         .orElseThrow(() -> new ResourceNotFoundException(
-            "Account not found for accountId :: + accountId"
+            "Account not found for accountId :: " + accountId
         ));
     Float portfolioValue = getAccountPortfolioValue(accountId);
     Float currentBalance = account.getBalance();
@@ -129,16 +129,18 @@ public class AssetService implements AssetServiceI {
   }
 
   /**
-   * Get an account's net profit/loss by calculation the starting balance ???.
+   * Calculate and return the percent change between an account's starting balance
+   * and current value. If account has net losses, percent change will be negative,
+   * if account has net profit, percent change will be positive.
    *
    * @param accountId Unique ID for the account
-   * @return ???
+   * @return Percent change between starting balance and current account value
    * @throws ResourceNotFoundException if account does not exist in the database
    */
   public Float getAccountPnl(String accountId) throws ResourceNotFoundException {
     Account account = accountRepository.findById(accountId)
         .orElseThrow(() -> new ResourceNotFoundException(
-            "Account not found for accountId :: + accountId"
+            "Account not found for accountId :: " + accountId
         ));
     Float accountValue = getAccountTotalValue(accountId);
     Float startingBalance = account.getStartingBalance();

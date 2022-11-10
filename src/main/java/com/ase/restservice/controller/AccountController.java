@@ -98,6 +98,14 @@ public class AccountController {
     return assetService.getAccountPortfolioValue(accountId);
   }
 
+  /**
+   * Get percent different between starting balance and current account value. This represents the
+   * account's net profit/loss.
+   *
+   * @param accountId Unique Identifier for an account
+   * @return  Percent difference between account starting balance and current account value
+   * @throws ResourceNotFoundException if account does not exist in the database
+   */
   @Operation(summary = "Get a profits/losses for an account given accountId")
   @GetMapping("/accounts/{accountId}/pnl")
   public Float getAccountPnl(@PathVariable(value = "accountId") String accountId)

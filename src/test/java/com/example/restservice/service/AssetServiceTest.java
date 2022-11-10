@@ -207,9 +207,9 @@ public class AssetServiceTest {
     String actualMessage = exception.getMessage();
     assertTrue(actualMessage.contains(expectedMessage));
   }
-  @DisplayName("JUnit test for getAccountTotalValue")
+  @DisplayName("JUnit test for getAccountTotalValue success")
   @Test
-  public void testAccountTotalValue() throws ResourceNotFoundException {
+  public void testAccountTotalValueSuccess() throws ResourceNotFoundException {
     for (Stock stock : stocks) {
       doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
     }
@@ -219,9 +219,21 @@ public class AssetServiceTest {
     Float totalValue = assetService.getAccountTotalValue(accountId);
     assertEquals(totalValue, totalValueTruth);
   }
-  @DisplayName("JUnit test for getAccountPnl")
+
+  @DisplayName("Test for getAccountTotalValue failure")
   @Test
-  public void testAccountPnl() throws ResourceNotFoundException {
+  public void testAccountTotalValueFailure() throws ResourceNotFoundException {
+    doReturn(Optional.empty()).when(mockAccountRepository).findById(accountId);
+    ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->{
+      assetService.getAccountTotalValue(accountId);
+    });
+    String expectedMessage = "Account not found for accountId :: " + accountId;
+    String actualMessage = exception.getMessage();
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
+  @DisplayName("JUnit test for getAccountPnl success")
+  @Test
+  public void testAccountPnlSuccess() throws ResourceNotFoundException {
     for (Stock stock : stocks) {
       doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
     }
@@ -229,5 +241,16 @@ public class AssetServiceTest {
     doReturn(Optional.ofNullable(user)).when(mockAccountRepository).findById(accountId);
     Float pnl = assetService.getAccountPnl(accountId);
     assertEquals(pnl, pnlTruth);
+  }
+  @DisplayName("Test for getAccountPnl() when account does not exist")
+  @Test
+  public void testAccountPnlFailure() throws ResourceNotFoundException {
+    doReturn(Optional.empty()).when(mockAccountRepository).findById(accountId);
+    ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->{
+      assetService.getAccountPnl(accountId);
+    });
+    String expectedMessage = "Account not found for accountId :: " + accountId;
+    String actualMessage = exception.getMessage();
+    assertTrue(actualMessage.contains(expectedMessage));
   }
 }
