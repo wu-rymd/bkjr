@@ -2,7 +2,6 @@ package com.example.restservice.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
@@ -13,9 +12,7 @@ import com.ase.restservice.repository.TransactionRepository;
 import com.ase.restservice.service.AccountService;
 import com.ase.restservice.service.AssetService;
 import com.ase.restservice.service.TransactionService;
-import java.util.ArrayList;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class TransactionServiceTest {
+public final class TransactionServiceTest {
   @Mock
   private AssetService mockAssetService;
   @Mock
@@ -34,11 +31,11 @@ public class TransactionServiceTest {
   private TransactionRepository mockTransactionRepository;
   @InjectMocks
   private TransactionService transactionService;
-  Transaction buyTransaction;
-  Transaction sellTransaction;
-  Asset asset;
-  Stock stock;
-  String accountId = "jlamborn";
+  private Transaction buyTransaction;
+  private Transaction sellTransaction;
+  private Asset asset;
+  private Stock stock;
+  private String accountId = "jlamborn";
   @BeforeEach
   // Generate fake transactions
   public void setup() {
@@ -77,7 +74,7 @@ public class TransactionServiceTest {
     Asset resultAsset = transactionService.buyTransaction(buyTransaction, stock);
     // check accountBalance was called with the correct update amount
     verify(mockAccountService).updateAccountBalance(accountId,
-        -1*(stock.getPrice() * buyTransaction.getNumShares()));
+        -1 * (stock.getPrice() * buyTransaction.getNumShares()));
     buyTransaction.setTransactionStatus("COMPLETED");
     // verify that transaction was updated to have transaction status "COMPLETED"
     verify(mockTransactionRepository).save(buyTransaction);
@@ -109,8 +106,8 @@ public class TransactionServiceTest {
     assertEquals(resultAsset.get(), resultAssetTruth.get());
   }
 
-  @DisplayName("Test for successful sellTransaction in which the entire asset is sold (asset should "
-      + "be deleted from the database")
+  @DisplayName("Test for successful sellTransaction in which the entire asset is "
+      + "sold (asset should be deleted from the database")
   @Test
   public void sellTransactionOfEntireAsset() throws Exception {
     doReturn(Optional.empty()).when(mockAssetService).sellAsset(

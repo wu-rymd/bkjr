@@ -10,13 +10,52 @@ import java.util.Optional;
  * Interface for Transaction service.
  */
 public interface TransactionServiceI {
+  /**
+   * Write a new transaction to the database.
+   * @param transaction new Transaction
+   * @return returns the asset that was created/affected by this transaction
+   * @throws Exception if user does not exist
+   */
   Optional<Asset> createTransaction(Transaction transaction) throws Exception;
 
+  /**
+   * Update a transaction status in the database.
+   * @param transaction transaction to update
+   * @param status new status
+   */
   void updateTransactionStatus(Transaction transaction, String status);
 
+  /**
+   * Executes transactions to buy/sell assets. Directs to helper methods based on transaction type.
+   *
+   * @param transaction Transaction object placed
+   * @return return the updated asset unless the asset was deleted (in the case the user sold
+   *        all the shares of the asset), then return null.
+   *
+   * @throws Exception when transaction is invalid, or required resources do not exist in database
+   */
   Optional<Asset> executeTransaction(Transaction transaction) throws Exception;
 
+  /**
+   * Executes buy transactions by doing the following: Updating/creating account asset,
+   * updating account balance, updating transaction status.
+   *
+   * @param transaction Transaction object to be executed, with transactionType="BUY"
+   * @param stock Stock to be bought
+   * @return account's updated asset after the buyTransaction has been executed
+   * @throws ResourceNotFoundException if account does not exist
+   */
   Asset buyTransaction(Transaction transaction, Stock stock) throws ResourceNotFoundException;
 
+  /**
+   * Executes sell transaction by doing the following: Updating/deleting account asset,
+   * updating account balance, updating transaction status.
+   *
+   * @param transaction Transaction object to be executed, with transactionType="SELL"
+   * @param stock Stock to be sold
+   * @return account's updated asset after sellTransaction has been excecuted, return null in
+   *        the case that all the asset has been sold (asset has been deleted)
+   * @throws Exception if invalid sell, or required resources do not exist
+   */
   Optional<Asset> sellTransaction(Transaction transaction, Stock stock) throws Exception;
 }
