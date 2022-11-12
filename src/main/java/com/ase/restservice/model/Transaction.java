@@ -14,7 +14,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "transaction")
-public class Transaction {
+public final class Transaction {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private UUID uuid;
@@ -29,17 +29,26 @@ public class Transaction {
   @Column(name = "transaction_status", nullable = false)
   private String transactionStatus;
 
-  public Transaction() {}
+  /**
+   * Default constructor for Transaction.
+   */
+  public Transaction() {  }
 
   /**
-   * Constructor for Transaction objects, UUID is generated here.
+   * Constructor for Transaction.
+   *
+   * @param accountId Unique ID for account
+   * @param stockId Unique ID for stockId
+   * @param numShares number of shares being bought/sold
+   * @param transactionType Buy or sell
+   * @param transactionStatus status of transaction
    */
   public Transaction(
-      String accountId,
-      String stockId,
-      Float numShares,
-      String transactionType,
-      String transactionStatus
+      final String accountId,
+      final String stockId,
+      final Float numShares,
+      final String transactionType,
+      final String transactionStatus
   ) {
     this.accountId = accountId;
     this.stockId = stockId;
@@ -48,36 +57,69 @@ public class Transaction {
     this.transactionStatus = transactionStatus;
   }
 
+  /**
+   * getter for UUID.
+   * @return UUID
+   */
   public UUID getUuid() {
     return uuid;
   }
 
+  /**
+   * Getter for accountId.
+   * @return accountId
+   */
   public String getAccountId() {
     return accountId;
   }
 
+  /**
+   * Getter for stockId.
+   * @return stockId.
+   */
   public String getStockId() {
     return stockId;
   }
 
+  /**
+   * Getter for numShares.
+   * @return numShares
+   */
   public Float getNumShares() {
     return numShares;
   }
 
+  /**
+   * Getter for transactionType.
+   * @return transactionType
+   */
   public String getTransactionType() {
     return transactionType;
   }
 
+  /**
+   * Getter for transactionStatus.
+   * @return transactionStatus
+   */
   public String getTransactionStatus() {
     return transactionStatus;
   }
 
-  public void setTransactionStatus(String transactionStatus) {
+  /**
+   * Setter for TransactionStatus.
+   * @param transactionStatus transactionStatus
+   */
+  public void setTransactionStatus(final String transactionStatus) {
     this.transactionStatus = transactionStatus;
   }
 
+  /**
+   * Custom equals method.
+   * @param o object to compare to this
+   * @return true if o and this share the same attributes, false otherwise
+   */
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (o == this) {
       return true;
     }
@@ -91,5 +133,14 @@ public class Transaction {
         && Objects.equals(this.getNumShares(), c.getNumShares())
         && Objects.equals(this.getTransactionType(), c.getTransactionType())
         && Objects.equals(this.getTransactionStatus(), c.getTransactionStatus());
+  }
+
+  /**
+   * Custom hashcode method.
+   * @return hashcode representation of a Transaction
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(uuid, accountId, stockId, numShares, transactionType, transactionStatus);
   }
 }

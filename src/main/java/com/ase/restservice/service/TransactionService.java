@@ -4,7 +4,6 @@ import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.model.Transaction;
-import com.ase.restservice.repository.AccountRepository;
 import com.ase.restservice.repository.TransactionRepository;
 import java.util.Objects;
 import java.util.Optional;
@@ -17,17 +16,28 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransactionService implements TransactionServiceI {
   @Autowired
-  TransactionRepository transactionRepository;
-  @Autowired AssetService assetService;
-  @Autowired StockService stockService;
+  private TransactionRepository transactionRepository;
+  @Autowired private AssetService assetService;
+  @Autowired private StockService stockService;
   @Autowired
-  AccountService accountService;
+  private AccountService accountService;
 
+  /**
+   * Write a new transaction to the database.
+   * @param transaction new Transaction
+   * @return returns the asset that was created/affected by this transaction
+   * @throws Exception if user does not exist
+   */
   public Optional<Asset> createTransaction(Transaction transaction) throws Exception {
     transactionRepository.save(transaction);
     return executeTransaction(transaction);
   }
 
+  /**
+   * Update a transaction status in the database.
+   * @param transaction transaction to update
+   * @param status new status
+   */
   public void updateTransactionStatus(Transaction transaction, String status) {
     transaction.setTransactionStatus(status);
     transactionRepository.save(transaction);
