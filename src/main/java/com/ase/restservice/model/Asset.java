@@ -11,39 +11,75 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "asset")
-public class Asset {
+public final class Asset {
 
   @EmbeddedId
   private AssetId assetId;
   private Float numShares;
 
+  /**
+   * Default constructor.
+   */
   public Asset() {
   }
 
-  public Asset(String accountId, String stockId, Float numShares) {
+  /**
+   * Creates an asset object.
+   *
+   * @param accountId unique identifier for account
+   * @param stockId   unique identifier for stock
+   * @param numShares number of shares of stock owned by account
+   */
+  public Asset(final String accountId, final String stockId, final Float numShares) {
     this.assetId = new AssetId(accountId, stockId);
     this.numShares = numShares;
   }
 
+  /**
+   * Getter for accountId.
+   *
+   * @return accountId
+   */
   public String getAccountId() {
     return assetId.getAccountId();
   }
 
+  /**
+   * Getter for stockId.
+   *
+   * @return stockId
+   */
   public String getStockId() {
     return assetId.getStockId();
   }
 
+  /**
+   * Getter for numShares.
+   *
+   * @return Float number of shares
+   */
   @Column(name = "num_shares", nullable = false)
   public Float getNumShares() {
     return numShares;
   }
 
-  public void setNumShares(Float numShares) {
+  /**
+   * Setter for numShares.
+   *
+   * @param numShares Float number of shares
+   */
+  public void setNumShares(final Float numShares) {
     this.numShares = numShares;
   }
 
+  /**
+   * Custom equals to compare objects with Asset object.
+   *
+   * @param o object to compare to this
+   * @return true if attributes of this and o are equal, else false
+   */
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (o == this) {
       return true;
     }
@@ -55,5 +91,10 @@ public class Asset {
         && Objects.equals(this.getStockId(), c.getStockId())
         && Objects.equals(this.getNumShares(), c.getNumShares());
 
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(assetId, numShares);
   }
 }

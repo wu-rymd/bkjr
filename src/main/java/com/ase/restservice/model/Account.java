@@ -2,8 +2,6 @@ package com.ase.restservice.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -18,50 +16,80 @@ public class Account {
   private Float balance;
   private Float startingBalance;
 
+  /**
+   * Default constructor for Account.
+   */
   public Account() {
-
   }
 
   /**
    * Represents an account.
    *
-   * @param accountId ID of an account
-   * @param balance Account balance
+   * @param accountId       ID of an account
+   * @param balance         Account balance
    * @param startingBalance Starting balance of an account
    */
-  public Account(String accountId, Float balance, Float startingBalance) {
+  public Account(final String accountId, final Float balance, final Float startingBalance) {
     this.accountId = accountId;
     this.balance = balance;
     this.startingBalance = startingBalance;
   }
 
+  /**
+   * Getter for accountId.
+   * @return accountId
+   */
   @Id
   public String getAccountId() {
     return accountId;
   }
 
-  public void setAccountId(String accountId) {
+  /**
+   * Setter for accountId.
+   * @param accountId accountId
+   */
+  public void setAccountId(final String accountId) {
     this.accountId = accountId;
   }
 
+  /**
+   * Getter for balance.
+   * @return balance
+   */
   @Column(name = "balance", nullable = false)
   public Float getBalance() {
     return balance;
   }
 
-  public void setBalance(Float balance) {
+  /**
+   * Setter for balance.
+   * @param balance balance
+   */
+  public void setBalance(final Float balance) {
     this.balance = balance;
   }
 
+  /**
+   * Getter for starting balance.
+   * @return starting balance
+   */
   @Column(name = "starting_balance", nullable = false)
   public Float getStartingBalance() {
     return startingBalance;
   }
 
-  public void setStartingBalance(Float startingBalance) {
+  /**
+   * Setter for starting balance.
+   * @param startingBalance starting balance
+   */
+  public void setStartingBalance(final Float startingBalance) {
     this.startingBalance = startingBalance;
   }
 
+  /**
+   * Custom toString method.
+   * @return string representation of account
+   */
   @Override
   public String toString() {
     return "Account [accountId=" + accountId + ", balance=" + balance

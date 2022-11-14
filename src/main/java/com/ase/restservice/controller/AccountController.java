@@ -2,7 +2,6 @@ package com.ase.restservice.controller;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Account;
-import com.ase.restservice.repository.AccountRepository;
 import com.ase.restservice.service.AccountService;
 import com.ase.restservice.service.AssetService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +35,7 @@ public class AccountController {
    */
   @Operation(summary = "Create account given Account object")
   @PostMapping("/accounts")
-  public Account createAccount(@Valid @RequestBody Account account) {
+  public Account createAccount(@Valid @RequestBody final Account account) {
     return accountService.createAccount(account);
   }
 
@@ -49,7 +48,7 @@ public class AccountController {
    */
   @Operation(summary = "Get account given accountId")
   @GetMapping("/accounts/{accountId}")
-  public Account getAccount(@PathVariable(value = "accountId") String accountId)
+  public Account getAccount(@PathVariable(value = "accountId") final String accountId)
       throws ResourceNotFoundException {
     return accountService.getAccountById(accountId);
   }
@@ -63,7 +62,7 @@ public class AccountController {
    */
   @Operation(summary = "Get balance of account given accountId")
   @GetMapping("/accounts/{accountId}/balance")
-  public Float getAccountBalance(@PathVariable(value = "accountId") String accountId)
+  public Float getAccountBalance(@PathVariable(value = "accountId") final String accountId)
       throws ResourceNotFoundException {
     return accountService.getAccountById(accountId).getBalance();
   }
@@ -78,8 +77,8 @@ public class AccountController {
    */
   @Operation(summary = "Update balance of account given accountId")
   @PutMapping("/accounts/{accountId}/balance")
-  public Account updateAccountBalance(@PathVariable(value = "accountId") String accountId,
-      @RequestParam(value = "amount", defaultValue = "0") Float amount)
+  public Account updateAccountBalance(@PathVariable(value = "accountId") final String accountId,
+      @RequestParam(value = "amount", defaultValue = "0") final Float amount)
       throws ResourceNotFoundException {
     return accountService.updateAccountBalance(accountId, amount);
   }
@@ -93,7 +92,7 @@ public class AccountController {
    */
   @Operation(summary = "Get portfolio value of account given accountId")
   @GetMapping("/accounts/{accountId}/portfolio_value")
-  public Float getAccountPortfolioValue(@PathVariable(value = "accountId") String accountId)
+  public Float getAccountPortfolioValue(@PathVariable(value = "accountId") final String accountId)
       throws ResourceNotFoundException {
     return assetService.getAccountPortfolioValue(accountId);
   }

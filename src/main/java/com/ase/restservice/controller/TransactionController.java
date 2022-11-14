@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TransactionController {
   @Autowired
-  TransactionService transactionService;
+  private TransactionService transactionService;
 
   /**
    * Create a new transaction.
@@ -27,7 +27,7 @@ public class TransactionController {
    */
   @Operation(summary = "Create transaction given Transaction object")
   @PostMapping("/transactions")
-  public Optional<Asset> postAsset(@RequestBody Transaction transaction) throws Exception {
+  public Optional<Asset> postAsset(@RequestBody final Transaction transaction) throws Exception {
     return transactionService.createTransaction(transaction);
   }
 
