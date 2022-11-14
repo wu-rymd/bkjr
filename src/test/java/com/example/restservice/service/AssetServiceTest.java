@@ -40,11 +40,11 @@ public final class AssetServiceTest {
   @InjectMocks
   private AssetService assetService;
 
-  Float startingBalance;
-  Float endingBalance;
-  Float totalValueTruth;
-  Float pnlTruth;
-  Account user;
+  private Float startingBalance;
+  private Float endingBalance;
+  private Float totalValueTruth;
+  private Float pnlTruth;
+  private Account user;
   private List<Asset> assets =  new ArrayList<>();
   private List<Stock> stocks = new ArrayList<>();
   private String accountId = "testAccount";
@@ -64,7 +64,7 @@ public final class AssetServiceTest {
 
     portfolioValueTruth = (103.11f * 10f) + (111.03f * 1.5f) + (132.00f * 10.3f);
 
-    user = new Account(accountId,50f,100f);
+    user = new Account(accountId, 50f, 100f);
     endingBalance = 50f;
     startingBalance = 100f;
 
@@ -232,7 +232,7 @@ public final class AssetServiceTest {
   @Test
   public void testAccountTotalValueFailure() throws ResourceNotFoundException {
     doReturn(Optional.empty()).when(mockAccountRepository).findById(accountId);
-    ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->{
+    ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
       assetService.getAccountTotalValue(accountId);
     });
     String expectedMessage = "Account not found for accountId :: " + accountId;
@@ -254,7 +254,7 @@ public final class AssetServiceTest {
   @Test
   public void testAccountPnlFailure() throws ResourceNotFoundException {
     doReturn(Optional.empty()).when(mockAccountRepository).findById(accountId);
-    ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->{
+    ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
       assetService.getAccountPnl(accountId);
     });
     String expectedMessage = "Account not found for accountId :: " + accountId;
