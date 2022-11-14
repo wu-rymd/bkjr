@@ -5,7 +5,6 @@ import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.AssetId;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.repository.AssetRepository;
-import com.ase.restservice.service.StockService;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -112,6 +111,7 @@ public class AssetService implements AssetServiceI {
    * @param accountId UUID for which account this transaction belongs to
    * @param stockId   UUID for which stock is being bought
    * @param numShares number of shares request in the buy order
+   * @return new Asset
    */
   public Asset buyAsset(String accountId, String stockId, Float numShares) {
     // when buying an asset, first check if it already exists.

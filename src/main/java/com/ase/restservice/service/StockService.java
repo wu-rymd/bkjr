@@ -3,7 +3,6 @@ package com.ase.restservice.service;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.repository.StockRepository;
-import com.ase.restservice.service.StockServiceI;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

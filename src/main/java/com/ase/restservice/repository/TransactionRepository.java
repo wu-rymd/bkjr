@@ -1,6 +1,5 @@
 package com.ase.restservice.repository;
 
-import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Transaction;
 import java.util.List;
 import java.util.UUID;

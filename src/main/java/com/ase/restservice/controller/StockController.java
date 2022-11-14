@@ -2,7 +2,6 @@ package com.ase.restservice.controller;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Stock;
-import com.ase.restservice.repository.StockRepository;
 import com.ase.restservice.service.StockService;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
@@ -13,14 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for /stocks endpoints.
  */
 @RestController
-public class StockController {
+public final class StockController {
   @Autowired
   private StockService stockService;
 
@@ -32,10 +30,15 @@ public class StockController {
    */
   @Operation(summary = "Create stock given Stock object")
   @PostMapping("/stocks")
-  public Stock createStock(@Valid @RequestBody Stock stock) {
+  public Stock createStock(@Valid @RequestBody final Stock stock) {
     return stockService.createStock(stock);
   }
 
+  /**
+   * Endpoint to get  all stocks available in the database.
+   *
+   * @return a list of all available stocks in database
+   */
   @Operation(summary = "List all stocks")
   @GetMapping("/stocks")
   public List<Stock> listStocks() {
@@ -51,7 +54,7 @@ public class StockController {
    */
   @Operation(summary = "Get price of stock given stockId")
   @GetMapping("/stocks/{stockId}/price")
-  public Float getStockPrice(@PathVariable(value = "stockId") String stockId)
+  public Float getStockPrice(@PathVariable(value = "stockId") final String stockId)
       throws ResourceNotFoundException {
     Stock stock = stockService.getStockById(stockId);
     return stock.getPrice();
@@ -67,8 +70,8 @@ public class StockController {
    */
   @Operation(summary = "Update price of stock given accountId and price")
   @PutMapping("/stocks/{stockId}/{price}")
-  public Stock updateStockPrice(@PathVariable(value = "stockId") String stockId,
-        @PathVariable(value = "price") Float price)
+  public Stock updateStockPrice(@PathVariable(value = "stockId") final String stockId,
+        @PathVariable(value = "price") final Float price)
         throws ResourceNotFoundException {
     return stockService.updateStockPrice(stockId, price);
   }
