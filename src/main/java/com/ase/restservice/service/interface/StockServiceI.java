@@ -14,7 +14,7 @@ public interface StockServiceI {
    * @param stock Stock
    * @return Created stock
    */
-  Stock createStock(Stock stock);
+  Stock createStock(Stock stock) throws ResourceNotFoundException;
 
   /**
    * Retrieve all stocks.

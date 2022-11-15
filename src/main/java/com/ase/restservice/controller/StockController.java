@@ -30,7 +30,8 @@ public final class StockController {
    */
   @Operation(summary = "Create stock given Stock object")
   @PostMapping("/stocks")
-  public Stock createStock(@Valid @RequestBody final Stock stock) {
+  public Stock createStock(@Valid @RequestBody final Stock stock)
+      throws ResourceNotFoundException {
     return stockService.createStock(stock);
   }
 

@@ -3,9 +3,11 @@ package com.ase.restservice.service;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.repository.StockRepository;
+import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import yahoofinance.YahooFinance;
 
 /**
  * Service for Stock operations.
@@ -21,9 +23,24 @@ public class StockService implements StockServiceI {
    *
    * @param stock Stock
    * @return Created stock
+   * @throws ResourceNotFoundException if the stock ID is invalid
    */
-  public Stock createStock(Stock stock) {
+  public Stock createStock(Stock stock) throws ResourceNotFoundException {
     // TODO: Throw exception if stock already exists
+
+    // check if stock ID is valid
+    String stockId = stock.getStockId();
+    try {
+        yahoofinance.Stock apiStock = YahooFinance.get(stockId);
+        if (apiStock == null) {
+          throw new ResourceNotFoundException(
+            "Stock ID given is not valid :: " + stockId
+          );
+        }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
     return stockRepository.save(stock);
   }
 
