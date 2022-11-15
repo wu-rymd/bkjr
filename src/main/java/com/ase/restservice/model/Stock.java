@@ -1,9 +1,11 @@
 package com.ase.restservice.model;
 
+import java.io.IOException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import yahoofinance.YahooFinance;
 
 /**
  * Represents Stock table.
@@ -38,7 +40,7 @@ public class Stock {
    */
   @Id
   public String getStockId() {
-    return stockId;
+    return this.stockId;
   }
 
   /**
@@ -55,7 +57,15 @@ public class Stock {
    */
   @Column(name = "price", nullable = false)
   public Float getPrice() {
-    return price;
+    try {
+        yahoofinance.Stock apiStock = YahooFinance.get(this.stockId);
+        Float apiPrice = apiStock.getQuote().getPrice().floatValue();
+        this.price = apiPrice;
+        return this.price;
+    } catch (IOException e) {
+      e.printStackTrace();
+      return this.price;  // return most recent price for this stock
+    }
   }
 
   /**
