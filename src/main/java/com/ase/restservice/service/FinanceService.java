@@ -22,10 +22,11 @@ public class FinanceService implements FinanceServiceI {
             if (apiStock == null) {
                 return false;
             }
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return true;
+        return false;
     }
 }
