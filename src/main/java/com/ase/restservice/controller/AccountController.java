@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for /accounts endpoints.
  */
 @RestController
-public class AccountController {
+public final class AccountController {
 
   @Autowired
   private AccountService accountService;
@@ -101,7 +101,7 @@ public class AccountController {
       throws ResourceNotFoundException {
     return assetService.getAccountPortfolioValue(accountId);
   }
-  
+
   @Operation(summary = "Get all transactions (buy/sell orders) for an account given accountId")
   @GetMapping("/accounts/{accountId}/transactions")
   public List<Transaction> getAccountTransactions(

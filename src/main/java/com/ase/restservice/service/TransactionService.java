@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  * Service for Transaction operations.
  */
 @Service
-public class TransactionService implements TransactionServiceI {
+public final class TransactionService implements TransactionServiceI {
   @Autowired
   private TransactionRepository transactionRepository;
   @Autowired private AssetService assetService;

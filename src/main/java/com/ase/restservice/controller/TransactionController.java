@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for /transactions endpoints.
  */
 @RestController
-public class TransactionController {
+public final class TransactionController {
   @Autowired
   private TransactionService transactionService;
 
