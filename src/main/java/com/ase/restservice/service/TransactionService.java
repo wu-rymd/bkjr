@@ -113,9 +113,23 @@ public final class TransactionService implements TransactionServiceI {
     return newAsset;
   }
 
-  public List<Transaction> listAccountTransactions(String accountId) {
-    return transactionRepository.findByAccountId(accountId);
+  /**
+   * List all transactions for an account given accountId.
+   * @param accountId Unique identifier for account
+   * @return List of transactions belonging to account with accountId
+   */
+  public List<Transaction> listAccountTransactions(String accountId)
+      throws ResourceNotFoundException {
+    return transactionRepository.findByAccountId(accountId)
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "Account not found for accountId :: " + accountId
+        ));
   }
+
+  /**
+   * List all transactions.
+   * @return list of all transactions
+   */
   public List<Transaction> listAllTransactions() {
     return transactionRepository.findAll();
   }

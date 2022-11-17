@@ -111,7 +111,7 @@ public final class AccountController {
   @Operation(summary = "List all transactions (buy/sell orders) for an account given accountId")
   @GetMapping("/accounts/{accountId}/transactions")
   public List<Transaction> listAccountTransactions(
-      @PathVariable(value = "accountId") String accountId) {
+      @PathVariable(value = "accountId") String accountId) throws ResourceNotFoundException {
     return transactionService.listAccountTransactions(accountId);
   }
 
