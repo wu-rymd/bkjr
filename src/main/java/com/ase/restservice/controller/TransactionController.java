@@ -4,8 +4,10 @@ import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Transaction;
 import com.ase.restservice.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +31,11 @@ public final class TransactionController {
   @PostMapping("/transactions")
   public Optional<Asset> postAsset(@RequestBody final Transaction transaction) throws Exception {
     return transactionService.createTransaction(transaction);
+  }
+  @Operation(summary = "Return all transactions in database")
+  @GetMapping("/transactions")
+  public List<Transaction> listAllTransactions() {
+    return transactionService.listAllTransactions();
   }
 
 }

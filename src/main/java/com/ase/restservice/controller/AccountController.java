@@ -102,10 +102,25 @@ public final class AccountController {
     return assetService.getAccountPortfolioValue(accountId);
   }
 
-  @Operation(summary = "Get all transactions (buy/sell orders) for an account given accountId")
+  /**
+   * List all transactions for an account given accountId.
+   * @param accountId Unique identifier for account
+   * @return List of all transactions for account with accountId
+   */
+  @Operation(summary = "List all transactions (buy/sell orders) for an account given accountId")
   @GetMapping("/accounts/{accountId}/transactions")
-  public List<Transaction> getAccountTransactions(
+  public List<Transaction> listAccountTransactions(
       @PathVariable(value = "accountId") String accountId) {
-    return transactionService.getAccountTransactions(accountId);
+    return transactionService.listAccountTransactions(accountId);
+  }
+
+  /**
+   * List all accounts.
+   * @return List of all accounts
+   */
+  @Operation(summary = "List all accounts")
+  @GetMapping("/accounts")
+  public List<Account> listAllAccounts() {
+    return accountService.listAllAccounts();
   }
 }

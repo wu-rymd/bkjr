@@ -3,6 +3,7 @@ package com.ase.restservice.service;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Account;
 import com.ase.restservice.repository.AccountRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +60,15 @@ public class AccountService implements AccountServiceI {
         .orElseThrow(() -> new ResourceNotFoundException(
             "Account not found for accountId :: " + accountId
         ));
+  }
+
+  /**
+   * List all accounts.
+   *
+   * @return list of accounts
+   */
+  public List<Account> listAllAccounts() {
+    return accountRepository.findAll();
   }
 
   /**

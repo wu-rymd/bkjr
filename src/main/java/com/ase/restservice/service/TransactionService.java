@@ -113,7 +113,10 @@ public final class TransactionService implements TransactionServiceI {
     return newAsset;
   }
 
-  public List<Transaction> getAccountTransactions(String accountId) {
+  public List<Transaction> listAccountTransactions(String accountId) {
     return transactionRepository.findByAccountId(accountId);
+  }
+  public List<Transaction> listAllTransactions() {
+    return transactionRepository.findAll();
   }
 }
