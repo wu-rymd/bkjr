@@ -1,9 +1,11 @@
 package com.ase.restservice.service;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.model.Account;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.AssetId;
 import com.ase.restservice.model.Stock;
+import com.ase.restservice.repository.AccountRepository;
 import com.ase.restservice.repository.AssetRepository;
 import java.util.List;
 import java.util.Objects;
@@ -19,7 +21,8 @@ public class AssetService implements AssetServiceI {
 
   @Autowired
   private AssetRepository assetRepository;
-
+  @Autowired
+  private AccountRepository accountRepository;
   @Autowired
   private StockService stockService;
 
@@ -103,6 +106,44 @@ public class AssetService implements AssetServiceI {
       total += price * asset.getNumShares();
     }
     return total;
+  }
+
+  /**
+   * Calculate the total value of an account (portfolio value + cash balance).
+   *
+   * @param accountId Unique ID for the account
+   * @return Total value of an account
+   * @throws ResourceNotFoundException if account does not exist in the database
+   */
+  public Float getAccountTotalValue(String accountId) throws ResourceNotFoundException {
+    Account account = accountRepository.findById(accountId)
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "Account not found for accountId :: " + accountId
+        ));
+    Float portfolioValue = getAccountPortfolioValue(accountId);
+    Float currentBalance = account.getBalance();
+
+    return currentBalance + portfolioValue;
+  }
+
+  /**
+   * Calculate and return the percent change between an account's starting balance
+   * and current value. If account has net losses, percent change will be negative,
+   * if account has net profit, percent change will be positive.
+   *
+   * @param accountId Unique ID for the account
+   * @return Percent change between starting balance and current account value
+   * @throws ResourceNotFoundException if account does not exist in the database
+   */
+  public Float getAccountPnl(String accountId) throws ResourceNotFoundException {
+    Account account = accountRepository.findById(accountId)
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "Account not found for accountId :: " + accountId
+        ));
+    Float accountValue = getAccountTotalValue(accountId);
+    Float startingBalance = account.getStartingBalance();
+
+    return (accountValue - startingBalance) / startingBalance;
   }
 
   /**

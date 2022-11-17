@@ -76,7 +76,7 @@ public final class AccountController {
    * Update account balance.
    *
    * @param accountId AccountID
-   * @param amount Value that will be summed with balance
+   * @param amount    Value that will be summed with balance
    * @return Updated balance
    * @throws ResourceNotFoundException if account does not exist in the database
    */
@@ -104,6 +104,7 @@ public final class AccountController {
 
   /**
    * List all transactions for an account given accountId.
+   *
    * @param accountId Unique identifier for account
    * @return List of all transactions for account with accountId
    */
@@ -116,11 +117,27 @@ public final class AccountController {
 
   /**
    * List all accounts.
+   *
    * @return List of all accounts
    */
   @Operation(summary = "List all accounts")
   @GetMapping("/accounts")
   public List<Account> listAllAccounts() {
     return accountService.listAllAccounts();
+  }
+
+  /**
+   * * Get percent different between starting balance and current account value. This represents the
+   * account's net profit/loss.
+   *
+   * @param accountId Unique Identifier for an account
+   * @return Percent difference between account starting balance and current account value
+   * @throws ResourceNotFoundException if account does not exist in the database
+   */
+  @Operation(summary = "Get a profits/losses for an account given accountId")
+  @GetMapping("/accounts/{accountId}/pnl")
+  public Float getAccountPnl(@PathVariable(value = "accountId") String accountId)
+      throws ResourceNotFoundException {
+    return assetService.getAccountPnl(accountId);
   }
 }
