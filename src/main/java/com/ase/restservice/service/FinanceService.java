@@ -1,8 +1,10 @@
 package com.ase.restservice.service;
 
+import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.model.Stock;
 import java.io.IOException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 
 /**
@@ -10,6 +12,9 @@ import yahoofinance.YahooFinance;
  */
 @Service
 public class FinanceService implements FinanceServiceI {
+    @Autowired
+    private StockService stockService;
+
     /**
      * Checks whether a stock ID is valid.
      *
@@ -18,7 +23,7 @@ public class FinanceService implements FinanceServiceI {
      */
     public boolean isStockIdValid(String stockId) {
         try {
-            Stock apiStock = YahooFinance.get(stockId);
+            yahoofinance.Stock apiStock = YahooFinance.get(stockId);
             if (apiStock == null) {
                 return false;
             }
@@ -26,7 +31,53 @@ public class FinanceService implements FinanceServiceI {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return false;
+    }
+
+    /**
+     * Gets the price for a given stock ID.
+     *
+     * @param stockId Stock ID
+     * @return Float real-time value of the stock
+     * @throws ResourceNotFoundException if the stock ID is invalid
+     * @throws IOException when there is a connection error
+     */
+    public Float getStockPrice(String stockId) throws ResourceNotFoundException, IOException {
+        // Check if the stock ID is valid
+        if (!isStockIdValid(stockId)) {
+            throw new ResourceNotFoundException(
+                "Stock ID given is not valid :: " + stockId
+            );
+        }
+
+        // Get real-time price
+        try {
+            yahoofinance.Stock apiStock = YahooFinance.get(stockId);
+            Float apiPrice = apiStock.getQuote().getPrice().floatValue();
+            return apiPrice;
+        } catch (IOException e) {
+            throw new IOException(e);
+        }
+    }
+
+    /**
+     * Creates a Stock object in the database with the current real-time price given a stock ID.
+     *
+     * @param stockId Stock ID
+     * @return Instantiated Stock object with current real-time price
+     * @throws ResourceNotFoundException if the stock ID is invalid
+     * @throws IOException when there is a connection error
+     */
+    public Stock createStockFromId(String stockId)
+            throws ResourceNotFoundException, IOException {
+        try {
+            Float apiPrice = getStockPrice(stockId);
+            Stock stockObj = new Stock(stockId, apiPrice);
+            return stockService.createStock(stockObj);
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException(e);
+        } catch (IOException e) {
+            throw new IOException(e);
+        }
     }
 }
