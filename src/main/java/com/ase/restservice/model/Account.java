@@ -1,18 +1,20 @@
 package com.ase.restservice.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.persistence.*;
+import java.util.Collection;
 
 /**
  * Represents Account table.
  */
 @Entity
 @Table(name = "account")
-public class Account {
+public class Account implements UserDetails {
 
   private String accountId;
+  private String password;
   private Float balance;
   private Float startingBalance;
 
@@ -26,13 +28,15 @@ public class Account {
    * Represents an account.
    *
    * @param accountId       ID of an account
+   * @param password        password for authorization
    * @param balance         Account balance
    * @param startingBalance Starting balance of an account
    */
-  public Account(final String accountId, final Float balance, final Float startingBalance) {
+  public Account(final String accountId, final String password, final Float balance, final Float startingBalance) {
     this.accountId = accountId;
+    this.password = password;
     this.balance = balance;
-    this.balance = startingBalance;
+    this.startingBalance = startingBalance;
   }
 
   /**
@@ -50,6 +54,23 @@ public class Account {
    */
   public void setAccountId(final String accountId) {
     this.accountId = accountId;
+  }
+
+  /**
+   * Getter for password.
+   * @return password
+   */
+  @Column(name = "password", nullable = false)
+  public String getPassword() {
+    return password;
+  }
+
+  /**
+   * Setter for password.
+   * @param password password
+   */
+  public void setPassword(final String password) {
+    this.password = password;
   }
 
   /**
@@ -88,8 +109,45 @@ public class Account {
 
   /**
    * Custom toString method.
+   *
    * @return string representation of account
    */
+
+  @Transient
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return null;
+  }
+
+  @Transient
+  @Override
+  public String getUsername() {
+    return this.accountId;
+  }
+
+  @Transient
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Transient
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Transient
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Transient
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
   @Override
   public String toString() {
     return "Account [accountId=" + accountId + ", balance=" + balance
