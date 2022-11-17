@@ -32,7 +32,7 @@ public class Account {
   public Account(final String accountId, final Float balance, final Float startingBalance) {
     this.accountId = accountId;
     this.balance = balance;
-    this.balance = startingBalance;
+    this.startingBalance = startingBalance;
   }
 
   /**
