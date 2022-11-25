@@ -2,6 +2,7 @@ package com.ase.restservice.service;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Cryptocurrency;
+
 import java.util.List;
 
 /**
@@ -61,7 +62,7 @@ public interface CryptocurrencyServiceI {
 
     /**
      * Gets the price of a cryptocurrency by cryptocurrencyId.
-     * 
+     *
      * @param cryptocurrencyId CryptocurrencyID
      * @return Cryptocurrency price
      * @throws ResourceNotFoundException if cryptocurrency does not exist in the

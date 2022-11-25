@@ -4,8 +4,10 @@ import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Cryptocurrency;
 import com.ase.restservice.service.CryptocurrencyService;
 import io.swagger.v3.oas.annotations.Operation;
+
 import java.util.List;
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,20 +28,20 @@ public final class CryptocurrencyController {
     /**
      * Create a new cryptocurrency. Checks if cryptocurrency ID is valid before
      * storing in database.
-     * 
+     *
      * @param cryptocurrency Cryptocurrency
      * @return Updated cryptocurrency
      */
     @Operation(summary = "Create cryptocurrency given Cryptocurrency object")
     @PostMapping("/cryptocurrencies")
-    public Cryptocurrency creaCryptocurrency(@Valid @RequestBody final Cryptocurrency cryptocurrency)
+    public Cryptocurrency createCryptocurrency(@Valid @RequestBody final Cryptocurrency cryptocurrency)
             throws ResourceNotFoundException {
         return cryptocurrencyService.createCryptocurrency(cryptocurrency);
     }
 
     /**
      * Endpoint to get all cryptocurrencies available in the database.
-     * 
+     *
      * @return a list of all available cryptocurrencies in database
      */
     @Operation(summary = "List all cryptocurrencies")
@@ -50,7 +52,7 @@ public final class CryptocurrencyController {
 
     /**
      * Retrieve a cryptocurrency's price.
-     * 
+     *
      * @param cryptocurrencyId CryptocurrencyID
      * @return Cryptocurrency price
      * @throws ResourceNotFoundException if cryptocurrency ID is not valid
@@ -64,7 +66,7 @@ public final class CryptocurrencyController {
 
     /**
      * Update a cryptocurrency's price.
-     * 
+     *
      * @param cryptocurrencyId CryptocurrencyID
      * @param price            New price
      * @return Updated cryptocurrency

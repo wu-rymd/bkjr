@@ -24,7 +24,7 @@ public class NFT {
 
     /**
      * Constructor for NFT.
-     * 
+     *
      * @param nftId unique Id for nft
      * @param price price of nft
      */
@@ -35,7 +35,7 @@ public class NFT {
 
     /**
      * Getter for nftId.
-     * 
+     *
      * @return nftId
      */
     @Id
@@ -45,7 +45,7 @@ public class NFT {
 
     /**
      * Setter for nftId.
-     * 
+     *
      * @param nftId nftId
      */
     public void setNftId(final String nftId) {
@@ -54,7 +54,7 @@ public class NFT {
 
     /**
      * Getter for price.
-     * 
+     *
      * @return price
      */
     @Column(name = "price", nullable = false)
@@ -64,7 +64,7 @@ public class NFT {
 
     /**
      * Setter for price.
-     * 
+     *
      * @param price price
      */
     public void setPrice(final Float price) {

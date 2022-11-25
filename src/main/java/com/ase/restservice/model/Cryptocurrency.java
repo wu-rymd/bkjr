@@ -24,7 +24,7 @@ public class Cryptocurrency {
 
     /**
      * Constructor for Cryptocurrency.
-     * 
+     *
      * @param cryptocurrencyId unique Id for cryptocurrency
      * @param price            price of cryptocurrency
      */
@@ -35,7 +35,7 @@ public class Cryptocurrency {
 
     /**
      * Getter for cryptocurrencyId.
-     * 
+     *
      * @return cryptocurrencyId
      */
     @Id
@@ -45,7 +45,7 @@ public class Cryptocurrency {
 
     /**
      * Setter for cryptocurrencyId.
-     * 
+     *
      * @param cryptocurrencyId cryptocurrencyId
      */
     public void setCryptocurrencyId(final String cryptocurrencyId) {
@@ -54,7 +54,7 @@ public class Cryptocurrency {
 
     /**
      * Getter for price.
-     * 
+     *
      * @return price
      */
     @Column(name = "price", nullable = false)
@@ -64,7 +64,7 @@ public class Cryptocurrency {
 
     /**
      * Setter for price.
-     * 
+     *
      * @param price price
      */
     public void setPrice(final Float price) {
@@ -73,7 +73,7 @@ public class Cryptocurrency {
 
     /**
      * Override toString method.
-     * 
+     *
      * @return String representation of Cryptocurrency
      */
 
