@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 /**
  * Service for Cryptocurrency operations.
  */
+@Service
 public class CryptocurrencyService implements CryptocurrencyServiceI {
 
     @Autowired
