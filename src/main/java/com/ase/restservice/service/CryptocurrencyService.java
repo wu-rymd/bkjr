@@ -22,7 +22,10 @@ public class CryptocurrencyService implements CryptocurrencyServiceI {
      * @return Created cryptocurrency
      */
     public Cryptocurrency createCryptocurrency(Cryptocurrency cryptocurrency) {
-
+        if (cryptocurrencyRepository.existsById(cryptocurrency.getCryptocurrencyId())) {
+            throw new ResourceNotFoundException("Cryptocurrency already exists");
+        }
+        return cryptocurrencyRepository.save(cryptocurrency);
     }
 
     /**
@@ -32,7 +35,10 @@ public class CryptocurrencyService implements CryptocurrencyServiceI {
      * @return Updated cryptocurrency
      */
     public Cryptocurrency updateCryptocurrency(Cryptocurrency cryptocurrency) {
-
+        if (!cryptocurrencyRepository.existsById(cryptocurrency.getCryptocurrencyId())) {
+            throw new ResourceNotFoundException("Cryptocurrency does not exist");
+        }
+        return cryptocurrencyRepository.save(cryptocurrency);
     }
 
     /**
@@ -41,7 +47,10 @@ public class CryptocurrencyService implements CryptocurrencyServiceI {
      * @param cryptocurrencyId CryptocurrencyID
      */
     public void deleteCryptocurrencyById(String cryptocurrencyId) {
-
+        if (!cryptocurrencyRepository.existsById(cryptocurrencyId)) {
+            throw new ResourceNotFoundException("Cryptocurrency does not exist");
+        }
+        cryptocurrencyRepository.deleteById(cryptocurrencyId);
     }
 
     /**
@@ -53,7 +62,9 @@ public class CryptocurrencyService implements CryptocurrencyServiceI {
      *                                   database
      */
     public Cryptocurrency getCryptocurrencyById(String cryptocurrencyId) throws ResourceNotFoundException {
-
+        return cryptocurrencyRepository.findById(cryptocurrencyId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Cryptocurrency not found for this id :: " + cryptocurrencyId));
     }
 
     /**
@@ -66,7 +77,9 @@ public class CryptocurrencyService implements CryptocurrencyServiceI {
      */
     public Cryptocurrency updateCryptocurrencyPrice(String cryptocurrencyId, Float price)
             throws ResourceNotFoundException {
-
+        Cryptocurrency cryptocurrency = getCryptocurrencyById(cryptocurrencyId);
+        cryptocurrency.setPrice(price);
+        return updateCryptocurrency(cryptocurrency);
     }
 
     /**
@@ -75,7 +88,7 @@ public class CryptocurrencyService implements CryptocurrencyServiceI {
      * @return List of cryptocurrencies
      */
     public List<Cryptocurrency> getAllCryptocurrencies() {
-
+        return cryptocurrencyRepository.findAll();
     }
 
     /**
@@ -86,7 +99,7 @@ public class CryptocurrencyService implements CryptocurrencyServiceI {
      * @throws ResourceNotFoundException if cryptocurrency does not exist in the
      */
     public Float getCryptocurrencyPrice(String cryptocurrencyId) throws ResourceNotFoundException {
-
+        return getCryptocurrencyById(cryptocurrencyId).getPrice();
     }
 
 }

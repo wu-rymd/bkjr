@@ -2,10 +2,7 @@ package com.ase.restservice.controller;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Cryptocurrency;
-
-import com.ase.restservice.service.FinanceService; // implement this
-import com.ase.restservice.service.CryptocurrencyService; // implement this
-
+import com.ase.restservice.service.CryptocurrencyService;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import javax.validation.Valid;
@@ -22,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public final class CryptocurrencyController {
-    @Autowired
-    private FinanceService financeService;
 
     @Autowired
     private CryptocurrencyService cryptocurrencyService;
@@ -39,11 +34,6 @@ public final class CryptocurrencyController {
     @PostMapping("/cryptocurrencies")
     public Cryptocurrency creaCryptocurrency(@Valid @RequestBody final Cryptocurrency cryptocurrency)
             throws ResourceNotFoundException {
-        String cryptocurrencyId = cryptocurrency.getCryptocurrencyId();
-        if (!financeService.isCryptocurrencyIdValid(cryptocurrencyId)) {
-            throw new ResourceNotFoundException(
-                    "Cryptocurrency ID given is not valid :: " + cryptocurrencyId);
-        }
         return cryptocurrencyService.createCryptocurrency(cryptocurrency);
     }
 
@@ -69,10 +59,6 @@ public final class CryptocurrencyController {
     @GetMapping("/cryptocurrencies/{cryptocurrencyId}/price")
     public double getCryptocurrencyPrice(@PathVariable(value = "cryptocurrencyId") final String cryptocurrencyId)
             throws ResourceNotFoundException {
-        if (!financeService.isCryptocurrencyIdValid(cryptocurrencyId)) {
-            throw new ResourceNotFoundException(
-                    "Cryptocurrency ID given is not valid :: " + cryptocurrencyId);
-        }
         return cryptocurrencyService.getCryptocurrencyPrice(cryptocurrencyId);
     }
 
@@ -89,10 +75,6 @@ public final class CryptocurrencyController {
     public Cryptocurrency updateCryptocurrencyPrice(
             @PathVariable(value = "cryptocurrencyId") final String cryptocurrencyId,
             @PathVariable(value = "price") final Float price) throws ResourceNotFoundException {
-        if (!financeService.isCryptocurrencyIdValid(cryptocurrencyId)) {
-            throw new ResourceNotFoundException(
-                    "Cryptocurrency ID given is not valid :: " + cryptocurrencyId);
-        }
         return cryptocurrencyService.updateCryptocurrencyPrice(cryptocurrencyId, price);
     }
 }
