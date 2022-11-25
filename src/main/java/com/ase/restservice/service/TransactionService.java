@@ -5,6 +5,7 @@ import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.model.Transaction;
 import com.ase.restservice.repository.TransactionRepository;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
  * Service for Transaction operations.
  */
 @Service
-public class TransactionService implements TransactionServiceI {
+public final class TransactionService implements TransactionServiceI {
   @Autowired
   private TransactionRepository transactionRepository;
   @Autowired private AssetService assetService;
@@ -110,5 +111,26 @@ public class TransactionService implements TransactionServiceI {
     accountService.updateAccountBalance(transaction.getAccountId(), totalCost);
     updateTransactionStatus(transaction, "COMPLETED");
     return newAsset;
+  }
+
+  /**
+   * List all transactions for an account given accountId.
+   * @param accountId Unique identifier for account
+   * @return List of transactions belonging to account with accountId
+   */
+  public List<Transaction> listAccountTransactions(String accountId)
+      throws ResourceNotFoundException {
+    return transactionRepository.findByAccountId(accountId)
+        .orElseThrow(() -> new ResourceNotFoundException(
+            "Account not found for accountId :: " + accountId
+        ));
+  }
+
+  /**
+   * List all transactions.
+   * @return list of all transactions
+   */
+  public List<Transaction> listAllTransactions() {
+    return transactionRepository.findAll();
   }
 }
