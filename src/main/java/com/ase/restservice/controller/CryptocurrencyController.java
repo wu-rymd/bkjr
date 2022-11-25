@@ -34,7 +34,8 @@ public final class CryptocurrencyController {
      */
     @Operation(summary = "Create cryptocurrency given Cryptocurrency object")
     @PostMapping("/cryptocurrencies")
-    public Cryptocurrency createCryptocurrency(@Valid @RequestBody final Cryptocurrency cryptocurrency)
+    public Cryptocurrency createCryptocurrency(
+            @Valid @RequestBody final Cryptocurrency cryptocurrency)
             throws ResourceNotFoundException {
         return cryptocurrencyService.createCryptocurrency(cryptocurrency);
     }
@@ -59,7 +60,8 @@ public final class CryptocurrencyController {
      */
     @Operation(summary = "Get cryptocurrency price given cryptocurrencyID")
     @GetMapping("/cryptocurrencies/{cryptocurrencyId}/price")
-    public double getCryptocurrencyPrice(@PathVariable(value = "cryptocurrencyId") final String cryptocurrencyId)
+    public double getCryptocurrencyPrice(
+            @PathVariable(value = "cryptocurrencyId") final String cryptocurrencyId)
             throws ResourceNotFoundException {
         return cryptocurrencyService.getCryptocurrencyPrice(cryptocurrencyId);
     }

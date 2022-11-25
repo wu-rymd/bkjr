@@ -58,7 +58,8 @@ public interface CryptocurrencyServiceI {
      * @throws ResourceNotFoundException if cryptocurrency does not exist in the
      *                                   database
      */
-    Cryptocurrency updateCryptocurrencyPrice(String cryptocurrencyId, Float price) throws ResourceNotFoundException;
+    Cryptocurrency updateCryptocurrencyPrice(String cryptocurrencyId, Float price)
+            throws ResourceNotFoundException;
 
     /**
      * Gets the price of a cryptocurrency by cryptocurrencyId.

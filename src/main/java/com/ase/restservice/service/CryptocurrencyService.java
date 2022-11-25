@@ -64,8 +64,11 @@ public class CryptocurrencyService implements CryptocurrencyServiceI {
      * @throws ResourceNotFoundException if cryptocurrency does not exist in the
      *                                   database
      */
-    public Cryptocurrency getCryptocurrencyById(String cryptocurrencyId) throws ResourceNotFoundException {
-        return cryptocurrencyRepository.findById(cryptocurrencyId).orElseThrow(() -> new ResourceNotFoundException("Cryptocurrency not found for this id :: " + cryptocurrencyId));
+    public Cryptocurrency getCryptocurrencyById(String cryptocurrencyId)
+            throws ResourceNotFoundException {
+        return cryptocurrencyRepository.findById(cryptocurrencyId).orElseThrow(
+                () -> new ResourceNotFoundException(
+                        "Cryptocurrency not found for this id :: " + cryptocurrencyId));
     }
 
     /**
@@ -76,7 +79,8 @@ public class CryptocurrencyService implements CryptocurrencyServiceI {
      * @return Updated cryptocurrency
      * @throws ResourceNotFoundException if cryptocurrency does not exist in the
      */
-    public Cryptocurrency updateCryptocurrencyPrice(String cryptocurrencyId, Float price) throws ResourceNotFoundException {
+    public Cryptocurrency updateCryptocurrencyPrice(String cryptocurrencyId, Float price)
+            throws ResourceNotFoundException {
         Cryptocurrency cryptocurrency = getCryptocurrencyById(cryptocurrencyId);
         cryptocurrency.setPrice(price);
         return updateCryptocurrency(cryptocurrency);
