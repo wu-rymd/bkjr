@@ -21,7 +21,7 @@ public interface CryptocurrencyServiceI {
      *
      * @return List of cryptocurrencies
      */
-    List<Cryptocurrency> listCryptocurrencies();
+    List<Cryptocurrency> getAllCryptocurrencies();
 
     /**
      * Updates a cryptocurrency in the database.
