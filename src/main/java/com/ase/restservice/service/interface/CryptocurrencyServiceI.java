@@ -15,7 +15,8 @@ public interface CryptocurrencyServiceI {
      * @param cryptocurrency Cryptocurrency
      * @return Created cryptocurrency
      */
-    Cryptocurrency createCryptocurrency(Cryptocurrency cryptocurrency);
+    Cryptocurrency createCryptocurrency(Cryptocurrency cryptocurrency)
+            throws ResourceNotFoundException;
 
     /**
      * Retrieve all cryptocurrencies.
@@ -30,14 +31,15 @@ public interface CryptocurrencyServiceI {
      * @param cryptocurrency Cryptocurrency
      * @return Updated cryptocurrency
      */
-    Cryptocurrency updateCryptocurrency(Cryptocurrency cryptocurrency);
+    Cryptocurrency updateCryptocurrency(Cryptocurrency cryptocurrency)
+            throws ResourceNotFoundException;
 
     /**
      * Deletes a cryptocurrency in the database.
      *
      * @param cryptocurrencyId CryptocurrencyID
      */
-    void deleteCryptocurrencyById(String cryptocurrencyId);
+    void deleteCryptocurrencyById(String cryptocurrencyId) throws ResourceNotFoundException;
 
     /**
      * Gets a cryptocurrency by cryptocurrencyId.

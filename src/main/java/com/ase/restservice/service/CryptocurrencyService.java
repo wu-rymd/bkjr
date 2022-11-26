@@ -23,6 +23,8 @@ public class CryptocurrencyService implements CryptocurrencyServiceI {
      *
      * @param cryptocurrency Cryptocurrency
      * @return Created cryptocurrency
+     * @throws ResourceNotFoundException if cryptocurrency already exists in the
+     *                                   database
      */
     public Cryptocurrency createCryptocurrency(Cryptocurrency cryptocurrency)
             throws ResourceNotFoundException {
@@ -37,6 +39,8 @@ public class CryptocurrencyService implements CryptocurrencyServiceI {
      *
      * @param cryptocurrency Cryptocurrency
      * @return Updated cryptocurrency
+     * @throws ResourceNotFoundException if cryptocurrency does not exist in the
+     *                                   database
      */
     public Cryptocurrency updateCryptocurrency(Cryptocurrency cryptocurrency)
             throws ResourceNotFoundException {
@@ -50,6 +54,8 @@ public class CryptocurrencyService implements CryptocurrencyServiceI {
      * Deletes a cryptocurrency in the database.
      *
      * @param cryptocurrencyId CryptocurrencyID
+     * @throws ResourceNotFoundException if cryptocurrency does not exist in the
+     *                                   database
      */
     public void deleteCryptocurrencyById(String cryptocurrencyId)
             throws ResourceNotFoundException {
