@@ -1,6 +1,6 @@
 package com.ase.restservice.service;
 
-import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.exception.InvalidStockIDException;
 import com.ase.restservice.model.Stock;
 import java.io.IOException;
 
@@ -21,9 +21,10 @@ public interface FinanceServiceI {
      *
      * @param stockId Stock ID
      * @return Float real-time value of the stock
-     * @throws ResourceNotFoundException if the stock ID is invalid
+     * @throws InvalidStockIDException if the stock ID is invalid
+     * @throws IOException when there is a connection error
      */
-    Float getStockPrice(String stockId) throws ResourceNotFoundException, IOException;
+    Float getStockPrice(String stockId) throws InvalidStockIDException, IOException;
 
     /**
      * Creates a Stock object in the database with the current real-time price given a stock ID.
@@ -33,5 +34,5 @@ public interface FinanceServiceI {
      * @throws ResourceNotFoundException if the stock ID is invalid
      * @throws IOException when there is a connection error
      */
-    Stock createStockFromId(String stockId) throws ResourceNotFoundException, IOException;
+    Stock createStockFromId(String stockId) throws InvalidStockIDException, IOException;
 }

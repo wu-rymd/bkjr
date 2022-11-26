@@ -1,5 +1,6 @@
 package com.ase.restservice.service;
 
+import com.ase.restservice.exception.AccountNotFoundException;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.AssetId;
@@ -30,8 +31,9 @@ public interface AssetServiceI {
    * Deletes an asset in the database.
    *
    * @param assetId AssetID
+   * @throws ResourceNotFoundException if asset is not found in database
    */
-  void deleteAssetById(AssetId assetId);
+  void deleteAssetById(AssetId assetId) throws ResourceNotFoundException;
 
   /**
    * Gets an asset by assetId.
@@ -55,9 +57,34 @@ public interface AssetServiceI {
    *
    * @param accountId AccountID
    * @return Portfolio value
-   * @throws ResourceNotFoundException if account does not exist in the database
+   * @throws AccountNotFoundException if account does not exist in the database
+   * @throws ResourceNotFoundException if stock does not exist in the database
    */
-  Float getAccountPortfolioValue(String accountId) throws ResourceNotFoundException;
+  Float getAccountPortfolioValue(String accountId)
+    throws AccountNotFoundException, ResourceNotFoundException;
+
+  /**
+   * Calculate the total value of an account (portfolio value + cash balance).
+   *
+   * @param accountId Unique ID for the account
+   * @return Total value of an account
+   * @throws AccountNotFoundException if account does not exist in the database
+   * @throws ResourceNotFoundException if stock does not exist in database
+   */
+  Float getAccountTotalValue(String accountId)
+    throws AccountNotFoundException, ResourceNotFoundException;
+
+  /**
+   * Calculate and return the percent change between an account's starting balance
+   * and current value. If account has net losses, percent change will be negative,
+   * if account has net profit, percent change will be positive.
+   *
+   * @param accountId Unique ID for the account
+   * @return Percent change between starting balance and current account value
+   * @throws AccountNotFoundException if account does not exist in the database
+   */
+  Float getAccountPnl(String accountId)
+    throws AccountNotFoundException, ResourceNotFoundException;
 
   /**
    * Handles buying an asset for an account.

@@ -1,5 +1,7 @@
 package com.ase.restservice.controller;
 
+import com.ase.restservice.exception.AccountAlreadyExistsException;
+import com.ase.restservice.exception.AccountNotFoundException;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Account;
 import com.ase.restservice.service.AccountService;
@@ -31,11 +33,12 @@ public class AccountController {
    *
    * @param account Account
    * @return Updated account
-   * @throws ResourceNotFoundException if account does not exist in the database
+   * @throws AccountAlreadyExistsException if account already exists in the database
    */
   @Operation(summary = "Create account given Account object")
   @PostMapping("/accounts")
-  public Account createAccount(@Valid @RequestBody final Account account) {
+  public Account createAccount(@Valid @RequestBody final Account account)
+      throws AccountAlreadyExistsException {
     return accountService.createAccount(account);
   }
 
@@ -44,12 +47,12 @@ public class AccountController {
    *
    * @param accountId AccountID
    * @return account Account
-   * @throws ResourceNotFoundException if account does not exist in the database
+   * @throws AccountNotFoundException if account does not exist in the database
    */
   @Operation(summary = "Get account given accountId")
   @GetMapping("/accounts/{accountId}")
   public Account getAccount(@PathVariable(value = "accountId") final String accountId)
-      throws ResourceNotFoundException {
+      throws AccountNotFoundException {
     return accountService.getAccountById(accountId);
   }
 
@@ -58,12 +61,12 @@ public class AccountController {
    *
    * @param accountId AccountID
    * @return Account balance
-   * @throws ResourceNotFoundException if account does not exist in the database
+   * @throws AccountNotFoundException if account does not exist in the database
    */
   @Operation(summary = "Get balance of account given accountId")
   @GetMapping("/accounts/{accountId}/balance")
   public Float getAccountBalance(@PathVariable(value = "accountId") final String accountId)
-      throws ResourceNotFoundException {
+      throws AccountNotFoundException {
     return accountService.getAccountById(accountId).getBalance();
   }
 
@@ -73,13 +76,13 @@ public class AccountController {
    * @param accountId AccountID
    * @param amount Value that will be summed with balance
    * @return Updated balance
-   * @throws ResourceNotFoundException if account does not exist in the database
+   * @throws AccountNotFoundException if account does not exist in the database
    */
   @Operation(summary = "Update balance of account given accountId")
   @PutMapping("/accounts/{accountId}/balance")
   public Account updateAccountBalance(@PathVariable(value = "accountId") final String accountId,
       @RequestParam(value = "amount", defaultValue = "0") final Float amount)
-      throws ResourceNotFoundException {
+      throws AccountNotFoundException {
     return accountService.updateAccountBalance(accountId, amount);
   }
 
@@ -88,12 +91,13 @@ public class AccountController {
    *
    * @param accountId AccountID
    * @return Portfolio value
-   * @throws ResourceNotFoundException if account does not exist in the database
+   * @throws AccountNotFoundException if account does not exist in the database
+   * @throws ResourceNotFoundException if stock does not exist in the database
    */
   @Operation(summary = "Get portfolio value of account given accountId")
   @GetMapping("/accounts/{accountId}/portfolio_value")
   public Float getAccountPortfolioValue(@PathVariable(value = "accountId") final String accountId)
-      throws ResourceNotFoundException {
+      throws AccountNotFoundException, ResourceNotFoundException {
     return assetService.getAccountPortfolioValue(accountId);
   }
 
@@ -103,12 +107,13 @@ public class AccountController {
    *
    * @param accountId Unique Identifier for an account
    * @return  Percent difference between account starting balance and current account value
-   * @throws ResourceNotFoundException if account does not exist in the database
+   * @throws AccountNotFoundException if account does not exist in the database
+   * @throws ResourceNotFoundException if stock does not exist in the database
    */
   @Operation(summary = "Get a profits/losses for an account given accountId")
   @GetMapping("/accounts/{accountId}/pnl")
   public Float getAccountPnl(@PathVariable(value = "accountId") String accountId)
-      throws ResourceNotFoundException {
+      throws AccountNotFoundException, ResourceNotFoundException {
     return assetService.getAccountPnl(accountId);
 
   }

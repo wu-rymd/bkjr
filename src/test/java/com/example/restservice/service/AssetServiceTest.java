@@ -1,5 +1,6 @@
 package com.example.restservice.service;
 
+import com.ase.restservice.exception.AccountNotFoundException;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Account;
 import com.ase.restservice.model.Asset;
@@ -78,7 +79,8 @@ public final class AssetServiceTest {
 
   @DisplayName("JUnit test for getPortfolioValue")
   @Test
-  public void getPortfolioValue() throws ResourceNotFoundException {
+  public void getPortfolioValue()
+      throws AccountNotFoundException, ResourceNotFoundException {
     for (Stock stock : stocks) {
       doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
     }
@@ -217,7 +219,8 @@ public final class AssetServiceTest {
   }
   @DisplayName("JUnit test for getAccountTotalValue success")
   @Test
-  public void testAccountTotalValueSuccess() throws ResourceNotFoundException {
+  public void testAccountTotalValueSuccess()
+      throws AccountNotFoundException, ResourceNotFoundException {
     for (Stock stock : stocks) {
       doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
     }
@@ -241,7 +244,8 @@ public final class AssetServiceTest {
   }
   @DisplayName("JUnit test for getAccountPnl success")
   @Test
-  public void testAccountPnlSuccess() throws ResourceNotFoundException {
+  public void testAccountPnlSuccess()
+      throws AccountNotFoundException, ResourceNotFoundException {
     for (Stock stock : stocks) {
       doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
     }

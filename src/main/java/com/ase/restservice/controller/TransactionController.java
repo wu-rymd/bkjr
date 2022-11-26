@@ -1,5 +1,9 @@
 package com.ase.restservice.controller;
 
+import com.ase.restservice.exception.AccountNotFoundException;
+import com.ase.restservice.exception.InvalidOrderTypeException;
+import com.ase.restservice.exception.InvalidTransactionException;
+import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Transaction;
 import com.ase.restservice.service.TransactionService;
@@ -23,11 +27,16 @@ public class TransactionController {
    *
    * @param transaction Transaction
    * @return Asset
-   * @throws Exception if transaction is invalid
+   * @throws AccountNotFoundException if account is not found in database
+   * @throws ResourceNotFoundException if user does not have the asset
+   * @throws InvalidOrderTypeException when transaction type is not buy or sell
+   * @throws InvalidTransactionException if user does not have sufficient assets
    */
   @Operation(summary = "Create transaction given Transaction object")
   @PostMapping("/transactions")
-  public Optional<Asset> postAsset(@RequestBody final Transaction transaction) throws Exception {
+  public Optional<Asset> postAsset(@RequestBody final Transaction transaction)
+      throws AccountNotFoundException, ResourceNotFoundException,
+      InvalidOrderTypeException, InvalidTransactionException {
     return transactionService.createTransaction(transaction);
   }
 
