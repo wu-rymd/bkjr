@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransactionService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">rest-service-initial</a> &gt; <a href="index.source.html" class="el_package">com.ase.restservice.service</a> &gt; <span class="el_source">TransactionService.java</span></div><h1>TransactionService.java</h1><pre class="source lang-java linenums">package com.ase.restservice.service;
+
+import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.model.Asset;
+import com.ase.restservice.model.Stock;
+import com.ase.restservice.model.Transaction;
+import com.ase.restservice.repository.TransactionRepository;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ * Service for Transaction operations.
+ */
+@Service
+<span class="fc" id="L18">public final class TransactionService implements TransactionServiceI {</span>
+  @Autowired
+  private TransactionRepository transactionRepository;
+  @Autowired private AssetService assetService;
+  @Autowired private StockService stockService;
+  @Autowired
+  private AccountService accountService;
+
+  /**
+   * Write a new transaction to the database.
+   * @param transaction new Transaction
+   * @return returns the asset that was created/affected by this transaction
+   * @throws Exception if user does not exist
+   */
+  public Optional&lt;Asset&gt; createTransaction(Transaction transaction) throws Exception {
+<span class="nc" id="L33">    transactionRepository.save(transaction);</span>
+<span class="nc" id="L34">    return executeTransaction(transaction);</span>
+  }
+
+  /**
+   * Update a transaction status in the database.
+   * @param transaction transaction to update
+   * @param status new status
+   */
+  public void updateTransactionStatus(Transaction transaction, String status) {
+<span class="fc" id="L43">    transaction.setTransactionStatus(status);</span>
+<span class="fc" id="L44">    transactionRepository.save(transaction);</span>
+<span class="fc" id="L45">  }</span>
+
+  /**
+   * Executes transactions to buy/sell assets. Directs to helper methods based on transaction type.
+   *
+   * @param transaction Transaction object placed
+   * @return return the updated asset unless the asset was deleted (in the case the user sold
+   *        all the shares of the asset), then return null.
+   *
+   * @throws Exception when transaction is invalid, or required resources do not exist in database
+   */
+  public Optional&lt;Asset&gt; executeTransaction(Transaction transaction) throws Exception {
+<span class="nc" id="L57">    Stock stock = stockService.getStockById(transaction.getStockId());</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">    if (Objects.equals(transaction.getTransactionType(), &quot;BUY&quot;)) {</span>
+<span class="nc" id="L59">      return Optional.of(buyTransaction(transaction, stock));</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">    } else if (Objects.equals(transaction.getTransactionType(), &quot;Sell&quot;)) {</span>
+<span class="nc" id="L61">      return sellTransaction(transaction, stock);</span>
+    } else {
+<span class="nc" id="L63">      throw new Exception(&quot;INVALID ORDER TYPE&quot;);</span>
+    }
+  }
+
+  /**
+   * Executes buy transactions by doing the following: Updating/creating account asset,
+   * updating account balance, updating transaction status.
+   *
+   * @param transaction Transaction object to be executed, with transactionType=&quot;BUY&quot;
+   * @param stock Stock to be bought
+   * @return account's updated asset after the buyTransaction has been executed
+   * @throws ResourceNotFoundException if account does not exist
+   */
+  public Asset buyTransaction(Transaction transaction, Stock stock)
+      throws ResourceNotFoundException {
+    // UPDATE/CREATE ASSET
+<span class="fc" id="L79">    Asset newAsset = assetService.buyAsset(</span>
+<span class="fc" id="L80">        transaction.getAccountId(),</span>
+<span class="fc" id="L81">        transaction.getStockId(),</span>
+<span class="fc" id="L82">        transaction.getNumShares()</span>
+    );
+<span class="fc" id="L84">    float totalCost = stock.getPrice() * transaction.getNumShares();</span>
+    // UPDATE ACCOUNT BALANCE
+    // send the (-) amount of total_cost so that the account service DECREASES the account's balance
+<span class="fc" id="L87">    accountService.updateAccountBalance(transaction.getAccountId(), -totalCost);</span>
+<span class="fc" id="L88">    updateTransactionStatus(transaction, &quot;COMPLETED&quot;);</span>
+<span class="fc" id="L89">    return newAsset;</span>
+  }
+
+  /**
+   * Executes sell transaction by doing the following: Updating/deleting account asset,
+   * updating account balance, updating transaction status.
+   *
+   * @param transaction Transaction object to be executed, with transactionType=&quot;SELL&quot;
+   * @param stock Stock to be sold
+   * @return account's updated asset after sellTransaction has been excecuted, return null in
+   *        the case that all the asset has been sold (asset has been deleted)
+   * @throws Exception if invalid sell, or required resources do not exist
+   */
+  public Optional&lt;Asset&gt; sellTransaction(Transaction transaction, Stock stock) throws Exception {
+    // UPDATE/DELETE ASSET
+<span class="fc" id="L104">    Optional&lt;Asset&gt; newAsset = assetService.sellAsset(</span>
+<span class="fc" id="L105">        transaction.getAccountId(),</span>
+<span class="fc" id="L106">        stock.getStockId(),</span>
+<span class="fc" id="L107">        transaction.getNumShares());</span>
+<span class="fc" id="L108">    float totalCost = stock.getPrice() * transaction.getNumShares();</span>
+    // UPDATE ACCOUNT BALANCE
+    // SEND THE (+) amount of total_cost so tht the account service INCREASES account's balance
+<span class="fc" id="L111">    accountService.updateAccountBalance(transaction.getAccountId(), totalCost);</span>
+<span class="fc" id="L112">    updateTransactionStatus(transaction, &quot;COMPLETED&quot;);</span>
+<span class="fc" id="L113">    return newAsset;</span>
+  }
+
+  /**
+   * List all transactions for an account given accountId.
+   * @param accountId Unique identifier for account
+   * @return List of transactions belonging to account with accountId
+   */
+  public List&lt;Transaction&gt; listAccountTransactions(String accountId)
+      throws ResourceNotFoundException {
+<span class="nc" id="L123">    return transactionRepository.findByAccountId(accountId)</span>
+<span class="nc" id="L124">        .orElseThrow(() -&gt; new ResourceNotFoundException(</span>
+            &quot;Account not found for accountId :: &quot; + accountId
+        ));
+  }
+
+  /**
+   * List all transactions.
+   * @return list of all transactions
+   */
+  public List&lt;Transaction&gt; listAllTransactions() {
+<span class="nc" id="L134">    return transactionRepository.findAll();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
