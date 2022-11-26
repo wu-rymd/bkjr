@@ -19,7 +19,7 @@ public class NFTService {
 
     /**
      * Creates an NFT in the database.
-     * 
+     *
      * @param nft NFT
      * @return Created NFT
      * @throws ResourceNotFoundException if NFT already exists in the database
@@ -33,7 +33,7 @@ public class NFTService {
 
     /**
      * Retrieve all NFTs.
-     * 
+     *
      * @return List of NFTs
      */
     public List<NFT> getAllNFTs() {
@@ -42,7 +42,7 @@ public class NFTService {
 
     /**
      * Updates an NFT in the database.
-     * 
+     *
      * @param nft NFT
      * @return Updated NFT
      * @throws ResourceNotFoundException if NFT does not exist in the database
@@ -56,7 +56,7 @@ public class NFTService {
 
     /**
      * Deletes an NFT in the database.
-     * 
+     *
      * @param nftId NFTID
      * @throws ResourceNotFoundException if NFT does not exist in the database
      */
@@ -69,7 +69,7 @@ public class NFTService {
 
     /**
      * Gets a NFT by nftId.
-     * 
+     *
      * @param nftId NFTID
      * @return NFT
      * @throws ResourceNotFoundException if NFT does not exist in the database
@@ -83,7 +83,7 @@ public class NFTService {
 
     /**
      * Updates the price of an NFT.
-     * 
+     *
      * @param nftId NFTID
      * @param price NFT price
      * @return Updated NFT
@@ -100,7 +100,7 @@ public class NFTService {
 
     /**
      * Gets the price of an NFT.
-     * 
+     *
      * @param nftId NFTID
      * @return NFT price
      * @throws ResourceNotFoundException if NFT does not exist in the database

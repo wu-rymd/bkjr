@@ -11,7 +11,7 @@ import java.util.List;
 public interface NFTServiceI {
     /**
      * Creates an NFT in the database.
-     * 
+     *
      * @param nft NFT
      * @return Created NFT
      * @throws ResourceNotFoundException if NFT already exists in the database
@@ -20,14 +20,14 @@ public interface NFTServiceI {
 
     /**
      * Retrieve all NFTs.
-     * 
+     *
      * @return List of NFTs
      */
     List<NFT> getAllNFTs();
 
     /**
      * Updates an NFT in the database.
-     * 
+     *
      * @param nft NFT
      * @return Updated NFT
      * @throws ResourceNotFoundException if NFT does not exist in the database
@@ -36,7 +36,7 @@ public interface NFTServiceI {
 
     /**
      * Deletes an NFT in the database.
-     * 
+     *
      * @param nftId NFTID
      * @throws ResourceNotFoundException if NFT does not exist in the database
      */
@@ -44,7 +44,7 @@ public interface NFTServiceI {
 
     /**
      * Gets a NFT by nftId.
-     * 
+     *
      * @param nftId NFTID
      * @return NFT
      * @throws ResourceNotFoundException if NFT does not exist in the database
@@ -53,7 +53,7 @@ public interface NFTServiceI {
 
     /**
      * Updates the price of an NFT.
-     * 
+     *
      * @param nftId NFTID
      * @param price NFT price
      * @return Updated NFT
@@ -63,7 +63,7 @@ public interface NFTServiceI {
 
     /**
      * Gets the price of an NFT by nftId.
-     * 
+     *
      * @param nftId NFTID
      * @return NFT price
      * @throws ResourceNotFoundException if NFT does not exist in the database
