@@ -4,6 +4,7 @@ package com.ase.restservice.jwt;
 import java.util.Date;
 
 import com.ase.restservice.model.Account;
+import com.ase.restservice.model.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.jsonwebtoken.*;
@@ -17,9 +18,9 @@ public class JwtTokenUtil {
   @Value("${app.jwt.secret}")
   private String SECRET_KEY;
 
-  public String generateAccessToken(Account account) {
+  public String generateAccessToken(Client client) {
     return Jwts.builder()//TODO BUG HERE I think
-            .setSubject(String.format("%s", account.getAccountId()))
+            .setSubject(String.format("%s", client.getClientId()))
             .setIssuer("Kaiserscmarnn")
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_DURATION))

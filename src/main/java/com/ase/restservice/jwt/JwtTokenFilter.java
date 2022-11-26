@@ -6,8 +6,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.ase.restservice.model.Account;
+import com.ase.restservice.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -72,10 +71,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
   }
 
   private UserDetails getUserDetails(String token) {
-    Account userDetails = new Account();
+    Client userDetails = new Client();
     String[] jwtSubject = jwtUtil.getSubject(token).split(",");
 
-    userDetails.setAccountId(jwtSubject[0]);
+    userDetails.setClientId(jwtSubject[0]);
 //    userDetails.setUsername(jwtSubject[1]);
 
     return userDetails;

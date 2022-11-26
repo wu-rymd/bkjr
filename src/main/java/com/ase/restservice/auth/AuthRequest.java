@@ -6,18 +6,18 @@ import javax.validation.constraints.NotNull;
 public class AuthRequest {
 //  @NotNull @Email @Length(min = 5, max = 50)
   @NotNull
-  private String accountId;
+  private String clientId;
 
 //  @NotNull @Length(min = 5, max = 10)
   @NotNull
   private String password;
 
-  public String getAccountId() {
-    return accountId;
+  public String getClientId() {
+    return clientId;
   }
 
-  public void setAccountId(String accountId) {
-    this.accountId = accountId;
+  public void setClientId(String clientId) {
+    this.clientId = clientId;
   }
 
   public String getPassword() {

@@ -5,7 +5,7 @@ import javax.validation.Valid;
 import com.ase.restservice.auth.AuthRequest;
 import com.ase.restservice.auth.AuthResponse;
 import com.ase.restservice.jwt.JwtTokenUtil;
-import com.ase.restservice.model.Account;
+import com.ase.restservice.model.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,12 +30,12 @@ public class AuthApi {
     try {
       Authentication authentication = authManager.authenticate(
               new UsernamePasswordAuthenticationToken(
-                      request.getAccountId(), request.getPassword())
+                      request.getClientId(), request.getPassword())
       );
 
-      Account account = (Account) authentication.getPrincipal();
-      String accessToken = jwtUtil.generateAccessToken(account);
-      AuthResponse response = new AuthResponse(account.getAccountId(), accessToken);
+      Client client = (Client) authentication.getPrincipal();
+      String accessToken = jwtUtil.generateAccessToken(client);
+      AuthResponse response = new AuthResponse(client.getClientId(), accessToken);
 
       return ResponseEntity.ok().body(response);
 

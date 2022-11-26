@@ -11,7 +11,7 @@ import java.util.Collection;
  */
 @Entity
 @Table(name = "account")
-public class Account implements UserDetails {
+public class Account{
 
   private String accountId;
   private String password;
@@ -112,42 +112,6 @@ public class Account implements UserDetails {
    *
    * @return string representation of account
    */
-
-  @Transient
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return null;
-  }
-
-  @Transient
-  @Override
-  public String getUsername() {
-    return this.accountId;
-  }
-
-  @Transient
-  @Override
-  public boolean isAccountNonExpired() {
-    return true;
-  }
-
-  @Transient
-  @Override
-  public boolean isAccountNonLocked() {
-    return true;
-  }
-
-  @Transient
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return true;
-  }
-
-  @Transient
-  @Override
-  public boolean isEnabled() {
-    return true;
-  }
   @Override
   public String toString() {
     return "Account [accountId=" + accountId + ", balance=" + balance
