@@ -24,7 +24,8 @@ public class CryptocurrencyService implements CryptocurrencyServiceI {
      * @param cryptocurrency Cryptocurrency
      * @return Created cryptocurrency
      */
-    public Cryptocurrency createCryptocurrency(Cryptocurrency cryptocurrency) {
+    public Cryptocurrency createCryptocurrency(Cryptocurrency cryptocurrency)
+            throws ResourceNotFoundException {
         if (cryptocurrencyRepository.existsById(cryptocurrency.getCryptocurrencyId())) {
             throw new ResourceNotFoundException("Cryptocurrency already exists");
         }
@@ -37,7 +38,8 @@ public class CryptocurrencyService implements CryptocurrencyServiceI {
      * @param cryptocurrency Cryptocurrency
      * @return Updated cryptocurrency
      */
-    public Cryptocurrency updateCryptocurrency(Cryptocurrency cryptocurrency) {
+    public Cryptocurrency updateCryptocurrency(Cryptocurrency cryptocurrency)
+            throws ResourceNotFoundException {
         if (!cryptocurrencyRepository.existsById(cryptocurrency.getCryptocurrencyId())) {
             throw new ResourceNotFoundException("Cryptocurrency does not exist");
         }
@@ -49,7 +51,8 @@ public class CryptocurrencyService implements CryptocurrencyServiceI {
      *
      * @param cryptocurrencyId CryptocurrencyID
      */
-    public void deleteCryptocurrencyById(String cryptocurrencyId) {
+    public void deleteCryptocurrencyById(String cryptocurrencyId)
+            throws ResourceNotFoundException {
         if (!cryptocurrencyRepository.existsById(cryptocurrencyId)) {
             throw new ResourceNotFoundException("Cryptocurrency does not exist");
         }
