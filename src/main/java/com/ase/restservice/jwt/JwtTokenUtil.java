@@ -4,11 +4,11 @@ package com.ase.restservice.jwt;
 import java.util.Date;
 
 import com.ase.restservice.model.Account;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class JwtTokenUtil {
@@ -18,7 +18,7 @@ public class JwtTokenUtil {
   private String SECRET_KEY;
 
   public String generateAccessToken(Account account) {
-    return Jwts.builder()
+    return Jwts.builder()//TODO BUG HERE I think
             .setSubject(String.format("%s", account.getAccountId()))
             .setIssuer("Kaiserscmarnn")
             .setIssuedAt(new Date())
@@ -26,5 +26,36 @@ public class JwtTokenUtil {
             .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
             .compact();
 
+  }
+  private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenUtil.class);
+
+  public boolean validateAccessToken(String token) {
+    try {
+      Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+      return true;
+    } catch (ExpiredJwtException ex) {
+      LOGGER.error("JWT expired", ex.getMessage());
+    } catch (IllegalArgumentException ex) {
+      LOGGER.error("Token is null, empty or only whitespace", ex.getMessage());
+    } catch (MalformedJwtException ex) {
+      LOGGER.error("JWT is invalid", ex);
+    } catch (UnsupportedJwtException ex) {
+      LOGGER.error("JWT is not supported", ex);
+    } catch (SignatureException ex) {
+      LOGGER.error("Signature validation failed");
+    }
+
+    return false;
+  }
+
+  public String getSubject(String token) {
+    return parseClaims(token).getSubject();
+  }
+
+  private Claims parseClaims(String token) {
+    return Jwts.parser()
+            .setSigningKey(SECRET_KEY)
+            .parseClaimsJws(token)
+            .getBody();
   }
 }
