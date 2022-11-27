@@ -1,5 +1,7 @@
 package com.ase.restservice.service;
 
+import com.ase.restservice.exception.AccountNotFoundException;
+import com.ase.restservice.exception.InvalidTransactionException;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Account;
 import com.ase.restservice.model.Asset;
@@ -52,10 +54,16 @@ public class AssetService implements AssetServiceI {
    * Deletes an asset in the database.
    *
    * @param assetId AssetID
+   * @throws ResourceNotFoundException if asset is not found in database
    */
-  public void deleteAssetById(AssetId assetId) {
-    // TODO: Throw exception if asset does not exist
-    assetRepository.deleteById(assetId);
+  public void deleteAssetById(AssetId assetId) throws ResourceNotFoundException {
+    Optional<Asset> asset = assetRepository.findById(assetId);
+    if (asset.isPresent()) {
+      assetRepository.deleteById(assetId);
+    } else {
+      throw new ResourceNotFoundException(
+          "Asset " + assetId + " does not exist");
+    }
   }
 
   /**
@@ -90,9 +98,11 @@ public class AssetService implements AssetServiceI {
    *
    * @param accountId AccountID
    * @return Portfolio value
-   * @throws ResourceNotFoundException if account does not exist in the database
+   * @throws AccountNotFoundException if account does not exist in the database
+   * @throws ResourceNotFoundException if stock does not exist in the database
    */
-  public Float getAccountPortfolioValue(String accountId) throws ResourceNotFoundException {
+  public Float getAccountPortfolioValue(String accountId)
+      throws AccountNotFoundException, ResourceNotFoundException {
     List<Asset> userAssets = this.listAssets(accountId);
     float total = 0f;
     String stockId;
@@ -113,11 +123,13 @@ public class AssetService implements AssetServiceI {
    *
    * @param accountId Unique ID for the account
    * @return Total value of an account
-   * @throws ResourceNotFoundException if account does not exist in the database
+   * @throws AccountNotFoundException if account does not exist in the database
+   * @throws ResourceNotFoundException if stock does not exist in database
    */
-  public Float getAccountTotalValue(String accountId) throws ResourceNotFoundException {
+  public Float getAccountTotalValue(String accountId)
+      throws AccountNotFoundException, ResourceNotFoundException {
     Account account = accountRepository.findById(accountId)
-        .orElseThrow(() -> new ResourceNotFoundException(
+        .orElseThrow(() -> new AccountNotFoundException(
             "Account not found for accountId :: " + accountId
         ));
     Float portfolioValue = getAccountPortfolioValue(accountId);
@@ -133,11 +145,13 @@ public class AssetService implements AssetServiceI {
    *
    * @param accountId Unique ID for the account
    * @return Percent change between starting balance and current account value
-   * @throws ResourceNotFoundException if account does not exist in the database
+   * @throws AccountNotFoundException if account does not exist in the database
+   * @throws ResourceNotFoundException if stock does not exist in the database
    */
-  public Float getAccountPnl(String accountId) throws ResourceNotFoundException {
+  public Float getAccountPnl(String accountId)
+      throws AccountNotFoundException, ResourceNotFoundException {
     Account account = accountRepository.findById(accountId)
-        .orElseThrow(() -> new ResourceNotFoundException(
+        .orElseThrow(() -> new AccountNotFoundException(
             "Account not found for accountId :: " + accountId
         ));
     Float accountValue = getAccountTotalValue(accountId);
@@ -180,10 +194,11 @@ public class AssetService implements AssetServiceI {
    * @param stockId StockID
    * @param numShares Number of shares
    * @return Asset remaining in the account
-   * @throws Exception if order is invalid
+   * @throws ResourceNotFoundException if the user does not have an asset/stock
+   * @throws InvalidTransactionException if the number of shares is insufficient
    */
   public Optional<Asset> sellAsset(String accountId, String stockId, Float numShares)
-      throws Exception {
+      throws ResourceNotFoundException, InvalidTransactionException {
     Optional<Asset> asset = assetRepository.findById(new AssetId(accountId, stockId));
     if (asset.isPresent()) {
       // Check whether user is selling all of their asset
@@ -194,7 +209,7 @@ public class AssetService implements AssetServiceI {
         return Optional.empty();
       }
       if (userAsset.getNumShares() < numShares) {
-        throw new Exception("INVALID SELL ORDER");
+        throw new InvalidTransactionException("Insufficient shares");
       } else {
         userAsset.setNumShares(userAsset.getNumShares() - numShares);
         this.updateAsset(userAsset);

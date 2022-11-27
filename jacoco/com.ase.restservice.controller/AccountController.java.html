@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AccountController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">rest-service-initial</a> &gt; <a href="index.source.html" class="el_package">com.ase.restservice.controller</a> &gt; <span class="el_source">AccountController.java</span></div><h1>AccountController.java</h1><pre class="source lang-java linenums">package com.ase.restservice.controller;
+
+import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.model.Account;
+import com.ase.restservice.model.Transaction;
+import com.ase.restservice.service.AccountService;
+import com.ase.restservice.service.AssetService;
+import com.ase.restservice.service.TransactionService;
+import io.swagger.v3.oas.annotations.Operation;
+import java.util.List;
+import javax.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * Controller for /accounts endpoints.
+ */
+@RestController
+<span class="fc" id="L25">public final class AccountController {</span>
+
+  @Autowired
+  private AccountService accountService;
+  @Autowired
+  private AssetService assetService;
+  @Autowired
+  private TransactionService transactionService;
+
+  /**
+   * Create new account.
+   *
+   * @param account Account
+   * @return Updated account
+   * @throws ResourceNotFoundException if account does not exist in the database
+   */
+  @Operation(summary = &quot;Create account given Account object&quot;)
+  @PostMapping(&quot;/accounts&quot;)
+  public Account createAccount(@Valid @RequestBody final Account account) {
+<span class="nc" id="L44">    return accountService.createAccount(account);</span>
+  }
+
+  /**
+   * Retrieve an account.
+   *
+   * @param accountId AccountID
+   * @return account Account
+   * @throws ResourceNotFoundException if account does not exist in the database
+   */
+  @Operation(summary = &quot;Get account given accountId&quot;)
+  @GetMapping(&quot;/accounts/{accountId}&quot;)
+  public Account getAccount(@PathVariable(value = &quot;accountId&quot;) final String accountId)
+      throws ResourceNotFoundException {
+<span class="nc" id="L58">    return accountService.getAccountById(accountId);</span>
+  }
+
+  /**
+   * Retrieve account balance.
+   *
+   * @param accountId AccountID
+   * @return Account balance
+   * @throws ResourceNotFoundException if account does not exist in the database
+   */
+  @Operation(summary = &quot;Get balance of account given accountId&quot;)
+  @GetMapping(&quot;/accounts/{accountId}/balance&quot;)
+  public Float getAccountBalance(@PathVariable(value = &quot;accountId&quot;) final String accountId)
+      throws ResourceNotFoundException {
+<span class="nc" id="L72">    return accountService.getAccountById(accountId).getBalance();</span>
+  }
+
+  /**
+   * Update account balance.
+   *
+   * @param accountId AccountID
+   * @param amount    Value that will be summed with balance
+   * @return Updated balance
+   * @throws ResourceNotFoundException if account does not exist in the database
+   */
+  @Operation(summary = &quot;Update balance of account given accountId&quot;)
+  @PutMapping(&quot;/accounts/{accountId}/balance&quot;)
+  public Account updateAccountBalance(@PathVariable(value = &quot;accountId&quot;) final String accountId,
+      @RequestParam(value = &quot;amount&quot;, defaultValue = &quot;0&quot;) final Float amount)
+      throws ResourceNotFoundException {
+<span class="nc" id="L88">    return accountService.updateAccountBalance(accountId, amount);</span>
+  }
+
+  /**
+   * Get portfolio value of an account.
+   *
+   * @param accountId AccountID
+   * @return Portfolio value
+   * @throws ResourceNotFoundException if account does not exist in the database
+   */
+  @Operation(summary = &quot;Get portfolio value of account given accountId&quot;)
+  @GetMapping(&quot;/accounts/{accountId}/portfolio_value&quot;)
+  public Float getAccountPortfolioValue(@PathVariable(value = &quot;accountId&quot;) final String accountId)
+      throws ResourceNotFoundException {
+<span class="nc" id="L102">    return assetService.getAccountPortfolioValue(accountId);</span>
+  }
+
+  /**
+   * List all transactions for an account given accountId.
+   *
+   * @param accountId Unique identifier for account
+   * @return List of all transactions for account with accountId
+   */
+  @Operation(summary = &quot;List all transactions (buy/sell orders) for an account given accountId&quot;)
+  @GetMapping(&quot;/accounts/{accountId}/transactions&quot;)
+  public List&lt;Transaction&gt; listAccountTransactions(
+      @PathVariable(value = &quot;accountId&quot;) String accountId) throws ResourceNotFoundException {
+<span class="nc" id="L115">    return transactionService.listAccountTransactions(accountId);</span>
+  }
+
+  /**
+   * List all accounts.
+   *
+   * @return List of all accounts
+   */
+  @Operation(summary = &quot;List all accounts&quot;)
+  @GetMapping(&quot;/accounts&quot;)
+  public List&lt;Account&gt; listAllAccounts() {
+<span class="nc" id="L126">    return accountService.listAllAccounts();</span>
+  }
+
+  /**
+   * * Get percent different between starting balance and current account value. This represents the
+   * account's net profit/loss.
+   *
+   * @param accountId Unique Identifier for an account
+   * @return Percent difference between account starting balance and current account value
+   * @throws ResourceNotFoundException if account does not exist in the database
+   */
+  @Operation(summary = &quot;Get a profits/losses for an account given accountId&quot;)
+  @GetMapping(&quot;/accounts/{accountId}/pnl&quot;)
+  public Float getAccountPnl(@PathVariable(value = &quot;accountId&quot;) String accountId)
+      throws ResourceNotFoundException {
+<span class="nc" id="L141">    return assetService.getAccountPnl(accountId);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

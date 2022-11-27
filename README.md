@@ -2,6 +2,8 @@
 
 Team repo for Advanced Software Engineering (COMS W4156) / Fall 2022
 
+The repo for our client lives [here](https://github.com/wu-rymd/kaiserschmarrn-client).
+
 ## About
 
 This service provides an API to manage virtual stock accounts for its (future) clients that include trading apps, financial education software, and data visualization tools.
@@ -29,6 +31,13 @@ After registering their users' accounts and by keeping buy/sell transactions up-
 - To generate a report of style errors, run `./mvnw checkstyle:checkstyle`
   - The report is generated at `/target/checkstyle-result.xml`
   - We copied it to [`/checkstyle/checkstyle-result.xml`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/checkstyle/checkstyle-result.xml) to comply with T3 requirements, since `target/` is git-ignored
+
+## Static analysis
+
+- We use the JaCoCo plugin in Maven to perform static analysis and track branch coverage of our code base
+- To generate a report, run `./mvnw clean verify`
+  - The report is generated at `/target/site/jacoco/`
+  - We copied it to [`/jacoco`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/jacoco) to comply with T5 requirements, since `target/` is git-ignored
 
 ## Deployment
 
