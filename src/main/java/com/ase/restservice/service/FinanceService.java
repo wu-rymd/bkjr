@@ -1,6 +1,7 @@
 package com.ase.restservice.service;
 
 import com.ase.restservice.exception.InvalidStockIDException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.model.Stock;
 import java.io.IOException;
 import java.util.List;
@@ -70,7 +71,8 @@ public class FinanceService implements FinanceServiceI {
      * @throws InvalidStockIDException if the stock ID is invalid
      * @throws IOException             when there is a connection error
      */
-    public Stock createStockFromId(String stockId) throws InvalidStockIDException, IOException {
+    public Stock createStockFromId(String stockId)
+            throws InvalidStockIDException, IOException, ResourceAlreadyExistsException {
         try {
             Float apiPrice = getStockPrice(stockId);
             Stock stockObj = new Stock(stockId, apiPrice);
@@ -79,6 +81,8 @@ public class FinanceService implements FinanceServiceI {
             throw new InvalidStockIDException(e);
         } catch (IOException e) {
             throw new IOException(e);
+        } catch (ResourceAlreadyExistsException e) {
+            throw new ResourceAlreadyExistsException(e);
         }
     }
 
