@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.repository.StockRepository;
@@ -36,22 +37,46 @@ public final class StockServiceTest {
 
   @DisplayName("Test createStock success")
   @Test
-  public void createStockSuccess() {
+  public void createStockSuccess() throws ResourceAlreadyExistsException {
     stockService.createStock(stock);
     verify(mockStockRepository).save(stock);
   }
 
+  @DisplayName("Test createStock when stock already exists")
+  @Test
+  public void createStockAlreadyExists() {
+    doReturn(true).when(mockStockRepository).existsById(stock.getStockId());
+
+    Exception exception = assertThrows(ResourceAlreadyExistsException.class, () -> {
+      stockService.createStock(stock);
+    });
+    String expectedMessage = "Stock with ID " + stock.getStockId() + " already exists";
+    assertEquals(expectedMessage, exception.getMessage());
+  }
+
   @DisplayName("Test updateStock success")
   @Test
-  public void updateStockSuccess() {
+  public void updateStockSuccess() throws ResourceNotFoundException {
+    doReturn(true).when(mockStockRepository).existsById(stock.getStockId());
     stockService.updateStock(stock);
     verify(mockStockRepository).save(stock);
+  }
+
+  @DisplayName("Test updateStock when stock does not exist")
+  @Test
+  public void updateStockDNE() {
+    doReturn(false).when(mockStockRepository).existsById(stock.getStockId());
+    Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
+      stockService.updateStock(stock);
+    });
+    String expectedMessage = "Stock with ID " + stock.getStockId() + " does not exist";
+    assertEquals(expectedMessage, exception.getMessage());
   }
 
   @DisplayName("Test deleteStockById success")
   @Test
   public void deleteStockByIdSuccess() throws ResourceNotFoundException {
-    doReturn(Optional.of(stock)).when(mockStockRepository).findById(stock.getStockId());
+    doReturn(true).when(mockStockRepository).existsById(stock.getStockId());
 
     stockService.deleteStockById(stock.getStockId());
 
@@ -61,14 +86,13 @@ public final class StockServiceTest {
   @DisplayName("Test deleteStockById when stock does not exist")
   @Test
   public void deleteStockByIdStockDNE() {
-    doReturn(Optional.empty()).when(mockStockRepository).findById(stock.getStockId());
+    doReturn(false).when(mockStockRepository).existsById(stock.getStockId());
 
     Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
       stockService.deleteStockById(stock.getStockId());
     });
 
-    String expectedMessage = "com.ase.restservice.exception.ResourceNotFoundException: Stock not "
-        + "found for stockId :: AMZN";
+    String expectedMessage = "Stock with ID AMZN does not exist";
     String actualMessage = exception.getMessage();
     assertEquals(expectedMessage, actualMessage);
   }
@@ -87,6 +111,7 @@ public final class StockServiceTest {
     Stock updatedStock = new Stock(stock.getStockId(), 10F);
     doReturn(Optional.of(stock)).when(mockStockRepository).findById(stock.getStockId());
     doReturn(updatedStock).when(mockStockRepository).save(any());
+    doReturn(true).when(mockStockRepository).existsById(stock.getStockId());
     stockService.updateStockPrice(stock.getStockId(), 10F);
   }
 
