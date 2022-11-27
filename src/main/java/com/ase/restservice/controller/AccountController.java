@@ -38,7 +38,8 @@ public final class AccountController {
    *
    * @param account Account
    * @return Updated account
-   * @throws AccountAlreadyExistsException if account already exists in the database
+   * @throws AccountAlreadyExistsException if account already exists in the
+   *                                       database
    */
   @Operation(summary = "Create account given Account object")
   @PostMapping("/accounts")
@@ -96,7 +97,7 @@ public final class AccountController {
    *
    * @param accountId AccountID
    * @return Portfolio value
-   * @throws AccountNotFoundException if account does not exist in the database
+   * @throws AccountNotFoundException  if account does not exist in the database
    * @throws ResourceNotFoundException if stock does not exist in the database
    */
   @Operation(summary = "Get portfolio value of account given accountId")
@@ -131,12 +132,14 @@ public final class AccountController {
   }
 
   /**
-   * * Get percent different between starting balance and current account value. This represents the
+   * * Get percent different between starting balance and current account value.
+   * This represents the
    * account's net profit/loss.
    *
    * @param accountId Unique Identifier for an account
-   * @return  Percent difference between account starting balance and current account value
-   * @throws AccountNotFoundException if account does not exist in the database
+   * @return Percent difference between account starting balance and current
+   *         account value
+   * @throws AccountNotFoundException  if account does not exist in the database
    * @throws ResourceNotFoundException if stock does not exist in the database
    */
   @Operation(summary = "Get a profits/losses for an account given accountId")

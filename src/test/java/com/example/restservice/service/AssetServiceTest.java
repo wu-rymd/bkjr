@@ -47,7 +47,7 @@ public final class AssetServiceTest {
   private Float totalValueTruth;
   private Float pnlTruth;
   private Account user;
-  private List<Asset> assets =  new ArrayList<>();
+  private List<Asset> assets = new ArrayList<>();
   private List<Stock> stocks = new ArrayList<>();
   private String accountId = "testAccount";
   private Float portfolioValueTruth;
@@ -73,6 +73,7 @@ public final class AssetServiceTest {
     totalValueTruth = endingBalance + portfolioValueTruth;
     pnlTruth = (totalValueTruth - startingBalance) / startingBalance;
   }
+
   @AfterEach
   public void cleanUp() {
     assets = new ArrayList<>();
@@ -102,8 +103,7 @@ public final class AssetServiceTest {
     Asset retAssetTruth = new Asset(
         asset.getAccountId(),
         asset.getStockId(),
-        asset.getNumShares() + buyAmount
-    );
+        asset.getNumShares() + buyAmount);
     doReturn(Optional.of(asset)).when(mockAssetRepository).findById(any());
     Asset retAsset = assetService.buyAsset(accountId, stock.getStockId(), buyAmount);
     assertEquals(retAsset, retAssetTruth);
@@ -154,8 +154,7 @@ public final class AssetServiceTest {
     Stock stock = stocks.get(0);
     Asset asset = assets.get(0);
     Float sellAmount = .9f;
-    Asset updatedAssetTruth = new Asset(accountId, stock.getStockId(), (
-        asset.getNumShares() - sellAmount));
+    Asset updatedAssetTruth = new Asset(accountId, stock.getStockId(), (asset.getNumShares() - sellAmount));
 
     doReturn(Optional.of(asset)).when(mockAssetRepository).findById(
         new AssetId(accountId, stock.getStockId()));
@@ -186,10 +185,10 @@ public final class AssetServiceTest {
   @DisplayName("JUnit test for sellAsset when an account tries to sell more of "
       + "the asset than they own")
   @Test
-  public void sellAssetInvalidAmount()  {
+  public void sellAssetInvalidAmount() {
     Stock stock = stocks.get(0);
     Asset asset = assets.get(0);
-    Float sellAmount = 100f;  // an amount of shares > then stock.numShares()
+    Float sellAmount = 100f; // an amount of shares > then stock.numShares()
 
     doReturn(Optional.of(asset)).when(mockAssetRepository).findById(
         new AssetId(accountId, stock.getStockId()));
@@ -218,6 +217,7 @@ public final class AssetServiceTest {
     String actualMessage = exception.getMessage();
     assertTrue(actualMessage.contains(expectedMessage));
   }
+
   @DisplayName("JUnit test for getAccountTotalValue success")
   @Test
   public void testAccountTotalValueSuccess()
@@ -243,6 +243,7 @@ public final class AssetServiceTest {
     String actualMessage = exception.getMessage();
     assertTrue(actualMessage.contains(expectedMessage));
   }
+
   @DisplayName("JUnit test for getAccountPnl success")
   @Test
   public void testAccountPnlSuccess()
@@ -255,6 +256,7 @@ public final class AssetServiceTest {
     Float pnl = assetService.getAccountPnl(accountId);
     assertEquals(pnl, pnlTruth);
   }
+
   @DisplayName("Test for getAccountPnl() when account does not exist")
   @Test
   public void testAccountPnlFailure() throws AccountNotFoundException {
