@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -49,6 +51,14 @@ public class ApplicationSecurity {
 
     return clientName.equals(account.getClientId());
   }
+  public static String getUsernameOfClientLogged() {
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (principal instanceof UserDetails) {
+      return ((UserDetails) principal).getUsername();
+    } else {
+      return principal.toString();
+    }
+  }
 
   /**
    * This method checks whether a uri request should be granted based on authentication.
@@ -58,6 +68,10 @@ public class ApplicationSecurity {
    */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    String[] accountIdWhiteList = {
+            "/accounts/{accountId}/**",
+            "/assets/{accountId}/**"
+    };
     http.csrf().disable();
 //    http.authorizeRequests().anyRequest().permitAll();
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -65,9 +79,8 @@ public class ApplicationSecurity {
     http.authorizeRequests()
             .antMatchers("/auth/login")
             .permitAll()
-            .antMatchers("/accounts/{accountId}/**")
+            .antMatchers(accountIdWhiteList)
             .access("@applicationSecurity.checkAccountId(authentication,#accountId)")
-
             .anyRequest().authenticated();
 
     http.exceptionHandling()

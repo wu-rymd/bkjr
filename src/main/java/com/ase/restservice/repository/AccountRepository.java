@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, String> {
 
-  @Query(value = "SELECT * FROM Account WHERE account.client = ?1", nativeQuery = true)
+  @Query(value = "SELECT * FROM Account WHERE account.client_id = ?1", nativeQuery = true)
   List<Account> findAllAccountByClient(String client);
 
   @Query(value = "SELECT * FROM Account WHERE account.account_id = ?1", nativeQuery = true)

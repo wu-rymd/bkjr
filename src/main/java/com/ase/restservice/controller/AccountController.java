@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
+
 /**
  * Controller for /accounts endpoints.
  */
@@ -122,12 +124,13 @@ public final class AccountController {
   /**
    * List all accounts.
    *
-   * @return List of all accounts
+   * @return List of all accounts that are owned by the client logged in
    */
-  @Operation(summary = "List all accounts")
+  @Operation(summary = "List all accounts owned by the client")
   @GetMapping("/accounts")
-  public List<Account> listAllAccounts() {
-    return accountService.listAllAccounts();
+  public List<Account> listAllAccountsByCLient() {
+    String clientId = getUsernameOfClientLogged();
+    return accountService.listAllAccountsOfClient(clientId);
   }
 
   /**

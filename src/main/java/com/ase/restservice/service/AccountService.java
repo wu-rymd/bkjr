@@ -8,6 +8,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
+
 /**
  * Service for Account operations.
  */
@@ -35,6 +37,9 @@ public class AccountService implements com.ase.restservice.service.AccountServic
       );
     } catch (AccountNotFoundException e) {
       // reach here means account does not already exist in database
+      //clientID placement must be handled by system.
+      String clientID = getUsernameOfClientLogged();
+      account.setClientId(clientID);
       return accountRepository.save(account);
     }
   }
@@ -46,6 +51,7 @@ public class AccountService implements com.ase.restservice.service.AccountServic
    * @return Updated account
    */
   public Account updateAccount(Account account) throws AccountNotFoundException {
+    //TODO might cause an security risk as users shouldnt be able to change the client
     try {
       String accountId = account.getAccountId();
       Account dbAccount = this.getAccountById(accountId);
@@ -84,8 +90,8 @@ public class AccountService implements com.ase.restservice.service.AccountServic
   }
 
   /**
-   * List all accounts.
-   *
+   * List all accounts. THIS SHOULD NOT BE USED DUE TO SECURITY.
+   * THIS HAS TO BE HERE FOR COMPILER
    * @return list of accounts
    */
   public List<Account> listAllAccounts() {
@@ -107,6 +113,14 @@ public class AccountService implements com.ase.restservice.service.AccountServic
     account.setBalance(account.getBalance() + amount);
     final Account updatedAccount = this.updateAccount(account);
     return updatedAccount;
+  }
+  /**
+   * List all accounts that logged in client owns.
+   *
+   * @return list of accounts
+   */
+  public List<Account> listAllAccountsOfClient(String clientId) {
+    return accountRepository.findAllAccountByClient(clientId);
   }
 
 }
