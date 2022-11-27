@@ -37,7 +37,6 @@ public interface FinanceServiceI {
      * @throws IOException when there is a connection error
      */
     Stock createStockFromId(String stockId) throws InvalidStockIDException, IOException;
-<<<<<<< HEAD
 
     /**
      * Serve historical data from Yahoo! Finance API
@@ -49,6 +48,4 @@ public interface FinanceServiceI {
      */
     List<HistoricalQuote> getHistorical(String stockId)
         throws InvalidStockIDException, IOException;
-=======
->>>>>>> a86e2dc (merge confs)
 }
