@@ -1,5 +1,6 @@
 package com.ase.restservice.controller;
 
+import com.ase.restservice.exception.InvalidStockIDException;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.service.FinanceService;
@@ -33,7 +34,7 @@ public class FinanceController {
     @Operation(summary = "Get price of stock given stockId from Yahoo! Finance API")
     @GetMapping("/finance/{stockId}/price")
     public Float getApiStockPrice(@PathVariable(value = "stockId") final String stockId)
-            throws ResourceNotFoundException, IOException {
+        throws ResourceNotFoundException, IOException, InvalidStockIDException {
         return financeService.getStockPrice(stockId);
     }
 
@@ -47,7 +48,7 @@ public class FinanceController {
     @Operation(summary = "Update all stock prices in database with real-time price")
     @GetMapping("/finance/updateAllStockPrices")
     public List<Stock> updateAllStockPrices()
-            throws ResourceNotFoundException, IOException {
+        throws IOException, InvalidStockIDException, ResourceNotFoundException {
         // get stocks in database
         List<Stock> dbStocks = stockService.listStocks();
         // update each stock in db with real-time price
@@ -71,7 +72,7 @@ public class FinanceController {
     @Operation(summary = "Update one stock price in database with real-time price")
     @GetMapping("/finance/{stockId}/updatePrice")
     public Stock updateStockPrice(@PathVariable(value = "stockId") final String stockId)
-            throws ResourceNotFoundException, IOException {
+        throws ResourceNotFoundException, IOException, InvalidStockIDException {
         Float stockPrice = financeService.getStockPrice(stockId);
         stockService.updateStockPrice(stockId, stockPrice);
         return stockService.getStockById(stockId);
