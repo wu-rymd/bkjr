@@ -1,22 +1,23 @@
 package com.ase.restservice.model;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
-import java.util.Collection;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Represents Account table.
  */
 @Entity
 @Table(name = "account")
-public class Account{
+public class Account {
 
   private String accountId;
-  private String password;
+
   private Float balance;
   private Float startingBalance;
+  private String clientId;
 
   /**
    * Default constructor for Account.
@@ -28,15 +29,16 @@ public class Account{
    * Represents an account.
    *
    * @param accountId       ID of an account
-   * @param password        password for authorization
    * @param balance         Account balance
    * @param startingBalance Starting balance of an account
+   * @param clientId ID of client
    */
-  public Account(final String accountId, final String password, final Float balance, final Float startingBalance) {
+  public Account(final String accountId, final Float balance,
+                 final Float startingBalance, final String clientId) {
     this.accountId = accountId;
-    this.password = password;
     this.balance = balance;
     this.startingBalance = startingBalance;
+    this.clientId = clientId;
   }
 
   /**
@@ -56,22 +58,6 @@ public class Account{
     this.accountId = accountId;
   }
 
-  /**
-   * Getter for password.
-   * @return password
-   */
-  @Column(name = "password", nullable = false)
-  public String getPassword() {
-    return password;
-  }
-
-  /**
-   * Setter for password.
-   * @param password password
-   */
-  public void setPassword(final String password) {
-    this.password = password;
-  }
 
   /**
    * Getter for balance.
@@ -105,6 +91,23 @@ public class Account{
    */
   public void setStartingBalance(final Float startingBalance) {
     this.startingBalance = startingBalance;
+  }
+
+  /**
+   * Getter for clientId.
+   * @return clientId.
+   */
+  @Column(name = "client_id", nullable = false)
+  public String getClientId() {
+    return clientId;
+  }
+
+  /**
+   * Setter for clientId.
+   * @param clientId clientId
+   */
+  public void setClientId(final String clientId) {
+    this.clientId = clientId;
   }
 
   /**

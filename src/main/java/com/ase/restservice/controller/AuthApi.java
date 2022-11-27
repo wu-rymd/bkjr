@@ -21,10 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthApi {
-  @Autowired AuthenticationManager authManager;
   @Autowired
-  JwtTokenUtil jwtUtil;
+  private AuthenticationManager authManager;
+  @Autowired
+  private JwtTokenUtil jwtUtil;
 
+  /**
+   * Login URI for authentication.
+   * @param request
+   * @return responds with body or unauthorized status
+   */
   @PostMapping("/auth/login")
   public ResponseEntity<?> login(@RequestBody @Valid AuthRequest request) {
     try {

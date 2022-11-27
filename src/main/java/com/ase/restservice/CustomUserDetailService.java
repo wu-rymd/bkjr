@@ -13,13 +13,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class CustomUserDetailService implements UserDetailsService {
 
   @Autowired
-  ClientRepository clientRepository;
+  private ClientRepository clientRepository;
 
+  /**
+   * Finds client based on clientID.
+   * @param clientID clientID
+   * @return client
+   * @throws UsernameNotFoundException
+   */
   @Override
   @Transactional
   public UserDetails loadUserByUsername(String clientID) throws UsernameNotFoundException {
     Client client = clientRepository.findClientId(clientID)
-            .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + clientID));
+            .orElseThrow(() ->
+                    new UsernameNotFoundException("User Not Found with username: " + clientID));
 
     return client;
   }

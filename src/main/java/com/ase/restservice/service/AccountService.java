@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  * Service for Account operations.
  */
 @Service
-public class AccountService implements AccountServiceI {
+public class AccountService implements com.ase.restservice.service.AccountServiceI {
 
   @Autowired
   private AccountRepository accountRepository;

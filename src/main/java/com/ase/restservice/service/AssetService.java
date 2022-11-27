@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  * Service for Asset operations.
  */
 @Service
-public class AssetService implements AssetServiceI {
+public class AssetService implements com.ase.restservice.service.AssetServiceI {
 
   @Autowired
   private AssetRepository assetRepository;

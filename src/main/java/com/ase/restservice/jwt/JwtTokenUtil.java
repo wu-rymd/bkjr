@@ -2,12 +2,17 @@ package com.ase.restservice.jwt;
 
 
 import java.util.Date;
-
-import com.ase.restservice.model.Account;
 import com.ase.restservice.model.Client;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,23 +21,33 @@ public class JwtTokenUtil {
   private static final long EXPIRE_DURATION = 24 * 60 * 60 * 1000; // 24 hour
 
   @Value("${app.jwt.secret}")
-  private String SECRET_KEY;
+  private String secretKey;
 
+  /**
+   * Generates access token based on client and date.
+   * @param client
+   * @return jwt
+   */
   public String generateAccessToken(Client client) {
-    return Jwts.builder()//TODO BUG HERE I think
+    return Jwts.builder()
             .setSubject(String.format("%s", client.getClientId()))
             .setIssuer("Kaiserscmarnn")
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_DURATION))
-            .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+            .signWith(SignatureAlgorithm.HS512, secretKey)
             .compact();
 
   }
   private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenUtil.class);
 
+  /**
+   * checks if the given token is valid.
+   * @param token
+   * @return boolean of weather it is valid
+   */
   public boolean validateAccessToken(String token) {
     try {
-      Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+      Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
       return true;
     } catch (ExpiredJwtException ex) {
       LOGGER.error("JWT expired", ex.getMessage());
@@ -49,13 +64,23 @@ public class JwtTokenUtil {
     return false;
   }
 
+  /**
+   * gets subject hidden in token.
+   * @param token
+   * @return subject.
+   */
   public String getSubject(String token) {
     return parseClaims(token).getSubject();
   }
 
+  /**
+   * parses claims based on the token.
+   * @param token
+   * @return parsed jwt
+   */
   private Claims parseClaims(String token) {
     return Jwts.parser()
-            .setSigningKey(SECRET_KEY)
+            .setSigningKey(secretKey)
             .parseClaimsJws(token)
             .getBody();
   }

@@ -1,19 +1,17 @@
 package com.ase.restservice;
 
 import com.ase.restservice.jwt.JwtTokenFilter;
+import com.ase.restservice.model.Account;
 import com.ase.restservice.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,16 +27,36 @@ import javax.servlet.http.HttpServletResponse;
 public class ApplicationSecurity {
 
   @Resource
-  private UserDetailsService userDetailsService;  //wot
-
+  private UserDetailsService userDetailsService;
 
   @Autowired
   private AccountRepository accountRepo;
   @Autowired
   private JwtTokenFilter jwtTokenFilter;
 
+  /**
+   * This method checks whether the account asked for
+   * by the client is authorized to the client or not.
+   * @param authentication authenticated client object
+   * @param accountId accountId that client wants to open
+   * @return whether client is allowed to access account or not
+   */
+  public boolean checkAccountId(Authentication authentication, String accountId) {
+    // need to check which client this account has
+    String clientName = authentication.getName();
+    Account account =  accountRepo.findAccountByAccountId(accountId).orElseThrow(() ->
+            new UsernameNotFoundException("Account Not Found with username: " + accountId));
 
-  @Bean //here
+    return clientName.equals(account.getClientId());
+  }
+
+  /**
+   * This method checks whether a uri request should be granted based on authentication.
+   * @param http the http request
+   * @return allows http to be build to display
+   * @throws Exception unauthorized
+   */
+  @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf().disable();
 //    http.authorizeRequests().anyRequest().permitAll();
@@ -47,10 +65,9 @@ public class ApplicationSecurity {
     http.authorizeRequests()
             .antMatchers("/auth/login")
             .permitAll()
-            .antMatchers("/v2/api-docs", "/configuration/ui",
-                    "/swagger-resources/**", "/configuration/**", "/swagger-ui.html"
-                    , "/webjars/**", "/csrf", "/")
-            .permitAll()
+            .antMatchers("/accounts/{accountId}/**")
+            .access("@applicationSecurity.checkAccountId(authentication,#accountId)")
+
             .anyRequest().authenticated();
 
     http.exceptionHandling()
@@ -70,9 +87,11 @@ public class ApplicationSecurity {
     return http.build();
   }
 
-
-
-  @Bean //new
+  /**
+   * Provides Authentication.
+   * @return authentication with userdetailservice
+   */
+  @Bean
   public DaoAuthenticationProvider authenticationProvider() {
     DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
@@ -82,14 +101,24 @@ public class ApplicationSecurity {
     return authProvider;
   }
 
-
-  @Bean //old but can stay
+  /**
+   * Returns password encoder object.
+   * @return password encoder object
+   */
+  @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 
+  /**
+   *
+   * @param authConfiguration
+   * @return authConfiguration
+   * @throws Exception
+   */
   @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration) throws Exception {
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration)
+          throws Exception {
     return authConfiguration.getAuthenticationManager();
   }
 }
