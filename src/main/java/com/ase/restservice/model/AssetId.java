@@ -4,12 +4,14 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Represents (account_id, stock_id) composite key.
+ * Represents (account_id, tradable_type, tradable_id) composite key.
+ * Tradable_type can be "stock", "crpto", or "nft"
  */
 public final class AssetId implements Serializable {
 
   private String accountId;
-  private String stockId;
+  private String tradableType;
+  private String tradableId;
 
   /**
    * Default constructor for AssetId.
@@ -20,16 +22,19 @@ public final class AssetId implements Serializable {
   /**
    * Constructor for AssetId.
    *
-   * @param accountId Unique ID for account
-   * @param stockId Unique Id for stock
+   * @param accountId    unique identifier for account
+   * @param tradableType type of tradable
+   * @param tradableId   unique identifier for tradable
    */
-  public AssetId(final String accountId, final String stockId) {
+  public AssetId(final String accountId, final String tradableType, final String tradableId) {
     this.accountId = accountId;
-    this.stockId = stockId;
+    this.tradableType = tradableType;
+    this.tradableId = tradableId;
   }
 
   /**
    * Getter for AccountId.
+   * 
    * @return accountId
    */
   public String getAccountId() {
@@ -37,15 +42,26 @@ public final class AssetId implements Serializable {
   }
 
   /**
-   * Getter for StockId.
-   * @return stockId
+   * Getter for TradableType.
+   * 
+   * @return tradableType
    */
-  public String getStockId() {
-    return stockId;
+  public String getTradableType() {
+    return tradableType;
+  }
+
+  /**
+   * Getter for TradableId.
+   * 
+   * @return tradableId
+   */
+  public String getTradableId() {
+    return tradableId;
   }
 
   /**
    * Custom equals function.
+   * 
    * @param o object to compare equality
    * @return true if attributes of this and o are all equal, false otherwise
    */
@@ -59,12 +75,12 @@ public final class AssetId implements Serializable {
     }
     AssetId c = (AssetId) o;
     return Objects.equals(this.getAccountId(), c.getAccountId())
-        && Objects.equals(this.getStockId(), c.getStockId());
-
+        && Objects.equals(this.getTradableType(), c.getTradableType())
+        && Objects.equals(this.getTradableId(), c.getTradableId());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(accountId, stockId);
+    return Objects.hash(accountId, tradableType, tradableId);
   }
 }
