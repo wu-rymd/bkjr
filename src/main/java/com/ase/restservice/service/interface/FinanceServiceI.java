@@ -1,11 +1,6 @@
 package com.ase.restservice.service;
 
-<<<<<<< HEAD
-import com.ase.restservice.exception.ResourceAlreadyExistsException;
-import com.ase.restservice.exception.ResourceNotFoundException;
-=======
 import com.ase.restservice.exception.InvalidStockIDException;
->>>>>>> origin
 import com.ase.restservice.model.Stock;
 import java.io.IOException;
 import java.util.List;
