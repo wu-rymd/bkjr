@@ -3,6 +3,8 @@ package com.ase.restservice.service;
 import com.ase.restservice.exception.InvalidStockIDException;
 import com.ase.restservice.model.Stock;
 import java.io.IOException;
+import java.util.List;
+import yahoofinance.histquotes.HistoricalQuote;
 
 /**
  * Interface for Finance service (involving Yahoo! Finance API)
@@ -35,4 +37,15 @@ public interface FinanceServiceI {
      * @throws IOException when there is a connection error
      */
     Stock createStockFromId(String stockId) throws InvalidStockIDException, IOException;
+
+    /**
+     * Serve historical data from Yahoo! Finance API
+     *
+     * @param stockId Stock ID to get historical data of
+     * @return A list of historical quotes of the stock
+     * @throws InvalidStockIDException if the stock ID is invalid
+     * @throws IOException when there is a connection error
+     */
+    List<HistoricalQuote> getHistorical(String stockId)
+        throws InvalidStockIDException, IOException;
 }
