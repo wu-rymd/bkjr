@@ -137,18 +137,23 @@ public class AssetService implements AssetServiceI {
       throws AccountNotFoundException, ResourceNotFoundException {
     List<Asset> userAssets = this.listAssets(accountId);
     float total = 0f;
-    String stockId;
-    Stock stock;
-    Float price;
     for (Asset asset : userAssets) {
-      // Total value of a given asset is the current share price * the # of shares the
-      // account owns
-      stockId = asset.getStockId();
-      stock = stockService.getStockById(stockId);
-      price = stock.getPrice();
-      total += price * asset.getNumShares();
+      if (asset.getTradableType().equals("Stock")) {
+        Stock stock = stockService.getStockById(asset.getTradableId());
+        total += stock.getPrice() * asset.getQuantity();
+      } else if (asset.getTradableType().equals("Cryptocurrency")) {
+        Cryptocurrency crypto = cryptocurrencyService
+            .getCryptocurrencyById(asset.getTradableId());
+        total += crypto.getPrice() * asset.getQuantity();
+      } else if (asset.getTradableType().equals("NFT")) {
+        NFT nft = nftService.getNFTById(asset.getTradableId());
+        total += nft.getPrice() * asset.getQuantity();
+      } else {
+        throw new ResourceNotFoundException(
+            "pnl functions for asset type " + asset.getTradableType()
+                + " not implemented");
+      }
     }
-    return total;
   }
 
   /**
@@ -195,61 +200,65 @@ public class AssetService implements AssetServiceI {
   /**
    * Handles buying an asset for an account.
    *
-   * @param accountId UUID for which account this transaction belongs to
-   * @param stockId   UUID for which stock is being bought
-   * @param numShares number of shares request in the buy order
+   * @param accountId    UUID for which account this transaction belongs to
+   * @param tradableType Tradable type
+   * @param tradableId   UUID for which tradable this transaction belongs to
+   * @param quantity     Quantity of tradable to buy
    * @return new Asset
    */
-  public Asset buyAsset(String accountId, String stockId, Float numShares) {
+  public Asset buyAsset(String accountId, String tradableType, String tradableId,
+      Float quantity) throws AccountNotFoundException, ResourceNotFoundException {
     // when buying an asset, first check if it already exists.
-    // If exists, then update the stock amount
+    // If exists, then update the quantity
     // If not exists, write a new asset
-    Optional<Asset> asset = assetRepository.findById(new AssetId(accountId, stockId));
+    AssetId assetId = new AssetId(accountId, tradableType, tradableId);
+    Optional<Asset> asset = assetRepository.findById(assetId);
     if (asset.isPresent()) {
-      // update the current asset
-      Asset currentAsset = asset.get();
-      currentAsset.setNumShares(currentAsset.getNumShares() + numShares);
-      assetRepository.save(currentAsset);
-      return currentAsset;
+      Asset newAsset = asset.get();
+      newAsset.setQuantity(newAsset.getQuantity() + quantity);
+      return assetRepository.save(newAsset);
     } else {
-      // new asset
-      Asset newAsset = new Asset(accountId, stockId, numShares);
-      assetRepository.save(newAsset);
-      return newAsset;
+      Asset newAsset = new Asset(accountId, tradableType, tradableId, quantity);
+      return assetRepository.save(newAsset);
     }
+
   }
 
   /**
    * Handles selling an asset for an account.
    *
-   * @param accountId AccountID
-   * @param stockId   StockID
-   * @param numShares Number of shares
+   * @param accountId    AccountID
+   * @param tradableType Tradable type
+   * @param tradableId   TradableID
+   * @param quantity     Quantity of tradable to sell
    * @return Asset remaining in the account
-   * @throws ResourceNotFoundException   if the user does not have an asset/stock
-   * @throws InvalidTransactionException if the number of shares is insufficient
+   * @throws ResourceNotFoundException   if the user does not have an asset of the
+   *                                     given type
+   * @throws InvalidTransactionException if the user does not have enough of the
+   *                                     asset to sell
    */
-  public Optional<Asset> sellAsset(String accountId, String stockId, Float numShares)
+  public Optional<Asset> sellAsset(String accountId, String tradableType, String tradableId, Float quantity)
       throws ResourceNotFoundException, InvalidTransactionException {
-    Optional<Asset> asset = assetRepository.findById(new AssetId(accountId, stockId));
+    Optional<Asset> asset = assetRepository.findById(new AssetId(accountId, tradableType, tradableId));
     if (asset.isPresent()) {
       // Check whether user is selling all of their asset
       Asset userAsset = asset.get();
-      if (Objects.equals(userAsset.getNumShares(), numShares)) {
+      if (Objects.equals(userAsset.getQuantity(), quantity)) {
         // Delete the asset
-        this.deleteAssetById(new AssetId(accountId, stockId));
+        this.deleteAssetById(new AssetId(accountId, tradableType, tradableId));
         return Optional.empty();
       }
-      if (userAsset.getNumShares() < numShares) {
-        throw new InvalidTransactionException("Insufficient shares");
+      if (userAsset.getQuantity() < quantity) {
+        throw new InvalidTransactionException("Insufficient amount of asset to sell");
       } else {
-        userAsset.setNumShares(userAsset.getNumShares() - numShares);
+        userAsset.setQuantity(userAsset.getQuantity() - quantity);
         this.updateAsset(userAsset);
         return Optional.of(userAsset);
       }
     } else {
       throw new ResourceNotFoundException(
-          "Asset " + stockId + " does not exist for user " + accountId);
+          "Asset of the tradable type" + tradableType + "with the id " +
+              tradableId + " for this account does not exist");
     }
   }
 }

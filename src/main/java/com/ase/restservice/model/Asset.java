@@ -79,7 +79,7 @@ public final class Asset {
    * @return Float number of tradables
    */
   @Column(name = "quantity", nullable = false)
-  public Float getquantity() {
+  public Float getQuantity() {
     return quantity;
   }
 
@@ -88,7 +88,7 @@ public final class Asset {
    *
    * @param quantity number of tradables
    */
-  public void setquantity(final Float quantity) {
+  public void setQuantity(final Float quantity) {
     this.quantity = quantity;
   }
 
@@ -110,7 +110,7 @@ public final class Asset {
     return Objects.equals(this.getAccountId(), c.getAccountId())
         && Objects.equals(this.getTradableType(), c.getTradableType())
         && Objects.equals(this.getTradableId(), c.getTradableId())
-        && Objects.equals(this.getquantity(), c.getquantity());
+        && Objects.equals(this.getQuantity(), c.getQuantity());
   }
 
   @Override
