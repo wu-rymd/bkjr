@@ -1,11 +1,17 @@
 package com.ase.restservice.controller;
 
+import com.ase.restservice.exception.AccountNotFoundException;
+import com.ase.restservice.exception.InvalidOrderTypeException;
+import com.ase.restservice.exception.InvalidTransactionException;
+import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Transaction;
 import com.ase.restservice.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for /transactions endpoints.
  */
 @RestController
-public class TransactionController {
+public final class TransactionController {
   @Autowired
   private TransactionService transactionService;
 
@@ -23,12 +29,22 @@ public class TransactionController {
    *
    * @param transaction Transaction
    * @return Asset
-   * @throws Exception if transaction is invalid
+   * @throws AccountNotFoundException if account is not found in database
+   * @throws ResourceNotFoundException if user does not have the asset
+   * @throws InvalidOrderTypeException when transaction type is not buy or sell
+   * @throws InvalidTransactionException if user does not have sufficient assets
    */
   @Operation(summary = "Create transaction given Transaction object")
   @PostMapping("/transactions")
-  public Optional<Asset> postAsset(@RequestBody final Transaction transaction) throws Exception {
+  public Optional<Asset> postAsset(@RequestBody final Transaction transaction)
+      throws AccountNotFoundException, ResourceNotFoundException,
+      InvalidOrderTypeException, InvalidTransactionException {
     return transactionService.createTransaction(transaction);
+  }
+  @Operation(summary = "Return all transactions in database")
+  @GetMapping("/transactions")
+  public List<Transaction> listAllTransactions() {
+    return transactionService.listAllTransactions();
   }
 
 }

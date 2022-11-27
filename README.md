@@ -30,6 +30,13 @@ After registering their users' accounts and by keeping buy/sell transactions up-
   - The report is generated at `/target/checkstyle-result.xml`
   - We copied it to [`/checkstyle/checkstyle-result.xml`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/checkstyle/checkstyle-result.xml) to comply with T3 requirements, since `target/` is git-ignored
 
+## Static analysis
+
+- We use the JaCoCo plugin in Maven to perform static analysis and track branch coverage of our code base
+- To generate a report, run `./mvnw clean verify`
+  - The report is generated at `/target/site/jacoco/`
+  - We copied it to [`/jacoco`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/jacoco) to comply with T5 requirements, since `target/` is git-ignored
+
 ## Deployment
 
 - We deployed the service to an AWS EC2 Instance

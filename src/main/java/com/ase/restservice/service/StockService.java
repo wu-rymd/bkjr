@@ -43,9 +43,13 @@ public class StockService implements StockServiceI {
    *
    * @param stockId StockID
    */
-  public void deleteStockById(String stockId) {
-    // TODO: Throw exception if stock does not exist
-    stockRepository.deleteById(stockId);
+  public void deleteStockById(String stockId) throws ResourceNotFoundException {
+    try {
+      Stock dbStock = this.getStockById(stockId);
+      stockRepository.deleteById(stockId);
+    } catch (ResourceNotFoundException e) {
+      throw new ResourceNotFoundException(e);
+    }
   }
 
   /**

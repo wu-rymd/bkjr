@@ -49,7 +49,7 @@ public final class AssetController {
    * @param accountId unique identifier for account
    * @param stockId unique identifier for stock, attribute of asset
    * @return the asset with given stockId for given accountId
-   * @throws ResourceNotFoundException if account or asset does not exist
+   * @throws ResourceNotFoundException if asset does not exist
    */
   @Operation(summary = "Get asset given accountId and stockId")
   @GetMapping("/assets/{accountId}/{stockId}")

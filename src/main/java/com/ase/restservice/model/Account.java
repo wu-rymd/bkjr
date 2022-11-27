@@ -1,6 +1,5 @@
 package com.ase.restservice.model;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,7 +13,6 @@ import javax.persistence.Table;
 public class Account {
 
   private String accountId;
-
   private Float balance;
   private Float startingBalance;
   private String clientId;
@@ -57,7 +55,6 @@ public class Account {
   public void setAccountId(final String accountId) {
     this.accountId = accountId;
   }
-
 
   /**
    * Getter for balance.
@@ -112,7 +109,6 @@ public class Account {
 
   /**
    * Custom toString method.
-   *
    * @return string representation of account
    */
   @Override

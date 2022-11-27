@@ -1,0 +1,28 @@
+package com.ase.restservice.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+/**
+ * Custom exception that is thrown when a requested account does not exist in the database.
+ */
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
+public class AccountNotFoundException extends Exception {
+
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * Constructor with Throwable. Allows exception wrapping via Exception.
+   */
+  public AccountNotFoundException(Throwable cause) {
+    super(cause);
+  }
+
+  /**
+   * Custom error for when client requests an account that does not exist.
+   * @param message error message
+   */
+  public AccountNotFoundException(String message) {
+    super(message);
+  }
+}
