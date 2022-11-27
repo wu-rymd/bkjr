@@ -14,13 +14,14 @@ import org.springframework.stereotype.Repository;
 public interface AssetRepository extends JpaRepository<Asset, AssetId> {
 
   /**
-   * Native query to get all assets of a given stock id.
+   * Native query to get all assets of a given tradable_type and tradable_id.
    *
-   * @param stockId unique identifier for a stock
-   * @return List of assets of the given stock
+   * @param tradableType Tradable type
+   * @param tradableId   Tradable id
+   * @return List of assets of the given (tradable_type, tradable_id)
    */
-  @Query(value = "SELECT * FROM Asset WHERE asset.stock_id = ?1", nativeQuery = true)
-  List<Asset> findAllAssetsByStockId(String stockId);
+  @Query(value = "SELECT * FROM Asset WHERE tradable_type = ?1 AND tradable_id = ?2", nativeQuery = true)
+  List<Asset> findAllAssetsByTypeAndId(String tradableType, String tradableId);
 
   /**
    * Native query to get all assets that belong to a given account id.
