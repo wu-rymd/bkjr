@@ -138,14 +138,14 @@ public class AssetService implements AssetServiceI {
     List<Asset> userAssets = this.listAssets(accountId);
     float total = 0f;
     for (Asset asset : userAssets) {
-      if (asset.getTradableType().equals("Stock")) {
+      if (asset.getTradableType().equals("stock")) {
         Stock stock = stockService.getStockById(asset.getTradableId());
         total += stock.getPrice() * asset.getQuantity();
-      } else if (asset.getTradableType().equals("Cryptocurrency")) {
+      } else if (asset.getTradableType().equals("cryptocurrency")) {
         Cryptocurrency crypto = cryptocurrencyService
             .getCryptocurrencyById(asset.getTradableId());
         total += crypto.getPrice() * asset.getQuantity();
-      } else if (asset.getTradableType().equals("NFT")) {
+      } else if (asset.getTradableType().equals("nft")) {
         NFT nft = nftService.getNFTById(asset.getTradableId());
         total += nft.getPrice() * asset.getQuantity();
       } else {
