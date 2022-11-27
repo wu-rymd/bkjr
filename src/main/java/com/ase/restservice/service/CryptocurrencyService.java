@@ -1,6 +1,7 @@
 package com.ase.restservice.service;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.model.Cryptocurrency;
 import com.ase.restservice.repository.CryptocurrencyRepository;
 
@@ -23,13 +24,13 @@ public class CryptocurrencyService implements CryptocurrencyServiceI {
      *
      * @param cryptocurrency Cryptocurrency
      * @return Created cryptocurrency
-     * @throws ResourceNotFoundException if cryptocurrency already exists in the
-     *                                   database
+     * @throws ResourceAlreadyExistsException if cryptocurrency already exists in
+     *                                        the database
      */
     public Cryptocurrency createCryptocurrency(Cryptocurrency cryptocurrency)
-            throws ResourceNotFoundException {
+            throws ResourceAlreadyExistsException {
         if (cryptocurrencyRepository.existsById(cryptocurrency.getCryptocurrencyId())) {
-            throw new ResourceNotFoundException("Cryptocurrency already exists");
+            throw new ResourceAlreadyExistsException("Cryptocurrency already exists");
         }
         return cryptocurrencyRepository.save(cryptocurrency);
     }

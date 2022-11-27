@@ -1,6 +1,7 @@
 package com.ase.restservice.controller;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.model.NFT;
 import com.ase.restservice.service.NFTService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,7 +36,7 @@ public final class NFTController {
     @Operation(summary = "Create NFT given NFT object")
     @PostMapping("/nfts")
     public NFT createNFT(@Valid @RequestBody final NFT nft)
-            throws ResourceNotFoundException {
+            throws ResourceAlreadyExistsException {
         return nftService.createNFT(nft);
     }
 

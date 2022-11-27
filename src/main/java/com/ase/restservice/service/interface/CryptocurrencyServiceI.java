@@ -1,6 +1,7 @@
 package com.ase.restservice.service;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.model.Cryptocurrency;
 
 import java.util.List;
@@ -14,9 +15,11 @@ public interface CryptocurrencyServiceI {
      *
      * @param cryptocurrency Cryptocurrency
      * @return Created cryptocurrency
+     * @throws ResourceAlreadyExistsException if cryptocurrency already exists in
+     *                                        the database
      */
     Cryptocurrency createCryptocurrency(Cryptocurrency cryptocurrency)
-            throws ResourceNotFoundException;
+            throws ResourceAlreadyExistsException;
 
     /**
      * Retrieve all cryptocurrencies.

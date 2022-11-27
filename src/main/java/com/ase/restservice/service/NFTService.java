@@ -1,6 +1,7 @@
 package com.ase.restservice.service;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.model.NFT;
 import com.ase.restservice.repository.NFTRepository;
 
@@ -22,11 +23,11 @@ public class NFTService {
      *
      * @param nft NFT
      * @return Created NFT
-     * @throws ResourceNotFoundException if NFT already exists in the database
+     * @throws ResourceAlreadyExistsException if NFT already exists in the database
      */
-    public NFT createNFT(NFT nft) throws ResourceNotFoundException {
+    public NFT createNFT(NFT nft) throws ResourceAlreadyExistsException {
         if (nftRepository.existsById(nft.getNftId())) {
-            throw new ResourceNotFoundException("NFT already exists");
+            throw new ResourceAlreadyExistsException("NFT already exists");
         }
         return nftRepository.save(nft);
     }

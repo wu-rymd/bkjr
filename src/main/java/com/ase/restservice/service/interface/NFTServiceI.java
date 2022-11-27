@@ -1,6 +1,7 @@
 package com.ase.restservice.service;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.model.NFT;
 
 import java.util.List;
@@ -14,9 +15,9 @@ public interface NFTServiceI {
      *
      * @param nft NFT
      * @return Created NFT
-     * @throws ResourceNotFoundException if NFT already exists in the database
+     * @throws ResourceAlreadyExistsException if NFT already exists in the database
      */
-    NFT createNFT(NFT nft) throws ResourceNotFoundException;
+    NFT createNFT(NFT nft) throws ResourceAlreadyExistsException;
 
     /**
      * Retrieve all NFTs.

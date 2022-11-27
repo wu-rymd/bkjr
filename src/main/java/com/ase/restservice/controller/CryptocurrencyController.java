@@ -1,6 +1,7 @@
 package com.ase.restservice.controller;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.model.Cryptocurrency;
 import com.ase.restservice.service.CryptocurrencyService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +37,7 @@ public final class CryptocurrencyController {
     @PostMapping("/cryptocurrencies")
     public Cryptocurrency createCryptocurrency(
             @Valid @RequestBody final Cryptocurrency cryptocurrency)
-            throws ResourceNotFoundException {
+            throws ResourceAlreadyExistsException {
         return cryptocurrencyService.createCryptocurrency(cryptocurrency);
     }
 
