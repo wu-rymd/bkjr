@@ -2,16 +2,26 @@ package com.example.restservice.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.ase.restservice.exception.AccountNotFoundException;
+import com.ase.restservice.exception.InvalidOrderTypeException;
+import com.ase.restservice.exception.InvalidTransactionException;
+import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Transaction;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.repository.TransactionRepository;
 import com.ase.restservice.service.AccountService;
 import com.ase.restservice.service.AssetService;
+import com.ase.restservice.service.StockService;
 import com.ase.restservice.service.TransactionService;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +39,8 @@ public final class TransactionServiceTest {
   private AccountService mockAccountService;
   @Mock
   private TransactionRepository mockTransactionRepository;
+  @Mock
+  private StockService mockStockService;
   @InjectMocks
   private TransactionService transactionService;
   private Transaction buyTransaction;
@@ -50,12 +62,38 @@ public final class TransactionServiceTest {
         this.accountId,
         "AMZN",
         23.45f,
-        "SELL",
+        "Sell",
         "PENDING"
     );
     asset = new Asset(accountId, "AMZN", 1234.5f);
     stock = new Stock("AMZN", 3.33f);
   }
+
+  @DisplayName("Test that createTransaction saves incoming transactions")
+  @Test
+  public void createTransactionSaves()
+      throws InvalidOrderTypeException, InvalidTransactionException, ResourceNotFoundException,
+      AccountNotFoundException {
+   // return value here is not important, we are not testing this portion of the method
+    doReturn(asset).when(mockAssetService).buyAsset(
+        asset.getAccountId(),
+        asset.getStockId(),
+        buyTransaction.getNumShares()
+    );
+    doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
+    transactionService.createTransaction(buyTransaction);
+    // Check that save is called twice, because the transaction is saved when it is
+    // requested and also when it is executed
+    verify(mockTransactionRepository, times(2)).save(buyTransaction);
+  }
+
+  @DisplayName("Test that updateTransactionStatus saves the updated transaction")
+  @Test
+  public void updateTransactionStatusSaves() {
+    transactionService.updateTransactionStatus(buyTransaction, "COMPLETED");
+    verify(mockTransactionRepository).save(buyTransaction);
+  }
+
   @DisplayName("Test for successful buyTransaction")
   @Test
   public void buyTransactionSuccess() throws Exception {
@@ -123,5 +161,86 @@ public final class TransactionServiceTest {
     verify(mockTransactionRepository).save(sellTransaction);
     // sellTransaction should return null when the asset is deleted
     assertFalse(resultAsset.isPresent());
+  }
+
+  @DisplayName("Test successful buy order on executeTransaction")
+  @Test
+  public void executeTransactionBuySuccess()
+      throws ResourceNotFoundException, InvalidOrderTypeException, InvalidTransactionException,
+      AccountNotFoundException {
+
+    doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
+    doReturn(asset).when(mockAssetService).buyAsset(
+        accountId, buyTransaction.getStockId(),
+        buyTransaction.getNumShares()
+    );
+    transactionService.executeTransaction(buyTransaction);
+    verify(mockAccountService).updateAccountBalance(accountId,
+        -1 * stock.getPrice() * buyTransaction.getNumShares());
+    buyTransaction.setTransactionStatus("COMPLETED");
+    verify(mockTransactionRepository).save(buyTransaction);
+  }
+
+  @DisplayName("Test successful sell order on executeTransaction")
+  @Test
+  public void executeTransactionSellSuccess()
+      throws ResourceNotFoundException, InvalidTransactionException, AccountNotFoundException,
+      InvalidOrderTypeException {
+    doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
+    doReturn(Optional.of(asset)).when(mockAssetService).sellAsset(
+        accountId, stock.getStockId(), sellTransaction.getNumShares());
+    sellTransaction.setTransactionStatus("COMPLETED");
+
+    transactionService.executeTransaction(sellTransaction);
+
+    verify(mockAccountService).updateAccountBalance(accountId,
+        stock.getPrice() * sellTransaction.getNumShares());
+    verify(mockTransactionRepository).save(sellTransaction);
+  }
+
+  @DisplayName("Test invalid order type on executeTransaction")
+  @Test
+  public void executeTransactionInvalidType() throws ResourceNotFoundException {
+
+    Transaction invalidTransaction = new Transaction(this.accountId,
+        "AMZN",
+        12.34f,
+        "KaiserSHMARRN",
+        "PENDING");
+    doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
+    Exception exception = assertThrows(InvalidOrderTypeException.class, () -> {
+      transactionService.executeTransaction(invalidTransaction);
+    });
+    String expectedMessage = "Invalid order type :: " + invalidTransaction.getTransactionType();
+    String actualMessage = exception.getMessage();
+    assertTrue(actualMessage.contains(expectedMessage));
+  }
+
+  @DisplayName("Test successful listAccountTransactions")
+  @Test
+  public void listAccountTransactionsSuccess() throws AccountNotFoundException {
+    ArrayList<Transaction> accountTransactions = new ArrayList<>();
+    accountTransactions.add(buyTransaction);
+    accountTransactions.add(sellTransaction);
+    doReturn(Optional.of(accountTransactions))
+        .when(mockTransactionRepository).findByAccountId(accountId);
+
+    List<Transaction> res = transactionService.listAccountTransactions(accountId);
+
+    assertEquals(accountTransactions, res);
+  }
+
+  @DisplayName("Test listAccountTransactions when account does not exist")
+  @Test
+  public void listAccountTransactionsAccountDNE() {
+    doReturn(Optional.empty())
+        .when(mockTransactionRepository).findByAccountId(accountId);
+
+    Exception exception = assertThrows(AccountNotFoundException.class, () -> {
+      transactionService.listAccountTransactions(accountId);
+    });
+    String expectedMessage = "Account not found for accountId :: " + accountId;
+    String actualMessage = exception.getMessage();
+    assertEquals(expectedMessage, actualMessage);
   }
 }
