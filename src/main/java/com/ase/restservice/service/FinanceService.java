@@ -1,6 +1,7 @@
 package com.ase.restservice.service;
 
 import com.ase.restservice.exception.InvalidStockIDException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.model.Stock;
 import java.io.IOException;
 import java.util.List;
@@ -42,14 +43,13 @@ public class FinanceService implements FinanceServiceI {
      * @param stockId Stock ID
      * @return Float real-time value of the stock
      * @throws InvalidStockIDException if the stock ID is invalid
-     * @throws IOException when there is a connection error
+     * @throws IOException             when there is a connection error
      */
     public Float getStockPrice(String stockId) throws InvalidStockIDException, IOException {
         // Check if the stock ID is valid
         if (!isStockIdValid(stockId)) {
             throw new InvalidStockIDException(
-                "Stock ID given is not valid :: " + stockId
-            );
+                    "Stock ID given is not valid :: " + stockId);
         }
 
         // Get real-time price
@@ -63,14 +63,16 @@ public class FinanceService implements FinanceServiceI {
     }
 
     /**
-     * Creates a Stock object in the database with the current real-time price given a stock ID.
+     * Creates a Stock object in the database with the current real-time price given
+     * a stock ID.
      *
      * @param stockId Stock ID
      * @return Instantiated Stock object with current real-time price
      * @throws InvalidStockIDException if the stock ID is invalid
-     * @throws IOException when there is a connection error
+     * @throws IOException             when there is a connection error
      */
-    public Stock createStockFromId(String stockId) throws InvalidStockIDException, IOException {
+    public Stock createStockFromId(String stockId)
+            throws InvalidStockIDException, IOException, ResourceAlreadyExistsException {
         try {
             Float apiPrice = getStockPrice(stockId);
             Stock stockObj = new Stock(stockId, apiPrice);
@@ -79,6 +81,8 @@ public class FinanceService implements FinanceServiceI {
             throw new InvalidStockIDException(e);
         } catch (IOException e) {
             throw new IOException(e);
+        } catch (ResourceAlreadyExistsException e) {
+            throw new ResourceAlreadyExistsException(e);
         }
     }
 
@@ -88,12 +92,12 @@ public class FinanceService implements FinanceServiceI {
      * @param stockId Stock ID to get historical data of
      * @return A list of historical quotes of the stock
      * @throws InvalidStockIDException if the stock ID is invalid
-     * @throws IOException when there is a connection error
+     * @throws IOException             when there is a connection error
      */
     public List<HistoricalQuote> getHistorical(final String stockId)
             throws InvalidStockIDException, IOException {
         try {
-            Float apiPrice = getStockPrice(stockId); //dummy check for valid stock ID
+            Float apiPrice = getStockPrice(stockId); // dummy check for valid stock ID
             yahoofinance.Stock apiStock = YahooFinance.get(stockId);
             List<HistoricalQuote> histQuotes = apiStock.getHistory();
             return histQuotes;

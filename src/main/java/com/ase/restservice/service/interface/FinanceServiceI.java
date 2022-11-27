@@ -1,6 +1,7 @@
 package com.ase.restservice.service;
 
 import com.ase.restservice.exception.InvalidStockIDException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.model.Stock;
 import java.io.IOException;
 import java.util.List;
@@ -24,19 +25,23 @@ public interface FinanceServiceI {
      * @param stockId Stock ID
      * @return Float real-time value of the stock
      * @throws InvalidStockIDException if the stock ID is invalid
-     * @throws IOException when there is a connection error
+     * @throws IOException             when there is a connection error
      */
     Float getStockPrice(String stockId) throws InvalidStockIDException, IOException;
 
     /**
-     * Creates a Stock object in the database with the current real-time price given a stock ID.
+     * Creates a Stock object in the database with the current real-time price given
+     * a stock ID.
      *
      * @param stockId Stock ID
      * @return Instantiated Stock object with current real-time price
-     * @throws ResourceNotFoundException if the stock ID is invalid
-     * @throws IOException when there is a connection error
+     * @throws ResourceNotFoundException      if the stock ID is invalid
+     * @throws IOException                    when there is a connection error
+     * @throws ResourceAlreadyExistsException if the stock ID already exists in the
+     *                                        database
      */
-    Stock createStockFromId(String stockId) throws InvalidStockIDException, IOException;
+    Stock createStockFromId(String stockId) throws InvalidStockIDException, IOException,
+            ResourceAlreadyExistsException;
 
     /**
      * Serve historical data from Yahoo! Finance API
@@ -44,8 +49,8 @@ public interface FinanceServiceI {
      * @param stockId Stock ID to get historical data of
      * @return A list of historical quotes of the stock
      * @throws InvalidStockIDException if the stock ID is invalid
-     * @throws IOException when there is a connection error
+     * @throws IOException             when there is a connection error
      */
     List<HistoricalQuote> getHistorical(String stockId)
-        throws InvalidStockIDException, IOException;
+            throws InvalidStockIDException, IOException;
 }
