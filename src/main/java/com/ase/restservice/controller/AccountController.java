@@ -4,9 +4,12 @@ import com.ase.restservice.exception.AccountAlreadyExistsException;
 import com.ase.restservice.exception.AccountNotFoundException;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Account;
+import com.ase.restservice.model.Transaction;
 import com.ase.restservice.service.AccountService;
 import com.ase.restservice.service.AssetService;
+import com.ase.restservice.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,12 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for /accounts endpoints.
  */
 @RestController
-public class AccountController {
+public final class AccountController {
 
   @Autowired
   private AccountService accountService;
   @Autowired
   private AssetService assetService;
+  @Autowired
+  private TransactionService transactionService;
 
   /**
    * Create new account.
@@ -74,7 +79,7 @@ public class AccountController {
    * Update account balance.
    *
    * @param accountId AccountID
-   * @param amount Value that will be summed with balance
+   * @param amount    Value that will be summed with balance
    * @return Updated balance
    * @throws AccountNotFoundException if account does not exist in the database
    */
@@ -102,7 +107,31 @@ public class AccountController {
   }
 
   /**
-   * Get percent different between starting balance and current account value. This represents the
+   * List all transactions for an account given accountId.
+   *
+   * @param accountId Unique identifier for account
+   * @return List of all transactions for account with accountId
+   */
+  @Operation(summary = "List all transactions (buy/sell orders) for an account given accountId")
+  @GetMapping("/accounts/{accountId}/transactions")
+  public List<Transaction> listAccountTransactions(
+      @PathVariable(value = "accountId") String accountId) throws AccountNotFoundException {
+    return transactionService.listAccountTransactions(accountId);
+  }
+
+  /**
+   * List all accounts.
+   *
+   * @return List of all accounts
+   */
+  @Operation(summary = "List all accounts")
+  @GetMapping("/accounts")
+  public List<Account> listAllAccounts() {
+    return accountService.listAllAccounts();
+  }
+
+  /**
+   * * Get percent different between starting balance and current account value. This represents the
    * account's net profit/loss.
    *
    * @param accountId Unique Identifier for an account
@@ -115,6 +144,5 @@ public class AccountController {
   public Float getAccountPnl(@PathVariable(value = "accountId") String accountId)
       throws AccountNotFoundException, ResourceNotFoundException {
     return assetService.getAccountPnl(accountId);
-
   }
 }

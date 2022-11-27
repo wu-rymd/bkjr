@@ -8,8 +8,10 @@ import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Transaction;
 import com.ase.restservice.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Controller for /transactions endpoints.
  */
 @RestController
-public class TransactionController {
+public final class TransactionController {
   @Autowired
   private TransactionService transactionService;
 
@@ -38,6 +40,11 @@ public class TransactionController {
       throws AccountNotFoundException, ResourceNotFoundException,
       InvalidOrderTypeException, InvalidTransactionException {
     return transactionService.createTransaction(transaction);
+  }
+  @Operation(summary = "Return all transactions in database")
+  @GetMapping("/transactions")
+  public List<Transaction> listAllTransactions() {
+    return transactionService.listAllTransactions();
   }
 
 }

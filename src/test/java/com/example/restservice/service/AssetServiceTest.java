@@ -1,6 +1,7 @@
 package com.example.restservice.service;
 
 import com.ase.restservice.exception.AccountNotFoundException;
+import com.ase.restservice.exception.InvalidTransactionException;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Account;
 import com.ase.restservice.model.Asset;
@@ -193,10 +194,10 @@ public final class AssetServiceTest {
     doReturn(Optional.of(asset)).when(mockAssetRepository).findById(
         new AssetId(accountId, stock.getStockId()));
 
-    Exception exception = assertThrows(Exception.class, () -> {
+    Exception exception = assertThrows(InvalidTransactionException.class, () -> {
       assetService.sellAsset(accountId, stock.getStockId(), sellAmount);
     });
-    String expectedMessage = "INVALID SELL ORDER";
+    String expectedMessage = "Insufficient shares";
     String actualMessage = exception.getMessage();
     assertTrue(actualMessage.contains(expectedMessage));
   }
@@ -233,9 +234,9 @@ public final class AssetServiceTest {
 
   @DisplayName("Test for getAccountTotalValue failure")
   @Test
-  public void testAccountTotalValueFailure() throws ResourceNotFoundException {
+  public void testAccountTotalValueFailure() throws AccountNotFoundException {
     doReturn(Optional.empty()).when(mockAccountRepository).findById(accountId);
-    ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+    AccountNotFoundException exception = assertThrows(AccountNotFoundException.class, () -> {
       assetService.getAccountTotalValue(accountId);
     });
     String expectedMessage = "Account not found for accountId :: " + accountId;
@@ -256,9 +257,9 @@ public final class AssetServiceTest {
   }
   @DisplayName("Test for getAccountPnl() when account does not exist")
   @Test
-  public void testAccountPnlFailure() throws ResourceNotFoundException {
+  public void testAccountPnlFailure() throws AccountNotFoundException {
     doReturn(Optional.empty()).when(mockAccountRepository).findById(accountId);
-    ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+    AccountNotFoundException exception = assertThrows(AccountNotFoundException.class, () -> {
       assetService.getAccountPnl(accountId);
     });
     String expectedMessage = "Account not found for accountId :: " + accountId;

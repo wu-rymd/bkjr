@@ -4,6 +4,7 @@ import com.ase.restservice.exception.AccountAlreadyExistsException;
 import com.ase.restservice.exception.AccountNotFoundException;
 import com.ase.restservice.model.Account;
 import com.ase.restservice.repository.AccountRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -80,6 +81,15 @@ public class AccountService implements AccountServiceI {
         .orElseThrow(() -> new AccountNotFoundException(
             "Account not found for accountId :: " + accountId
         ));
+  }
+
+  /**
+   * List all accounts.
+   *
+   * @return list of accounts
+   */
+  public List<Account> listAllAccounts() {
+    return accountRepository.findAll();
   }
 
   /**

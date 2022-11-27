@@ -3,6 +3,7 @@ package com.ase.restservice.service;
 import com.ase.restservice.exception.AccountAlreadyExistsException;
 import com.ase.restservice.exception.AccountNotFoundException;
 import com.ase.restservice.model.Account;
+import java.util.List;
 
 /**
  * Interface for Account service.
@@ -40,6 +41,13 @@ public interface AccountServiceI {
    * @throws AccountNotFoundException if account does not exist in the database
    */
   Account getAccountById(String accountId) throws AccountNotFoundException;
+
+  /**
+   * List all accounts.
+   *
+   * @return list of accounts
+   */
+  List<Account> listAllAccounts();
 
   /**
    * Method to increase or decrease a user's account balance.

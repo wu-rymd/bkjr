@@ -7,6 +7,7 @@ import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.model.Transaction;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -69,4 +70,18 @@ public interface TransactionServiceI {
    */
   Optional<Asset> sellTransaction(Transaction transaction, Stock stock)
     throws AccountNotFoundException, InvalidTransactionException, ResourceNotFoundException;
+
+  /**
+   * List all transactions for an account given accountId.
+   * @param accountId Unique identifier for account
+   * @return List of transactions belonging to account with accountId
+   */
+  List<Transaction> listAccountTransactions(String accountId)
+      throws AccountNotFoundException;
+
+  /**
+   * List all transactions.
+   * @return list of all transactions
+   */
+  List<Transaction> listAllTransactions();
 }
