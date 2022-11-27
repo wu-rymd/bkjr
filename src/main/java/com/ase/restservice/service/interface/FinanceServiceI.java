@@ -37,10 +37,6 @@ public interface FinanceServiceI {
      * @throws ResourceNotFoundException if the stock ID is invalid
      * @throws IOException               when there is a connection error
      */
-<<<<<<< HEAD
-    Stock createStockFromId(String stockId) throws ResourceNotFoundException, IOException,
-            ResourceAlreadyExistsException;
-=======
     Stock createStockFromId(String stockId) throws InvalidStockIDException, IOException;
 
     /**
@@ -53,5 +49,4 @@ public interface FinanceServiceI {
      */
     List<HistoricalQuote> getHistorical(String stockId)
         throws InvalidStockIDException, IOException;
->>>>>>> origin
 }
