@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import yahoofinance.histquotes.HistoricalQuote;
 
 /**
  * Controller for /finance endpoints.
@@ -29,12 +30,13 @@ public class FinanceController {
      *
      * @param stockId StockID
      * @return Real-time stock price via Yahoo! Finance API
-     * @throws ResourceNotFoundException if stock ID is invalid
+     * @throws InvalidStockIDException if the stock ID is invalid
+     * @throws IOException when there is a connection error
      */
     @Operation(summary = "Get price of stock given stockId from Yahoo! Finance API")
     @GetMapping("/finance/{stockId}/price")
     public Float getApiStockPrice(@PathVariable(value = "stockId") final String stockId)
-        throws ResourceNotFoundException, IOException, InvalidStockIDException {
+            throws InvalidStockIDException, IOException {
         return financeService.getStockPrice(stockId);
     }
 
@@ -42,13 +44,14 @@ public class FinanceController {
      * Update all stock prices in database with real-time price.
      *
      * @return List of stocks and their updated stock prices in the database
-     * @throws ResourceNotFoundException if stock ID stored in the database is invalid
-     * @throws IOException if connection error to Yahoo! Finance API
+     * @throws InvalidStockIDException if the stock ID is invalid
+     * @throws IOException when there is a connection error
+     * @throws ResourceNotFoundException if stock does not exist in the database
      */
     @Operation(summary = "Update all stock prices in database with real-time price")
     @GetMapping("/finance/updateAllStockPrices")
     public List<Stock> updateAllStockPrices()
-        throws IOException, InvalidStockIDException, ResourceNotFoundException {
+            throws InvalidStockIDException, IOException, ResourceNotFoundException {
         // get stocks in database
         List<Stock> dbStocks = stockService.listStocks();
         // update each stock in db with real-time price
@@ -66,15 +69,32 @@ public class FinanceController {
      *
      * @param stockId Stock ID of price to be updated
      * @return Updated stock
-     * @throws ResourceNotFoundException if stock ID is not in database or invalid
-     * @throws IOException if connection error to Yahoo! Finance API
+     * @throws InvalidStockIDException if the stock ID is invalid
+     * @throws IOException when there is a connection error
+     * @throws ResourceNotFoundException if stock does not exist in the database
      */
     @Operation(summary = "Update one stock price in database with real-time price")
     @GetMapping("/finance/{stockId}/updatePrice")
     public Stock updateStockPrice(@PathVariable(value = "stockId") final String stockId)
-        throws ResourceNotFoundException, IOException, InvalidStockIDException {
+            throws InvalidStockIDException, IOException, ResourceNotFoundException {
         Float stockPrice = financeService.getStockPrice(stockId);
         stockService.updateStockPrice(stockId, stockPrice);
         return stockService.getStockById(stockId);
+    }
+
+    /**
+     * Serve historical data from Yahoo! Finance API
+     *
+     * @param stockId Stock ID to get historical data of
+     * @return A list of historical quotes of the stock
+     * @throws InvalidStockIDException if the stock ID is invalid
+     * @throws IOException when there is a connection error
+     */
+    @Operation(summary = "Serve historical data given a stock ID")
+    @GetMapping("/finance/{stockId}/historical")
+    public List<HistoricalQuote> getHistorical(@PathVariable(value = "stockId")
+                                               final String stockId)
+            throws InvalidStockIDException, IOException {
+        return financeService.getHistorical(stockId);
     }
 }

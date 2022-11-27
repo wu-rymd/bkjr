@@ -3,8 +3,10 @@ package com.ase.restservice.service;
 import com.ase.restservice.exception.InvalidStockIDException;
 import com.ase.restservice.model.Stock;
 import java.io.IOException;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import yahoofinance.histquotes.HistoricalQuote;
 import yahoofinance.YahooFinance;
 
 /**
@@ -73,6 +75,28 @@ public class FinanceService implements FinanceServiceI {
             Float apiPrice = getStockPrice(stockId);
             Stock stockObj = new Stock(stockId, apiPrice);
             return stockService.createStock(stockObj);
+        } catch (InvalidStockIDException e) {
+            throw new InvalidStockIDException(e);
+        } catch (IOException e) {
+            throw new IOException(e);
+        }
+    }
+
+    /**
+     * Serve historical data from Yahoo! Finance API
+     *
+     * @param stockId Stock ID to get historical data of
+     * @return A list of historical quotes of the stock
+     * @throws InvalidStockIDException if the stock ID is invalid
+     * @throws IOException when there is a connection error
+     */
+    public List<HistoricalQuote> getHistorical(final String stockId)
+            throws InvalidStockIDException, IOException {
+        try {
+            Float apiPrice = getStockPrice(stockId); //dummy check for valid stock ID
+            yahoofinance.Stock apiStock = YahooFinance.get(stockId);
+            List<HistoricalQuote> histQuotes = apiStock.getHistory();
+            return histQuotes;
         } catch (InvalidStockIDException e) {
             throw new InvalidStockIDException(e);
         } catch (IOException e) {
