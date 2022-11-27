@@ -31,4 +31,13 @@ public interface AssetRepository extends JpaRepository<Asset, AssetId> {
    */
   @Query(value = "SELECT * FROM Asset WHERE asset.account_id = ?1", nativeQuery = true)
   List<Asset> findAllAssetsByAccountId(String accountId);
+
+  /**
+   * Native query to get all assets that belong to a given tradable type.
+   *
+   * @param tradableType type of tradable
+   * @return list of assets that belong to the given tradable type
+   */
+  @Query(value = "SELECT * FROM Asset WHERE tradable_type = ?1", nativeQuery = true)
+  List<Asset> findAllAssetsByTradableType(String tradableType);
 }

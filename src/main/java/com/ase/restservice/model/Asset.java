@@ -38,6 +38,15 @@ public final class Asset {
   }
 
   /**
+   * Getter for assetId.
+   *
+   * @return assetId
+   */
+  public AssetId getAssetId() {
+    return assetId;
+  }
+
+  /**
    * Getter for accountId.
    *
    * @return accountId
