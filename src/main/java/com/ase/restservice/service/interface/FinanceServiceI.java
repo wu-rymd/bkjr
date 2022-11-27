@@ -1,5 +1,6 @@
 package com.ase.restservice.service;
 
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Stock;
 import java.io.IOException;
@@ -35,5 +36,5 @@ public interface FinanceServiceI {
      * @throws IOException               when there is a connection error
      */
     Stock createStockFromId(String stockId) throws ResourceNotFoundException, IOException,
-            ResourceNotFoundException;
+            ResourceAlreadyExistsException;
 }
