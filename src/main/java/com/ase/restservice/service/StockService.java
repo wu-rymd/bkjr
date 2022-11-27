@@ -54,20 +54,11 @@ public class StockService implements StockServiceI {
    * @throws ResourceNotFoundException if stock does not exist
    */
   public void deleteStockById(String stockId) throws ResourceNotFoundException {
-<<<<<<< HEAD
     if (!stockRepository.existsById(stockId)) {
       throw new ResourceNotFoundException(
           "Stock with ID " + stockId + " does not exist");
     }
     stockRepository.deleteById(stockId);
-=======
-    try {
-      Stock dbStock = this.getStockById(stockId);
-      stockRepository.deleteById(stockId);
-    } catch (ResourceNotFoundException e) {
-      throw new ResourceNotFoundException(e);
-    }
->>>>>>> origin
   }
 
   /**
