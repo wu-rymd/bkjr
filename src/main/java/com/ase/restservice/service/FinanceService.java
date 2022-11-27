@@ -1,5 +1,6 @@
 package com.ase.restservice.service;
 
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Stock;
 import java.io.IOException;
@@ -40,14 +41,13 @@ public class FinanceService implements FinanceServiceI {
      * @param stockId Stock ID
      * @return Float real-time value of the stock
      * @throws ResourceNotFoundException if the stock ID is invalid
-     * @throws IOException when there is a connection error
+     * @throws IOException               when there is a connection error
      */
     public Float getStockPrice(String stockId) throws ResourceNotFoundException, IOException {
         // Check if the stock ID is valid
         if (!isStockIdValid(stockId)) {
             throw new ResourceNotFoundException(
-                "Stock ID given is not valid :: " + stockId
-            );
+                    "Stock ID given is not valid :: " + stockId);
         }
 
         // Get real-time price
@@ -61,15 +61,18 @@ public class FinanceService implements FinanceServiceI {
     }
 
     /**
-     * Creates a Stock object in the database with the current real-time price given a stock ID.
+     * Creates a Stock object in the database with the current real-time price given
+     * a stock ID.
      *
      * @param stockId Stock ID
      * @return Instantiated Stock object with current real-time price
-     * @throws ResourceNotFoundException if the stock ID is invalid
-     * @throws IOException when there is a connection error
+     * @throws ResourceNotFoundException      if the stock ID is invalid
+     * @throws IOException                    when there is a connection error
+     * @throws ResourceAlreadyExistsException if the stock ID already exists in the
+     *                                        database
      */
     public Stock createStockFromId(String stockId)
-            throws ResourceNotFoundException, IOException {
+            throws ResourceNotFoundException, ResourceAlreadyExistsException, IOException {
         try {
             Float apiPrice = getStockPrice(stockId);
             Stock stockObj = new Stock(stockId, apiPrice);
@@ -78,6 +81,8 @@ public class FinanceService implements FinanceServiceI {
             throw new ResourceNotFoundException(e);
         } catch (IOException e) {
             throw new IOException(e);
+        } catch (ResourceAlreadyExistsException e) {
+            throw new ResourceAlreadyExistsException(e);
         }
     }
 }

@@ -26,12 +26,14 @@ public interface FinanceServiceI {
     Float getStockPrice(String stockId) throws ResourceNotFoundException, IOException;
 
     /**
-     * Creates a Stock object in the database with the current real-time price given a stock ID.
+     * Creates a Stock object in the database with the current real-time price given
+     * a stock ID.
      *
      * @param stockId Stock ID
      * @return Instantiated Stock object with current real-time price
      * @throws ResourceNotFoundException if the stock ID is invalid
-     * @throws IOException when there is a connection error
+     * @throws IOException               when there is a connection error
      */
-    Stock createStockFromId(String stockId) throws ResourceNotFoundException, IOException;
+    Stock createStockFromId(String stockId) throws ResourceNotFoundException, IOException,
+            ResourceNotFoundException;
 }

@@ -1,6 +1,7 @@
 package com.ase.restservice.controller;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.service.FinanceService;
 import com.ase.restservice.service.StockService;
@@ -35,18 +36,20 @@ public final class StockController {
   @Operation(summary = "Create stock given Stock object")
   @PostMapping("/stocks")
   public Stock createStock(@Valid @RequestBody final Stock stock)
-      throws ResourceNotFoundException {
+      throws ResourceNotFoundException, ResourceAlreadyExistsException {
     String stockId = stock.getStockId();
     if (!financeService.isStockIdValid(stockId)) {
       throw new ResourceNotFoundException(
-        "Stock ID given is not valid :: " + stockId
-      );
+          "Stock ID given is not valid :: " + stockId);
+    } else if (stockService.getStockById(stockId) != null) {
+      throw new ResourceAlreadyExistsException(
+          "Stock ID given already exists :: " + stockId);
     }
     return stockService.createStock(stock);
   }
 
   /**
-   * Endpoint to get  all stocks available in the database.
+   * Endpoint to get all stocks available in the database.
    *
    * @return a list of all available stocks in database
    */
@@ -75,15 +78,15 @@ public final class StockController {
    * Update stock price.
    *
    * @param stockId StockID
-   * @param price Stock price
+   * @param price   Stock price
    * @return Updated stock
    * @throws ResourceNotFoundException if stock does not exist in the database
    */
   @Operation(summary = "Update price of stock given accountId and price")
   @PutMapping("/stocks/{stockId}/{price}")
   public Stock updateStockPrice(@PathVariable(value = "stockId") final String stockId,
-        @PathVariable(value = "price") final Float price)
-        throws ResourceNotFoundException {
+      @PathVariable(value = "price") final Float price)
+      throws ResourceNotFoundException {
     return stockService.updateStockPrice(stockId, price);
   }
 }

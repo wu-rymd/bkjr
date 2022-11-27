@@ -1,6 +1,7 @@
 package com.ase.restservice.service;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.repository.StockRepository;
 import java.util.List;
@@ -21,9 +22,13 @@ public class StockService implements StockServiceI {
    *
    * @param stock Stock
    * @return Created stock
+   * @throws ResourceAlreadyExistsException if stock already exists
    */
-  public Stock createStock(Stock stock) {
-    // TODO: Throw exception if stock already exists
+  public Stock createStock(Stock stock) throws ResourceAlreadyExistsException {
+    if (stockRepository.existsById(stock.getStockId())) {
+      throw new ResourceAlreadyExistsException(
+          "Stock with ID " + stock.getStockId() + " already exists");
+    }
     return stockRepository.save(stock);
   }
 
@@ -32,9 +37,13 @@ public class StockService implements StockServiceI {
    *
    * @param stock Stock
    * @return Updated stock
+   * @throws ResourceNotFoundException if stock does not exist
    */
-  public Stock updateStock(Stock stock) {
-    // TODO: Throw exception if stock does not exist
+  public Stock updateStock(Stock stock) throws ResourceNotFoundException {
+    if (!stockRepository.existsById(stock.getStockId())) {
+      throw new ResourceNotFoundException(
+          "Stock with ID " + stock.getStockId() + " does not exist");
+    }
     return stockRepository.save(stock);
   }
 
@@ -42,9 +51,13 @@ public class StockService implements StockServiceI {
    * Deletes a stock in the database.
    *
    * @param stockId StockID
+   * @throws ResourceNotFoundException if stock does not exist
    */
-  public void deleteStockById(String stockId) {
-    // TODO: Throw exception if stock does not exist
+  public void deleteStockById(String stockId) throws ResourceNotFoundException {
+    if (!stockRepository.existsById(stockId)) {
+      throw new ResourceNotFoundException(
+          "Stock with ID " + stockId + " does not exist");
+    }
     stockRepository.deleteById(stockId);
   }
 
@@ -58,15 +71,14 @@ public class StockService implements StockServiceI {
   public Stock getStockById(String stockId) throws ResourceNotFoundException {
     return stockRepository.findById(stockId)
         .orElseThrow(() -> new ResourceNotFoundException(
-            "Stock not found for stockId :: " + stockId
-        ));
+            "Stock not found for stockId :: " + stockId));
   }
 
   /**
    * Updates the price of a stock.
    *
    * @param stockId StockID
-   * @param price Stock price
+   * @param price   Stock price
    * @return Updated stock
    * @throws ResourceNotFoundException if stock does not exist in the database
    */
