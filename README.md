@@ -2,6 +2,8 @@
 
 Team repo for Advanced Software Engineering (COMS W4156) / Fall 2022
 
+The repo for our client lives [here](https://github.com/wu-rymd/kaiserschmarrn-client).
+
 ## About
 
 This service provides an API to manage virtual stock accounts for its (future) clients that include trading apps, financial education software, and data visualization tools.
