@@ -1,6 +1,7 @@
 package com.ase.restservice.service;
 
-import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.exception.AccountAlreadyExistsException;
+import com.ase.restservice.exception.AccountNotFoundException;
 import com.ase.restservice.model.Account;
 import java.util.List;
 
@@ -13,8 +14,9 @@ public interface AccountServiceI {
    *
    * @param account Account
    * @return Created account
+   * @throws AccountAlreadyExistsException if account ID already exists in database
    */
-  Account createAccount(Account account);
+  Account createAccount(Account account) throws AccountAlreadyExistsException;
 
   /**
    * Updates an account in the database.
@@ -22,23 +24,23 @@ public interface AccountServiceI {
    * @param account Account
    * @return Updated account
    */
-  Account updateAccount(Account account);
+  Account updateAccount(Account account) throws AccountNotFoundException;
 
   /**
    * Deletes an account in the database.
    *
    * @param accountId AccountID
    */
-  void deleteAccountById(String accountId);
+  void deleteAccountById(String accountId) throws AccountNotFoundException;
 
   /**
    * Gets an account by accountId.
    *
    * @param accountId AccountID
    * @return Account
-   * @throws ResourceNotFoundException if account does not exist in the database
+   * @throws AccountNotFoundException if account does not exist in the database
    */
-  Account getAccountById(String accountId) throws ResourceNotFoundException;
+  Account getAccountById(String accountId) throws AccountNotFoundException;
 
   /**
    * List all accounts.
@@ -54,7 +56,7 @@ public interface AccountServiceI {
    * @param amount dollar amount to change account balance by. If negative, will decrease the
    *               account balance.
    * @return Returns the account with the updated balance
-   * @throws ResourceNotFoundException when account does not exist
+   * @throws AccountNotFoundException if account does not exist in the database
    */
-  Account updateAccountBalance(String accountId, Float amount) throws ResourceNotFoundException;
+  Account updateAccountBalance(String accountId, Float amount) throws AccountNotFoundException;
 }

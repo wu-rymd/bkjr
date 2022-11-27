@@ -1,5 +1,8 @@
 package com.ase.restservice.service;
 
+import com.ase.restservice.exception.AccountNotFoundException;
+import com.ase.restservice.exception.InvalidOrderTypeException;
+import com.ase.restservice.exception.InvalidTransactionException;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Stock;
@@ -27,9 +30,14 @@ public final class TransactionService implements TransactionServiceI {
    * Write a new transaction to the database.
    * @param transaction new Transaction
    * @return returns the asset that was created/affected by this transaction
-   * @throws Exception if user does not exist
+   * @throws AccountNotFoundException if account is not found in database
+   * @throws ResourceNotFoundException if user does not have the asset
+   * @throws InvalidOrderTypeException when transaction type is not buy or sell
+   * @throws InvalidTransactionException if user does not have sufficient assets
    */
-  public Optional<Asset> createTransaction(Transaction transaction) throws Exception {
+  public Optional<Asset> createTransaction(Transaction transaction)
+      throws AccountNotFoundException, ResourceNotFoundException,
+      InvalidOrderTypeException, InvalidTransactionException {
     transactionRepository.save(transaction);
     return executeTransaction(transaction);
   }
@@ -50,17 +58,22 @@ public final class TransactionService implements TransactionServiceI {
    * @param transaction Transaction object placed
    * @return return the updated asset unless the asset was deleted (in the case the user sold
    *        all the shares of the asset), then return null.
-   *
-   * @throws Exception when transaction is invalid, or required resources do not exist in database
+   * @throws AccountNotFoundException if account is not found in database
+   * @throws ResourceNotFoundException if user does not have the asset
+   * @throws InvalidOrderTypeException when transaction type is not buy or sell
+   * @throws InvalidTransactionException if user does not have sufficient assets
    */
-  public Optional<Asset> executeTransaction(Transaction transaction) throws Exception {
+  public Optional<Asset> executeTransaction(Transaction transaction)
+      throws AccountNotFoundException, ResourceNotFoundException,
+      InvalidOrderTypeException, InvalidTransactionException {
     Stock stock = stockService.getStockById(transaction.getStockId());
-    if (Objects.equals(transaction.getTransactionType(), "BUY")) {
+    String transactionType = transaction.getTransactionType();
+    if (Objects.equals(transactionType, "BUY")) {
       return Optional.of(buyTransaction(transaction, stock));
-    } else if (Objects.equals(transaction.getTransactionType(), "Sell")) {
+    } else if (Objects.equals(transactionType, "Sell")) {
       return sellTransaction(transaction, stock);
     } else {
-      throw new Exception("INVALID ORDER TYPE");
+      throw new InvalidOrderTypeException("Invalid order type :: " + transactionType);
     }
   }
 
@@ -71,10 +84,10 @@ public final class TransactionService implements TransactionServiceI {
    * @param transaction Transaction object to be executed, with transactionType="BUY"
    * @param stock Stock to be bought
    * @return account's updated asset after the buyTransaction has been executed
-   * @throws ResourceNotFoundException if account does not exist
+   * @throws AccountNotFoundException if account does not exist in the database
    */
   public Asset buyTransaction(Transaction transaction, Stock stock)
-      throws ResourceNotFoundException {
+      throws AccountNotFoundException {
     // UPDATE/CREATE ASSET
     Asset newAsset = assetService.buyAsset(
         transaction.getAccountId(),
@@ -97,9 +110,12 @@ public final class TransactionService implements TransactionServiceI {
    * @param stock Stock to be sold
    * @return account's updated asset after sellTransaction has been excecuted, return null in
    *        the case that all the asset has been sold (asset has been deleted)
-   * @throws Exception if invalid sell, or required resources do not exist
+   * @throws AccountNotFoundException if account does not exist in the database
+   * @throws InvalidTransactionException if transaction type is not buy or sell
+   * @throws ResourceNotFoundException if user does not have sufficient assets
    */
-  public Optional<Asset> sellTransaction(Transaction transaction, Stock stock) throws Exception {
+  public Optional<Asset> sellTransaction(Transaction transaction, Stock stock)
+      throws AccountNotFoundException, InvalidTransactionException, ResourceNotFoundException {
     // UPDATE/DELETE ASSET
     Optional<Asset> newAsset = assetService.sellAsset(
         transaction.getAccountId(),
@@ -117,11 +133,13 @@ public final class TransactionService implements TransactionServiceI {
    * List all transactions for an account given accountId.
    * @param accountId Unique identifier for account
    * @return List of transactions belonging to account with accountId
+   *
+   * @throws AccountNotFoundException if account does not exist
    */
   public List<Transaction> listAccountTransactions(String accountId)
-      throws ResourceNotFoundException {
+      throws AccountNotFoundException {
     return transactionRepository.findByAccountId(accountId)
-        .orElseThrow(() -> new ResourceNotFoundException(
+        .orElseThrow(() -> new AccountNotFoundException(
             "Account not found for accountId :: " + accountId
         ));
   }

@@ -36,7 +36,7 @@ public interface StockServiceI {
    *
    * @param stockId StockID
    */
-  void deleteStockById(String stockId);
+  void deleteStockById(String stockId) throws ResourceNotFoundException;
 
   /**
    * Gets a stock by stockId.
