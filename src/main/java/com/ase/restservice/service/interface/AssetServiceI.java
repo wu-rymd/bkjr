@@ -2,6 +2,7 @@ package com.ase.restservice.service;
 
 import com.ase.restservice.exception.AccountNotFoundException;
 import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.AssetId;
 
@@ -19,7 +20,7 @@ public interface AssetServiceI {
          * @return Created asset
          * @throws ResourceAlreadyExistsException if asset already exists
          */
-        Asset createAsset(Asset asset);
+        Asset createAsset(Asset asset) throws ResourceAlreadyExistsException;
 
         /**
          * Updates an asset in the database.
@@ -28,7 +29,7 @@ public interface AssetServiceI {
          * @return Updated asset
          * @throws ResourceNotFoundException if asset does not exist
          */
-        Asset updateAsset(Asset asset);
+        Asset updateAsset(Asset asset) throws ResourceNotFoundException;
 
         /**
          * Deletes an asset in the database.

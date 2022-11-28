@@ -67,7 +67,6 @@ public interface TransactionServiceI {
        *
        * @param transaction Transaction object to be executed, with
        *                    transactionType="SELL"
-       * @param stock       Stock to be sold
        * @return account's updated asset after sellTransaction has been excecuted,
        *         return null in
        *         the case that all the asset has been sold (asset has been deleted)
@@ -89,9 +88,4 @@ public interface TransactionServiceI {
        * @return list of all transactions
        */
       List<Transaction> listAllTransactions();
-
-      Optional<Asset> sellTransaction(Transaction transaction, Stock stock)
-              throws AccountNotFoundException,
-              InvalidTransactionException,
-              ResourceNotFoundException;
 }
