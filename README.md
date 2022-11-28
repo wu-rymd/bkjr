@@ -42,7 +42,7 @@ After registering their users' accounts and by keeping buy/sell transactions up-
   - We copied it to [`/reports/findbugs/findbugsXml.xml`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/reports/findbugs/findbugsXml.xml) to comply with T5 requirements, since `target/` is git-ignored
 - **_Developers:_** Use `./mvnw findbugs:gui` to open a GUI showing the report
 
-### Branch converage
+### Branch coverage
 
 - We use the JaCoCo plugin in Maven to track branch coverage of our code base
 - To generate a report, run `./mvnw clean verify`
