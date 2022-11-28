@@ -95,7 +95,8 @@ public class AssetService implements AssetServiceI {
      */
     public Asset getAssetById(AssetId assetId) throws ResourceNotFoundException {
         return assetRepository.findById(assetId)
-                .orElseThrow(() -> new ResourceNotFoundException("Asset not found for assetId :: " + assetId));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Asset not found for assetId :: " + assetId));
     }
 
     /**
@@ -133,7 +134,8 @@ public class AssetService implements AssetServiceI {
      * @throws AccountNotFoundException  if account does not exist in the database
      * @throws ResourceNotFoundException if stock does not exist in the database
      */
-    public Float getAccountPortfolioValue(String accountId) throws AccountNotFoundException, ResourceNotFoundException {
+    public Float getAccountPortfolioValue(String accountId)
+            throws AccountNotFoundException, ResourceNotFoundException {
         List<Asset> userAssets = this.listAssets(accountId);
         float total = 0f;
         for (Asset asset : userAssets) {
@@ -141,7 +143,8 @@ public class AssetService implements AssetServiceI {
                 Stock stock = stockService.getStockById(asset.getTradableId());
                 total += stock.getPrice() * asset.getQuantity();
             } else if (asset.getTradableType().equals("cryptocurrency")) {
-                Cryptocurrency crypto = cryptocurrencyService.getCryptocurrencyById(asset.getTradableId());
+                Cryptocurrency crypto = cryptocurrencyService.
+                        getCryptocurrencyById(asset.getTradableId());
                 total += crypto.getPrice() * asset.getQuantity();
             } else if (asset.getTradableType().equals("nft")) {
                 NFT nft = nftService.getNFTById(asset.getTradableId());
@@ -161,9 +164,12 @@ public class AssetService implements AssetServiceI {
      * @throws AccountNotFoundException  if account does not exist in the database
      * @throws ResourceNotFoundException if stock does not exist in database
      */
-    public Float getAccountTotalValue(String accountId) throws AccountNotFoundException, ResourceNotFoundException {
+    public Float getAccountTotalValue(String accountId)
+            throws AccountNotFoundException, ResourceNotFoundException {
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new AccountNotFoundException("Account not found for accountId :: " + accountId));
+                .orElseThrow(() ->
+                        new AccountNotFoundException("Account not found for accountId :: "
+                                + accountId));
         Float portfolioValue = getAccountPortfolioValue(accountId);
         Float currentBalance = account.getBalance();
 
@@ -184,7 +190,9 @@ public class AssetService implements AssetServiceI {
     public Float getAccountPnl(String accountId)
             throws AccountNotFoundException, ResourceNotFoundException {
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new AccountNotFoundException("Account not found for accountId :: " + accountId));
+                .orElseThrow(() ->
+                        new AccountNotFoundException("Account not found for accountId :: "
+                                + accountId));
         Float accountValue = getAccountTotalValue(accountId);
         Float startingBalance = account.getStartingBalance();
 

@@ -5,7 +5,6 @@ import com.ase.restservice.exception.InvalidOrderTypeException;
 import com.ase.restservice.exception.InvalidTransactionException;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Asset;
-import com.ase.restservice.model.Stock;
 import com.ase.restservice.model.Transaction;
 
 import java.util.List;
