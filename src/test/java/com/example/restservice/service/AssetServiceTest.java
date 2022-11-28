@@ -154,7 +154,8 @@ public final class AssetServiceTest {
     Stock stock = stocks.get(0);
     Asset asset = assets.get(0);
     Float sellAmount = .9f;
-    Asset updatedAssetTruth = new Asset(accountId, stock.getStockId(), (asset.getNumShares() - sellAmount));
+    Asset updatedAssetTruth = new Asset(accountId, stock.getStockId(),
+        (asset.getNumShares() - sellAmount));
 
     doReturn(Optional.of(asset)).when(mockAssetRepository).findById(
         new AssetId(accountId, stock.getStockId()));
