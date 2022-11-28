@@ -1,9 +1,13 @@
 package com.ase.restservice.service;
 
-import com.ase.restservice.exception.*;
+import com.ase.restservice.exception.AccountNotFoundException;
+import com.ase.restservice.exception.InvalidOrderTypeException;
+import com.ase.restservice.exception.InvalidTransactionException;
+import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.model.Transaction;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +17,7 @@ import java.util.Optional;
 public interface TransactionServiceI {
       /**
        * Write a new transaction to the database.
-       * 
+       *
        * @param transaction new Transaction
        * @return returns the asset that was created/affected by this transaction
        * @throws Exception if user does not exist
@@ -24,7 +28,7 @@ public interface TransactionServiceI {
 
       /**
        * Update a transaction status in the database.
-       * 
+       *
        * @param transaction transaction to update
        * @param status      new status
        */
@@ -73,20 +77,21 @@ public interface TransactionServiceI {
 
       /**
        * List all transactions for an account given accountId.
-       * 
+       *
        * @param accountId Unique identifier for account
        * @return List of transactions belonging to account with accountId
        */
-      List<Transaction> listAccountTransactions(String accountId)
-                  throws AccountNotFoundException;
+      List<Transaction> listAccountTransactions(String accountId) throws AccountNotFoundException;
 
       /**
        * List all transactions.
-       * 
+       *
        * @return list of all transactions
        */
       List<Transaction> listAllTransactions();
 
       Optional<Asset> sellTransaction(Transaction transaction, Stock stock)
-                  throws AccountNotFoundException, InvalidTransactionException, ResourceNotFoundException;
+              throws AccountNotFoundException,
+              InvalidTransactionException,
+              ResourceNotFoundException;
 }

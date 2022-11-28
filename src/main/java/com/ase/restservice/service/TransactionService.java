@@ -5,15 +5,15 @@ import com.ase.restservice.exception.InvalidOrderTypeException;
 import com.ase.restservice.exception.InvalidTransactionException;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Asset;
-import com.ase.restservice.model.AssetId;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.model.Cryptocurrency;
 import com.ase.restservice.model.NFT;
 import com.ase.restservice.model.Transaction;
 import com.ase.restservice.repository.TransactionRepository;
+
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +37,7 @@ public final class TransactionService implements TransactionServiceI {
 
   /**
    * Write a new transaction to the database.
-   * 
+   *
    * @param transaction new Transaction
    * @return returns the asset that was created/affected by this transaction
    * @throws AccountNotFoundException    if account is not found in database
@@ -54,7 +54,7 @@ public final class TransactionService implements TransactionServiceI {
 
   /**
    * Update a transaction status in the database.
-   * 
+   *
    * @param transaction transaction to update
    * @param status      new status
    */
@@ -98,11 +98,12 @@ public final class TransactionService implements TransactionServiceI {
    * @return account's updated asset after the buyTransaction has been executed
    * @throws AccountNotFoundException if account does not exist in the database
    */
-  public Asset buyTransaction(Transaction transaction)
-      throws AccountNotFoundException {
+  public Asset buyTransaction(Transaction transaction) throws AccountNotFoundException {
     // UPDATE/CREATE ASSET
-    Asset newAsset = assetService.buyAsset(transaction.getAccountId(), transaction.getTradableType(),
-        transaction.getTradableId(), transaction.getQuantity());
+    Asset newAsset = assetService.buyAsset(transaction.getAccountId(),
+        transaction.getTradableType(),
+        transaction.getTradableId(),
+        transaction.getQuantity());
 
     // UPDATE ACCOUNT BALANCE
     // send the (-) amount of total_cost so that the account service DECREASES
@@ -113,7 +114,8 @@ public final class TransactionService implements TransactionServiceI {
       Stock stock = stockService.getStockById(transaction.getTradableId());
       totalCost = stock.getPrice() * transaction.getQuantity();
     } else if (transaction.getTradableType().equals("cryptocurrency")) {
-      Cryptocurrency cryptocurrency = cryptocurrencyService.getCryptocurrencyById(transaction.getTradableId());
+      Cryptocurrency cryptocurrency = cryptocurrencyService.
+              getCryptocurrencyById(transaction.getTradableId());
       totalCost = cryptocurrency.getPrice() * transaction.getQuantity();
     } else if (transaction.getTradableType().equals("nft")) {
       NFT nft = nftService.getNFTById(transaction.getTradableId());
@@ -142,11 +144,9 @@ public final class TransactionService implements TransactionServiceI {
    * @throws ResourceNotFoundException   if user does not have sufficient assets
    */
   public Optional<Asset> sellTransaction(Transaction transaction)
-      throws AccountNotFoundException, InvalidTransactionException,
-      ResourceNotFoundException {
+      throws AccountNotFoundException, InvalidTransactionException, ResourceNotFoundException {
     // UPDATE/DELETE ASSET
-    Optional<Asset> newAsset = assetService.sellAsset(
-        transaction.getAccountId(),
+    Optional<Asset> newAsset = assetService.sellAsset(transaction.getAccountId(),
         transaction.getTradableType(),
         transaction.getTradableId(),
         transaction.getQuantity());
@@ -160,7 +160,8 @@ public final class TransactionService implements TransactionServiceI {
       Stock stock = stockService.getStockById(transaction.getTradableId());
       totalCost = stock.getPrice() * transaction.getQuantity();
     } else if (transaction.getTradableType().equals("cryptocurrency")) {
-      Cryptocurrency cryptocurrency = cryptocurrencyService.getCryptocurrencyById(transaction.getTradableId());
+      Cryptocurrency cryptocurrency = cryptocurrencyService.
+              getCryptocurrencyById(transaction.getTradableId());
       totalCost = cryptocurrency.getPrice() * transaction.getQuantity();
     } else if (transaction.getTradableType().equals("nft")) {
       NFT nft = nftService.getNFTById(transaction.getTradableId());
@@ -176,22 +177,21 @@ public final class TransactionService implements TransactionServiceI {
 
   /**
    * List all transactions for an account given accountId.
-   * 
+   *
    * @param accountId Unique identifier for account
    * @return List of transactions belonging to account with accountId
-   *
    * @throws AccountNotFoundException if account does not exist
    */
   public List<Transaction> listAccountTransactions(String accountId)
       throws AccountNotFoundException {
     return transactionRepository.findByAccountId(accountId)
-        .orElseThrow(() -> new AccountNotFoundException(
-            "Account not found for accountId :: " + accountId));
+        .orElseThrow(() -> new AccountNotFoundException("Account not found for accountId :: "
+                + accountId));
   }
 
   /**
    * List all transactions.
-   * 
+   *
    * @return list of all transactions
    */
   public List<Transaction> listAllTransactions() {
