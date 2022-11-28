@@ -9,13 +9,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 class RestServiceApplication {
 
-    /**
-     * Entry point to application.
-     *
-     * @param args args
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(RestServiceApplication.class, args);
-    }
+  /**
+   * Entry point to application.
+   *
+   * @param args args
+   */
+  public static void main(String[] args) {
+    SpringApplication.run(RestServiceApplication.class, args);
+  }
 
 }

@@ -9,21 +9,21 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class InvalidOrderTypeException extends Exception {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    /**
-     * Constructor with Throwable. Allows exception wrapping via Exception.
-     */
-    public InvalidOrderTypeException(Throwable cause) {
-        super(cause);
-    }
+  /**
+   * Constructor with Throwable. Allows exception wrapping via Exception.
+   */
+  public InvalidOrderTypeException(Throwable cause) {
+    super(cause);
+  }
 
-    /**
-     * Custom error for when client tries to make a transaction of an invalid type.
-     *
-     * @param message error message
-     */
-    public InvalidOrderTypeException(String message) {
-        super(message);
-    }
+  /**
+   * Custom error for when client tries to make a transaction of an invalid type.
+   *
+   * @param message error message
+   */
+  public InvalidOrderTypeException(String message) {
+    super(message);
+  }
 }
