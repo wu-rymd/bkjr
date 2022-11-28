@@ -5,8 +5,10 @@ import com.ase.restservice.model.Stock;
 import com.ase.restservice.service.FinanceService;
 import com.ase.restservice.service.StockService;
 import io.swagger.v3.oas.annotations.Operation;
+
 import java.util.List;
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,7 +41,7 @@ public final class StockController {
     String stockId = stock.getStockId();
     if (!financeService.isStockIdValid(stockId)) {
       throw new ResourceNotFoundException(
-        "Stock ID given is not valid :: " + stockId
+          "Stock ID given is not valid :: " + stockId
       );
     }
     return stockService.createStock(stock);
@@ -75,15 +77,15 @@ public final class StockController {
    * Update stock price.
    *
    * @param stockId StockID
-   * @param price Stock price
+   * @param price   Stock price
    * @return Updated stock
    * @throws ResourceNotFoundException if stock does not exist in the database
    */
   @Operation(summary = "Update price of stock given accountId and price")
   @PutMapping("/stocks/{stockId}/{price}")
   public Stock updateStockPrice(@PathVariable(value = "stockId") final String stockId,
-        @PathVariable(value = "price") final Float price)
-        throws ResourceNotFoundException {
+                                @PathVariable(value = "price") final Float price)
+      throws ResourceNotFoundException {
     return stockService.updateStockPrice(stockId, price);
   }
 }

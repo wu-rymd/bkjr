@@ -3,7 +3,9 @@ package com.ase.restservice.service;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.repository.StockRepository;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -70,7 +72,7 @@ public class StockService implements StockServiceI {
    * Updates the price of a stock.
    *
    * @param stockId StockID
-   * @param price Stock price
+   * @param price   Stock price
    * @return Updated stock
    * @throws ResourceNotFoundException if stock does not exist in the database
    */

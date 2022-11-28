@@ -32,7 +32,7 @@ public final class Asset {
    * @param quantity     number of tradables
    */
   public Asset(final String accountId, final String tradableType, final String tradableId,
-      final Float quantity) {
+               final Float quantity) {
     this.assetId = new AssetId(accountId, tradableType, tradableId);
     this.quantity = quantity;
   }

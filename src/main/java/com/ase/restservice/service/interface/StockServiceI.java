@@ -2,6 +2,7 @@ package com.ase.restservice.service;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Stock;
+
 import java.util.List;
 
 /**
@@ -51,7 +52,7 @@ public interface StockServiceI {
    * Updates the price of a stock.
    *
    * @param stockId StockID
-   * @param price Stock price
+   * @param price   Stock price
    * @return Updated stock
    * @throws ResourceNotFoundException if stock does not exist in the database
    */

@@ -37,6 +37,7 @@ public class Account {
 
   /**
    * Getter for accountId.
+   *
    * @return accountId
    */
   @Id
@@ -46,6 +47,7 @@ public class Account {
 
   /**
    * Setter for accountId.
+   *
    * @param accountId accountId
    */
   public void setAccountId(final String accountId) {
@@ -54,6 +56,7 @@ public class Account {
 
   /**
    * Getter for balance.
+   *
    * @return balance
    */
   @Column(name = "balance", nullable = false)
@@ -63,6 +66,7 @@ public class Account {
 
   /**
    * Setter for balance.
+   *
    * @param balance balance
    */
   public void setBalance(final Float balance) {
@@ -71,6 +75,7 @@ public class Account {
 
   /**
    * Getter for starting balance.
+   *
    * @return starting balance
    */
   @Column(name = "starting_balance", nullable = false)
@@ -80,6 +85,7 @@ public class Account {
 
   /**
    * Setter for starting balance.
+   *
    * @param startingBalance starting balance
    */
   public void setStartingBalance(final Float startingBalance) {
@@ -88,6 +94,7 @@ public class Account {
 
   /**
    * Custom toString method.
+   *
    * @return string representation of account
    */
   @Override

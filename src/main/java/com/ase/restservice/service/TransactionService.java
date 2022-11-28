@@ -69,8 +69,8 @@ public final class TransactionService implements TransactionServiceI {
    *
    * @param transaction Transaction object placed
    * @return return the updated asset unless the asset was deleted (in the case
-   *         the user sold
-   *         all the shares of the asset), then return null.
+   * the user sold
+   * all the shares of the asset), then return null.
    * @throws AccountNotFoundException    if account is not found in database
    * @throws ResourceNotFoundException   if user does not have the asset
    * @throws InvalidOrderTypeException   when transaction type is not buy or sell
@@ -139,8 +139,8 @@ public final class TransactionService implements TransactionServiceI {
    * @param transaction Transaction object to be executed, with
    *                    transactionType="SELL"
    * @return account's updated asset after sellTransaction has been excecuted,
-   *         return null in
-   *         the case that all the asset has been sold (asset has been deleted)
+   * return null in
+   * the case that all the asset has been sold (asset has been deleted)
    * @throws AccountNotFoundException    if account does not exist in the database
    * @throws InvalidTransactionException if transaction type is not buy or sell
    * @throws ResourceNotFoundException   if user does not have sufficient assets

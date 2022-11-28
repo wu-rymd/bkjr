@@ -20,6 +20,7 @@ public class InvalidOrderTypeException extends Exception {
 
   /**
    * Custom error for when client tries to make a transaction of an invalid type.
+   *
    * @param message error message
    */
   public InvalidOrderTypeException(String message) {

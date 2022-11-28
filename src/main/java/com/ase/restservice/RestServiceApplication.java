@@ -11,6 +11,7 @@ class RestServiceApplication {
 
   /**
    * Entry point to application.
+   *
    * @param args args
    */
   public static void main(String[] args) {
