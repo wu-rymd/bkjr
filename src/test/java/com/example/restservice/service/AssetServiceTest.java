@@ -201,7 +201,7 @@ public final class AssetServiceTest {
     Exception exception = assertThrows(InvalidTransactionException.class, () -> {
       assetService.sellAsset(accountId, "stock", stock.getStockId(), sellAmount);
     });
-    String expectedMessage = "Insufficient shares";
+    String expectedMessage = "Insufficient amount of asset to sell";
     String actualMessage = exception.getMessage();
     assertTrue(actualMessage.contains(expectedMessage));
   }
@@ -217,8 +217,10 @@ public final class AssetServiceTest {
     ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
       assetService.sellAsset(accountId, "stock", stock.getStockId(), sellAmount);
     });
-    String expectedMessage = "Asset " + stock.getStockId()
-        + " does not exist for user " + accountId;
+    String expectedMessage = "Asset of the tradable type"
+        + "stock" + "with the id " + stock.getStockId()
+        + " does not exist for the account: "
+        + accountId;
     String actualMessage = exception.getMessage();
     assertTrue(actualMessage.contains(expectedMessage));
   }

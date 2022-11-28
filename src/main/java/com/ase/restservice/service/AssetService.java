@@ -217,10 +217,12 @@ public class AssetService implements AssetServiceI {
     if (asset.isPresent()) {
       Asset newAsset = asset.get();
       newAsset.setQuantity(newAsset.getQuantity() + quantity);
-      return assetRepository.save(newAsset);
+      assetRepository.save(newAsset);
+      return newAsset;
     } else {
       Asset newAsset = new Asset(accountId, tradableType, tradableId, quantity);
-      return assetRepository.save(newAsset);
+      assetRepository.save(newAsset);
+      return newAsset;
     }
 
   }
@@ -239,9 +241,9 @@ public class AssetService implements AssetServiceI {
    *                                     asset to sell
    */
   public Optional<Asset> sellAsset(String accountId,
-                                   String tradableType,
-                                   String tradableId,
-                                   Float quantity)
+      String tradableType,
+      String tradableId,
+      Float quantity)
       throws ResourceNotFoundException, InvalidTransactionException {
     Optional<Asset> asset = assetRepository.findById(
         new AssetId(accountId, tradableType, tradableId));
@@ -263,7 +265,8 @@ public class AssetService implements AssetServiceI {
     } else {
       throw new ResourceNotFoundException("Asset of the tradable type"
           + tradableType + "with the id " + tradableId
-          + " for this account does not exist");
+          + " does not exist for the account: "
+          + accountId);
     }
   }
 }
