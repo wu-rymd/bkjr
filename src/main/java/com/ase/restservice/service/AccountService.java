@@ -96,8 +96,10 @@ public class AccountService implements com.ase.restservice.service.AccountServic
   }
 
   /**
-   * List all accounts. THIS SHOULD NOT BE USED DUE TO SECURITY.
+   * THIS SHOULD NOT BE USED DUE TO SECURITY.
    * THIS HAS TO BE HERE FOR COMPILER
+   * Lists all accounts.
+   *
    * @return list of accounts
    */
   public List<Account> listAllAccounts() {

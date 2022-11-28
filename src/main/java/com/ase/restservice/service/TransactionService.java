@@ -14,6 +14,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
+
 /**
  * Service for Transaction operations.
  */
@@ -150,6 +152,16 @@ public final class TransactionService implements TransactionServiceI {
    */
   public List<Transaction> listAllTransactions() {
     //TODO change transactions so that it doesnt show other client stuff
-    return transactionRepository.findAll();
+    String clientId = getUsernameOfClientLogged();
+    return transactionRepository.listAllTransactionsOfClient(clientId);
   }
+
+//  /**
+//   * List all transactions.
+//   * @return list of all transactions
+//   */
+//  public List<Transaction> listAllTransactions() {
+//    //TODO change transactions so that it doesnt show other client stuff
+//    return transactionRepository.findAll();
+//  }
 }
