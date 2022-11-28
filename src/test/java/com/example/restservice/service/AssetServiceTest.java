@@ -56,13 +56,13 @@ public final class AssetServiceTest {
   // Generate fake stock data, fake asset data
   public void setup() {
     stocks.add(new Stock("AMZN", 103.11f));
-    assets.add(new Asset(accountId, "AMZN", 10f));
+    assets.add(new Asset(accountId, "stock", "AMZN", 10f));
 
     stocks.add(new Stock("GOOGL", 111.03f));
-    assets.add(new Asset(accountId, "GOOGL", 1.5f));
+    assets.add(new Asset(accountId, "stock", "GOOGL", 1.5f));
 
     stocks.add(new Stock("META", 132.00f));
-    assets.add(new Asset(accountId, "META", 10.3f));
+    assets.add(new Asset(accountId, "stock", "META", 10.3f));
 
     portfolioValueTruth = (103.11f * 10f) + (111.03f * 1.5f) + (132.00f * 10.3f);
 
@@ -93,7 +93,7 @@ public final class AssetServiceTest {
 
   @DisplayName("JUnit test for buyAsset when asset already exists for account")
   @Test
-  public void buyExistingAsset() {
+  public void buyExistingAsset() throws AccountNotFoundException, ResourceNotFoundException {
     Stock stock = stocks.get(0);
     Asset asset = assets.get(0);
     Float buyAmount = 12.34f;
@@ -102,16 +102,17 @@ public final class AssetServiceTest {
     doReturn(null).when(mockAssetRepository).save(any());
     Asset retAssetTruth = new Asset(
         asset.getAccountId(),
-        asset.getStockId(),
-        asset.getNumShares() + buyAmount);
+        asset.getTradableType(),
+        asset.getTradableId(),
+        asset.getQuantity() + buyAmount);
     doReturn(Optional.of(asset)).when(mockAssetRepository).findById(any());
-    Asset retAsset = assetService.buyAsset(accountId, stock.getStockId(), buyAmount);
+    Asset retAsset = assetService.buyAsset(accountId, "stock", stock.getStockId(), buyAmount);
     assertEquals(retAsset, retAssetTruth);
   }
 
   @DisplayName("JUnit test for buyAsset when user does not already own shares of asset")
   @Test
-  public void buyNewAsset() {
+  public void buyNewAsset() throws AccountNotFoundException, ResourceNotFoundException {
     String stockId = stocks.get(0).getStockId();
     Float buyAmount = 12.34f;
 
@@ -121,16 +122,17 @@ public final class AssetServiceTest {
 
     Asset retAssetTruth = new Asset(
         accountId,
+        "stock",
         stockId,
         buyAmount);
     doReturn(Optional.empty()).when(mockAssetRepository).findById(any());
-    Asset retAsset = assetService.buyAsset(accountId, stockId, buyAmount);
+    Asset retAsset = assetService.buyAsset(accountId, "stock", stockId, buyAmount);
     assertEquals(retAsset, retAssetTruth);
   }
 
   @DisplayName("JUnit test for buyAsset when stock id does not exist")
   @Test
-  public void invalidBuyAsset() {
+  public void invalidBuyAsset() throws AccountNotFoundException, ResourceNotFoundException {
     String stockId = stocks.get(0).getStockId();
     Float buyAmount = 12.34f;
 
@@ -140,10 +142,11 @@ public final class AssetServiceTest {
 
     Asset retAssetTruth = new Asset(
         accountId,
+        "stock",
         stockId,
         buyAmount);
     doReturn(Optional.empty()).when(mockAssetRepository).findById(any());
-    Asset retAsset = assetService.buyAsset(accountId, stockId, buyAmount);
+    Asset retAsset = assetService.buyAsset(accountId, "stock", stockId, buyAmount);
     assertEquals(retAsset, retAssetTruth);
   }
 
@@ -154,14 +157,14 @@ public final class AssetServiceTest {
     Stock stock = stocks.get(0);
     Asset asset = assets.get(0);
     Float sellAmount = .9f;
-    Asset updatedAssetTruth = new Asset(accountId, stock.getStockId(),
-        (asset.getNumShares() - sellAmount));
+    Asset updatedAssetTruth = new Asset(accountId, "stock", stock.getStockId(),
+        (asset.getQuantity() - sellAmount));
 
     doReturn(Optional.of(asset)).when(mockAssetRepository).findById(
-        new AssetId(accountId, stock.getStockId()));
+        new AssetId(accountId, "stock", stock.getStockId()));
 
     Optional<Asset> updatedAsset = assetService.sellAsset(
-        accountId, stock.getStockId(), sellAmount);
+        accountId, "stock", stock.getStockId(), sellAmount);
     assertEquals(updatedAsset.get(), updatedAssetTruth);
   }
 
@@ -171,16 +174,16 @@ public final class AssetServiceTest {
   public void sellAllAsset() throws Exception {
     Stock stock = stocks.get(0);
     Asset asset = assets.get(0);
-    Float sellAmount = asset.getNumShares();
+    Float sellAmount = asset.getQuantity();
 
     doReturn(Optional.of(asset)).when(mockAssetRepository).findById(new AssetId(
-        accountId, stock.getStockId()));
+        accountId, "stock", stock.getStockId()));
     Optional<Asset> updatedAsset = assetService.sellAsset(
-        accountId, stock.getStockId(), sellAmount);
+        accountId, "stock", stock.getStockId(), sellAmount);
     // Expected behavior is that sellAsset returns null when the asset is deleted
     assertFalse(updatedAsset.isPresent());
     // Confirm that deleteById was called
-    verify(mockAssetRepository).deleteById(new AssetId(accountId, stock.getStockId()));
+    verify(mockAssetRepository).deleteById(new AssetId(accountId, "stock", stock.getStockId()));
   }
 
   @DisplayName("JUnit test for sellAsset when an account tries to sell more of "
@@ -192,10 +195,10 @@ public final class AssetServiceTest {
     Float sellAmount = 100f; // an amount of shares > then stock.numShares()
 
     doReturn(Optional.of(asset)).when(mockAssetRepository).findById(
-        new AssetId(accountId, stock.getStockId()));
+        new AssetId(accountId, "stock", stock.getStockId()));
 
     Exception exception = assertThrows(InvalidTransactionException.class, () -> {
-      assetService.sellAsset(accountId, stock.getStockId(), sellAmount);
+      assetService.sellAsset(accountId, "stock", stock.getStockId(), sellAmount);
     });
     String expectedMessage = "Insufficient shares";
     String actualMessage = exception.getMessage();
@@ -209,9 +212,9 @@ public final class AssetServiceTest {
     Stock stock = stocks.get(0);
     Float sellAmount = 1.23f;
     doReturn(Optional.empty()).when(mockAssetRepository).findById(
-        new AssetId(accountId, stock.getStockId()));
+        new AssetId(accountId, "stock", stock.getStockId()));
     ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-      assetService.sellAsset(accountId, stock.getStockId(), sellAmount);
+      assetService.sellAsset(accountId, "stock", stock.getStockId(), sellAmount);
     });
     String expectedMessage = "Asset " + stock.getStockId()
         + " does not exist for user " + accountId;

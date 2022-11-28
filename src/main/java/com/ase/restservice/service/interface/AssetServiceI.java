@@ -109,7 +109,7 @@ public interface AssetServiceI {
          * @param quantity     Quantity of tradable being bought
          * @return new Asset
          */
-        Asset buyAsset(String accountId, String tradableType, String tradableId, Integer quantity)
+        Asset buyAsset(String accountId, String tradableType, String tradableId, Float quantity)
                         throws ResourceNotFoundException, AccountNotFoundException;
 
         /**
@@ -123,5 +123,5 @@ public interface AssetServiceI {
          * @throws Exception if order is invalid
          */
         Optional<Asset> sellAsset(String accountId, String tradableType,
-                        String tradableId, Integer quantity) throws Exception;
+                        String tradableId, Float quantity) throws Exception;
 }

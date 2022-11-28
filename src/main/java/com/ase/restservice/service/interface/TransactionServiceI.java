@@ -55,9 +55,12 @@ public interface TransactionServiceI {
        * @param transaction Transaction object to be executed, with
        *                    transactionType="BUY"
        * @return account's updated asset after the buyTransaction has been executed
-       * @throws ResourceNotFoundException if account does not exist
+       * @throws AccountNotFoundException    if account is not found in database
+       * @throws ResourceNotFoundException   if user does not have the asset
+       * @throws InvalidOrderTypeException   when transaction type is not buy or sell
+       * @throws InvalidTransactionException if user does not have sufficient assets
        */
-      Asset buyTransaction(Transaction transaction) throws ResourceNotFoundException;
+      Asset buyTransaction(Transaction transaction) throws Exception;
 
       /**
        * Executes sell transaction by doing the following: Updating/deleting account
