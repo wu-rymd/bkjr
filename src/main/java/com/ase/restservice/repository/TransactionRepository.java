@@ -15,6 +15,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface TransactionRepository extends JpaRepository<Transaction, UUID> {
 
-  @Query(value = "SELECT * FROM Transaction WHERE transaction.account_id = ?1", nativeQuery = true)
-  Optional<List<Transaction>> findByAccountId(String accountId);
+    @Query(value = "SELECT * FROM Transaction WHERE transaction.account_id = ?1", nativeQuery = true)
+    Optional<List<Transaction>> findByAccountId(String accountId);
 }

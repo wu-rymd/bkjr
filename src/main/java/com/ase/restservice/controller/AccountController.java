@@ -28,126 +28,127 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public final class AccountController {
 
-  @Autowired
-  private AccountService accountService;
-  @Autowired
-  private AssetService assetService;
-  @Autowired
-  private TransactionService transactionService;
+    @Autowired
+    private AccountService accountService;
+    @Autowired
+    private AssetService assetService;
+    @Autowired
+    private TransactionService transactionService;
 
-  /**
-   * Create new account.
-   *
-   * @param account Account
-   * @return Updated account
-   * @throws AccountAlreadyExistsException if account already exists in the
-   *                                       database
-   */
-  @Operation(summary = "Create account given Account object")
-  @PostMapping("/accounts")
-  public Account createAccount(@Valid @RequestBody final Account account)
-      throws AccountAlreadyExistsException {
-    return accountService.createAccount(account);
-  }
+    /**
+     * Create new account.
+     *
+     * @param account Account
+     * @return Updated account
+     * @throws AccountAlreadyExistsException if account already exists in the
+     *                                       database
+     */
+    @Operation(summary = "Create account given Account object")
+    @PostMapping("/accounts")
+    public Account createAccount(@Valid @RequestBody final Account account)
+            throws AccountAlreadyExistsException {
+        return accountService.createAccount(account);
+    }
 
-  /**
-   * Retrieve an account.
-   *
-   * @param accountId AccountID
-   * @return account Account
-   * @throws AccountNotFoundException if account does not exist in the database
-   */
-  @Operation(summary = "Get account given accountId")
-  @GetMapping("/accounts/{accountId}")
-  public Account getAccount(@PathVariable(value = "accountId") final String accountId)
-      throws AccountNotFoundException {
-    return accountService.getAccountById(accountId);
-  }
+    /**
+     * Retrieve an account.
+     *
+     * @param accountId AccountID
+     * @return account Account
+     * @throws AccountNotFoundException if account does not exist in the database
+     */
+    @Operation(summary = "Get account given accountId")
+    @GetMapping("/accounts/{accountId}")
+    public Account getAccount(@PathVariable(value = "accountId") final String accountId)
+            throws AccountNotFoundException {
+        return accountService.getAccountById(accountId);
+    }
 
-  /**
-   * Retrieve account balance.
-   *
-   * @param accountId AccountID
-   * @return Account balance
-   * @throws AccountNotFoundException if account does not exist in the database
-   */
-  @Operation(summary = "Get balance of account given accountId")
-  @GetMapping("/accounts/{accountId}/balance")
-  public Float getAccountBalance(@PathVariable(value = "accountId") final String accountId)
-      throws AccountNotFoundException {
-    return accountService.getAccountById(accountId).getBalance();
-  }
+    /**
+     * Retrieve account balance.
+     *
+     * @param accountId AccountID
+     * @return Account balance
+     * @throws AccountNotFoundException if account does not exist in the database
+     */
+    @Operation(summary = "Get balance of account given accountId")
+    @GetMapping("/accounts/{accountId}/balance")
+    public Float getAccountBalance(@PathVariable(value = "accountId") final String accountId)
+            throws AccountNotFoundException {
+        return accountService.getAccountById(accountId).getBalance();
+    }
 
-  /**
-   * Update account balance.
-   *
-   * @param accountId AccountID
-   * @param amount    Value that will be summed with balance
-   * @return Updated balance
-   * @throws AccountNotFoundException if account does not exist in the database
-   */
-  @Operation(summary = "Update balance of account given accountId")
-  @PutMapping("/accounts/{accountId}/balance")
-  public Account updateAccountBalance(@PathVariable(value = "accountId") final String accountId,
-                                      @RequestParam(value = "amount", defaultValue = "0") final Float amount)
-      throws AccountNotFoundException {
-    return accountService.updateAccountBalance(accountId, amount);
-  }
+    /**
+     * Update account balance.
+     *
+     * @param accountId AccountID
+     * @param amount    Value that will be summed with balance
+     * @return Updated balance
+     * @throws AccountNotFoundException if account does not exist in the database
+     */
+    @Operation(summary = "Update balance of account given accountId")
+    @PutMapping("/accounts/{accountId}/balance")
+    public Account updateAccountBalance(@PathVariable(value = "accountId") final String accountId,
+                                        @RequestParam(value = "amount", defaultValue = "0")
+                                        final Float amount)
+            throws AccountNotFoundException {
+        return accountService.updateAccountBalance(accountId, amount);
+    }
 
-  /**
-   * Get portfolio value of an account.
-   *
-   * @param accountId AccountID
-   * @return Portfolio value
-   * @throws AccountNotFoundException  if account does not exist in the database
-   * @throws ResourceNotFoundException if stock does not exist in the database
-   */
-  @Operation(summary = "Get portfolio value of account given accountId")
-  @GetMapping("/accounts/{accountId}/portfolio_value")
-  public Float getAccountPortfolioValue(@PathVariable(value = "accountId") final String accountId)
-      throws AccountNotFoundException, ResourceNotFoundException {
-    return assetService.getAccountPortfolioValue(accountId);
-  }
+    /**
+     * Get portfolio value of an account.
+     *
+     * @param accountId AccountID
+     * @return Portfolio value
+     * @throws AccountNotFoundException  if account does not exist in the database
+     * @throws ResourceNotFoundException if stock does not exist in the database
+     */
+    @Operation(summary = "Get portfolio value of account given accountId")
+    @GetMapping("/accounts/{accountId}/portfolio_value")
+    public Float getAccountPortfolioValue(@PathVariable(value = "accountId") final String accountId)
+            throws AccountNotFoundException, ResourceNotFoundException {
+        return assetService.getAccountPortfolioValue(accountId);
+    }
 
-  /**
-   * List all transactions for an account given accountId.
-   *
-   * @param accountId Unique identifier for account
-   * @return List of all transactions for account with accountId
-   */
-  @Operation(summary = "List all transactions (buy/sell orders) for an account given accountId")
-  @GetMapping("/accounts/{accountId}/transactions")
-  public List<Transaction> listAccountTransactions(
-      @PathVariable(value = "accountId") String accountId) throws AccountNotFoundException {
-    return transactionService.listAccountTransactions(accountId);
-  }
+    /**
+     * List all transactions for an account given accountId.
+     *
+     * @param accountId Unique identifier for account
+     * @return List of all transactions for account with accountId
+     */
+    @Operation(summary = "List all transactions (buy/sell orders) for an account given accountId")
+    @GetMapping("/accounts/{accountId}/transactions")
+    public List<Transaction> listAccountTransactions(
+            @PathVariable(value = "accountId") String accountId) throws AccountNotFoundException {
+        return transactionService.listAccountTransactions(accountId);
+    }
 
-  /**
-   * List all accounts.
-   *
-   * @return List of all accounts
-   */
-  @Operation(summary = "List all accounts")
-  @GetMapping("/accounts")
-  public List<Account> listAllAccounts() {
-    return accountService.listAllAccounts();
-  }
+    /**
+     * List all accounts.
+     *
+     * @return List of all accounts
+     */
+    @Operation(summary = "List all accounts")
+    @GetMapping("/accounts")
+    public List<Account> listAllAccounts() {
+        return accountService.listAllAccounts();
+    }
 
-  /**
-   * * Get percent different between starting balance and current account value.
-   * This represents the
-   * account's net profit/loss.
-   *
-   * @param accountId Unique Identifier for an account
-   * @return Percent difference between account starting balance and current
-   * account value
-   * @throws AccountNotFoundException  if account does not exist in the database
-   * @throws ResourceNotFoundException if stock does not exist in the database
-   */
-  @Operation(summary = "Get a profits/losses for an account given accountId")
-  @GetMapping("/accounts/{accountId}/pnl")
-  public Float getAccountPnl(@PathVariable(value = "accountId") String accountId)
-      throws AccountNotFoundException, ResourceNotFoundException {
-    return assetService.getAccountPnl(accountId);
-  }
+    /**
+     * * Get percent different between starting balance and current account value.
+     * This represents the
+     * account's net profit/loss.
+     *
+     * @param accountId Unique Identifier for an account
+     * @return Percent difference between account starting balance and current
+     * account value
+     * @throws AccountNotFoundException  if account does not exist in the database
+     * @throws ResourceNotFoundException if stock does not exist in the database
+     */
+    @Operation(summary = "Get a profits/losses for an account given accountId")
+    @GetMapping("/accounts/{accountId}/pnl")
+    public Float getAccountPnl(@PathVariable(value = "accountId") String accountId)
+            throws AccountNotFoundException, ResourceNotFoundException {
+        return assetService.getAccountPnl(accountId);
+    }
 }

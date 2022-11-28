@@ -7,10 +7,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class RestServiceApplicationTests {
 
-  /**
-   * Entry point for unit test suite.
-   */
-  @Test
-  public void contextLoads() {
-  }
+    /**
+     * Entry point for unit test suite.
+     */
+    @Test
+    public void contextLoads() {
+    }
 }
