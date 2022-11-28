@@ -11,6 +11,7 @@ import com.ase.restservice.model.Stock;
 import com.ase.restservice.repository.TransactionRepository;
 import com.ase.restservice.service.AccountService;
 import com.ase.restservice.service.AssetService;
+import com.ase.restservice.service.StockService;
 import com.ase.restservice.service.TransactionService;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +28,8 @@ public final class TransactionServiceTest {
     private AssetService mockAssetService;
     @Mock
     private AccountService mockAccountService;
+    @Mock
+    private StockService mockStockService;
     @Mock
     private TransactionRepository mockTransactionRepository;
     @InjectMocks
@@ -74,7 +77,7 @@ public final class TransactionServiceTest {
                 asset.getTradableType(),
                 asset.getTradableId(),
                 buyTransaction.getQuantity());
-
+        doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
         Asset resultAsset = transactionService.buyTransaction(buyTransaction);
         // check accountBalance was called with the correct update amount
         verify(mockAccountService).updateAccountBalance(accountId,
@@ -101,6 +104,7 @@ public final class TransactionServiceTest {
                 asset.getTradableType(),
                 asset.getTradableId(),
                 sellTransaction.getQuantity());
+        doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
         Optional<Asset> resultAsset = transactionService.sellTransaction(sellTransaction);
         // check accountBalance was called with the correct update amount
         verify(mockAccountService).updateAccountBalance(accountId,
@@ -120,6 +124,7 @@ public final class TransactionServiceTest {
                 asset.getTradableType(),
                 asset.getTradableId(),
                 sellTransaction.getQuantity());
+        doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
         Optional<Asset> resultAsset = transactionService.sellTransaction(sellTransaction);
         verify(mockAccountService).updateAccountBalance(accountId,
                 (stock.getPrice() * sellTransaction.getQuantity()));
