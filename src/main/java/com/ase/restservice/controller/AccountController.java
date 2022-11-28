@@ -11,14 +11,17 @@ import com.ase.restservice.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.List;
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
 
@@ -147,5 +150,12 @@ public final class AccountController {
   public Float getAccountPnl(@PathVariable(value = "accountId") String accountId)
       throws AccountNotFoundException, ResourceNotFoundException {
     return assetService.getAccountPnl(accountId);
+  }
+  @Operation(summary = "Account is deleted by the client")
+  @DeleteMapping("accounts/{accountId}")
+  public Void deleteAccount(@PathVariable(value = "accountId") String accountId)
+    throws AccountNotFoundException, ResourceNotFoundException {
+      accountService.deleteAccountById(accountId);
+      return null;
   }
 }

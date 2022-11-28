@@ -69,7 +69,13 @@ public class AccountService implements com.ase.restservice.service.AccountServic
   public void deleteAccountById(String accountId) throws AccountNotFoundException {
     try {
       Account dbAccount = this.getAccountById(accountId);
-      accountRepository.deleteById(accountId);
+      //TODO check if i can delete it
+
+      String clientID = getUsernameOfClientLogged();
+
+      if (clientID.equals(dbAccount.getClientId())) {
+        accountRepository.deleteById(accountId);
+      }
     } catch (AccountNotFoundException e) {
       throw new AccountNotFoundException(e);
     }
