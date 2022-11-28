@@ -49,7 +49,7 @@ public class ApplicationSecurity {
   public boolean checkAccountId(Authentication authentication, String accountId) {
     // need to check which client this account has
     String clientName = authentication.getName();
-    Account account =  accountRepo.findAccountByAccountId(accountId).orElseThrow(() ->
+    Account account =  accountRepo.findAccountsByAccountId(accountId).orElseThrow(() ->
             new UsernameNotFoundException("Account Not Found with username: " + accountId)); //404
 
     return clientName.equals(account.getClientId()); //403

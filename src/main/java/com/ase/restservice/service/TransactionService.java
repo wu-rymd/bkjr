@@ -40,6 +40,8 @@ public final class TransactionService implements TransactionServiceI {
   public Optional<Asset> createTransaction(Transaction transaction)
       throws AccountNotFoundException, ResourceNotFoundException,
       InvalidOrderTypeException, InvalidTransactionException {
+
+    //need to check if it is appropriate
     transactionRepository.save(transaction);
     return executeTransaction(transaction);
   }
@@ -155,13 +157,4 @@ public final class TransactionService implements TransactionServiceI {
     String clientId = getUsernameOfClientLogged();
     return transactionRepository.listAllTransactionsOfClient(clientId);
   }
-
-//  /**
-//   * List all transactions.
-//   * @return list of all transactions
-//   */
-//  public List<Transaction> listAllTransactions() {
-//    //TODO change transactions so that it doesnt show other client stuff
-//    return transactionRepository.findAll();
-//  }
 }

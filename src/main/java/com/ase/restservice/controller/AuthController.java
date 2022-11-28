@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-public class AuthApi {
+public class AuthController {
   @Autowired
   private AuthenticationManager authManager;
   @Autowired

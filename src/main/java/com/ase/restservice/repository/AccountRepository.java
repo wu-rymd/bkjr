@@ -18,5 +18,5 @@ public interface AccountRepository extends JpaRepository<Account, String> {
   List<Account> findAllAccountByClient(String client);
 
   @Query(value = "SELECT * FROM Account WHERE account.account_id = ?1", nativeQuery = true)
-  Optional<Account> findAccountByAccountId(String accountId);
+  Optional<Account> findAccountsByAccountId(String accountId);
 }
