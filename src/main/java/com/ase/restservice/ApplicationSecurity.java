@@ -4,6 +4,7 @@ import com.ase.restservice.jwt.JwtTokenFilter;
 import com.ase.restservice.model.Account;
 import com.ase.restservice.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,6 +37,8 @@ public class ApplicationSecurity {
   @Autowired
   private JwtTokenFilter jwtTokenFilter;
 
+  @Value("${com.ase.restservice.ApplicationSecurity.production}")
+  private Boolean production;
   /**
    * This method checks whether the account asked for
    * by the client is authorized to the client or not.
@@ -47,9 +50,9 @@ public class ApplicationSecurity {
     // need to check which client this account has
     String clientName = authentication.getName();
     Account account =  accountRepo.findAccountByAccountId(accountId).orElseThrow(() ->
-            new UsernameNotFoundException("Account Not Found with username: " + accountId));
+            new UsernameNotFoundException("Account Not Found with username: " + accountId)); //404
 
-    return clientName.equals(account.getClientId());
+    return clientName.equals(account.getClientId()); //403
   }
   public static String getUsernameOfClientLogged() {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -73,15 +76,18 @@ public class ApplicationSecurity {
             "/assets/{accountId}/**"
     };
     http.csrf().disable();
-//    http.authorizeRequests().anyRequest().permitAll();
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-    http.authorizeRequests()
-            .antMatchers("/auth/login")
-            .permitAll()
-            .antMatchers(accountIdWhiteList)
-            .access("@applicationSecurity.checkAccountId(authentication,#accountId)")
-            .anyRequest().authenticated();
+    if (production) {
+      http.authorizeRequests()
+              .antMatchers("/auth/login")
+              .permitAll()
+              .antMatchers(accountIdWhiteList)
+              .access("@applicationSecurity.checkAccountId(authentication,#accountId)")
+              .anyRequest().authenticated();
+    } else {
+      http.authorizeRequests().anyRequest().permitAll();
+    }
 
     http.exceptionHandling()
             .authenticationEntryPoint(

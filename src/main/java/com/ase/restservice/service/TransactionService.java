@@ -149,6 +149,7 @@ public final class TransactionService implements TransactionServiceI {
    * @return list of all transactions
    */
   public List<Transaction> listAllTransactions() {
+    //TODO change transactions so that it doesnt show other client stuff
     return transactionRepository.findAll();
   }
 }
