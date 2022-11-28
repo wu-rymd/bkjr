@@ -254,8 +254,7 @@ public class AssetService implements AssetServiceI {
         // Delete the asset
         this.deleteAssetById(new AssetId(accountId, tradableType, tradableId));
         return Optional.empty();
-      }
-      if (userAsset.getQuantity() < quantity) {
+      } else if (userAsset.getQuantity() < quantity) {
         throw new InvalidTransactionException("Insufficient amount of asset to sell");
       } else {
         userAsset.setQuantity(userAsset.getQuantity() - quantity);

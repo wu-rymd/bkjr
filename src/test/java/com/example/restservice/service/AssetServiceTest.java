@@ -163,7 +163,8 @@ public final class AssetServiceTest {
 
     doReturn(Optional.of(asset)).when(mockAssetRepository).findById(
         new AssetId(accountId, "stock", stock.getStockId()));
-
+    doReturn(true).when(mockAssetRepository).existsById(
+        new AssetId(accountId, "stock", stock.getStockId()));
     Optional<Asset> updatedAsset = assetService.sellAsset(
         accountId, "stock", stock.getStockId(), sellAmount);
     assertEquals(updatedAsset.get(), updatedAssetTruth);
