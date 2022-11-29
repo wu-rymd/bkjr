@@ -31,17 +31,17 @@ public class ApplicationSecurity {
 
   @Resource
   private UserDetailsService userDetailsService;
-
   @Autowired
   private AccountRepository accountRepo;
   @Autowired
   private JwtTokenFilter jwtTokenFilter;
-
   @Value("${com.ase.restservice.ApplicationSecurity.production}")
   private Boolean production;
+
   /**
    * This method checks whether the account asked for
    * by the client is authorized to the client or not.
+   *
    * @param authentication authenticated client object
    * @param accountId accountId that client wants to open
    * @return whether client is allowed to access account or not
@@ -50,9 +50,9 @@ public class ApplicationSecurity {
     // need to check which client this account has
     String clientName = authentication.getName();
     Account account =  accountRepo.findAccountsByAccountId(accountId).orElseThrow(() ->
-            new UsernameNotFoundException("Account Not Found with username: " + accountId)); //404
-
-    return clientName.equals(account.getClientId()); //403
+            new UsernameNotFoundException("Account Not Found with username: " + accountId));
+            //401 thrown
+    return clientName.equals(account.getClientId()); //200 if true.   403 if false
   }
   public static String getUsernameOfClientLogged() {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -85,6 +85,7 @@ public class ApplicationSecurity {
               .antMatchers(accountIdWhiteList)
               .access("@applicationSecurity.checkAccountId(authentication,#accountId)")
               .anyRequest().authenticated();
+
     } else {
       http.authorizeRequests().anyRequest().permitAll();
     }
