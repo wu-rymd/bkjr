@@ -14,6 +14,7 @@ class RestServiceApplication {
    * @param args args
    */
   public static void main(String[] args) {
+
     SpringApplication.run(RestServiceApplication.class, args);
   }
 

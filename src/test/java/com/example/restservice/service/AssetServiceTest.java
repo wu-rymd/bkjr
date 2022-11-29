@@ -66,7 +66,7 @@ public final class AssetServiceTest {
 
     portfolioValueTruth = (103.11f * 10f) + (111.03f * 1.5f) + (132.00f * 10.3f);
 
-    user = new Account(accountId, 50f, 100f);
+    user = new Account(accountId, 50f, 100f, "binance");
     endingBalance = 50f;
     startingBalance = 100f;
 

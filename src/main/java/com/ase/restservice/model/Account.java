@@ -15,6 +15,7 @@ public class Account {
   private String accountId;
   private Float balance;
   private Float startingBalance;
+  private String clientId;
 
   /**
    * Default constructor for Account.
@@ -28,11 +29,14 @@ public class Account {
    * @param accountId       ID of an account
    * @param balance         Account balance
    * @param startingBalance Starting balance of an account
+   * @param clientId ID of client
    */
-  public Account(final String accountId, final Float balance, final Float startingBalance) {
+  public Account(final String accountId, final Float balance,
+                 final Float startingBalance, final String clientId) {
     this.accountId = accountId;
     this.balance = balance;
     this.startingBalance = startingBalance;
+    this.clientId = clientId;
   }
 
   /**
@@ -84,6 +88,23 @@ public class Account {
    */
   public void setStartingBalance(final Float startingBalance) {
     this.startingBalance = startingBalance;
+  }
+
+  /**
+   * Getter for clientId.
+   * @return clientId.
+   */
+  @Column(name = "client_id", nullable = false)
+  public String getClientId() {
+    return clientId;
+  }
+
+  /**
+   * Setter for clientId.
+   * @param clientId clientId
+   */
+  public void setClientId(final String clientId) {
+    this.clientId = clientId;
   }
 
   /**

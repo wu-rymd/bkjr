@@ -3,6 +3,7 @@ package com.ase.restservice.service;
 import com.ase.restservice.exception.AccountNotFoundException;
 import com.ase.restservice.exception.InvalidTransactionException;
 import com.ase.restservice.exception.ResourceNotFoundException;
+
 import com.ase.restservice.model.Account;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.AssetId;
@@ -15,11 +16,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
+
 /**
  * Service for Asset operations.
  */
 @Service
-public class AssetService implements AssetServiceI {
+public class AssetService implements com.ase.restservice.service.AssetServiceI {
 
   @Autowired
   private AssetRepository assetRepository;
@@ -81,14 +84,15 @@ public class AssetService implements AssetServiceI {
   }
 
   /**
-   * Retrieve all assets or those owned by an account.
+   * Retrieve all assets own by the authenticated client or those owned by an account.
    *
    * @param accountId AccountID
    * @return List of assets
    */
   public List<Asset> listAssets(String accountId) {
     if (accountId.isEmpty()) {
-      return assetRepository.findAll();
+      String username = getUsernameOfClientLogged();
+      return assetRepository.findAllforClient(username);
     }
     return assetRepository.findAllAssetsByAccountId(accountId);
   }

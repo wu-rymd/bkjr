@@ -30,4 +30,9 @@ public interface AssetRepository extends JpaRepository<Asset, AssetId> {
    */
   @Query(value = "SELECT * FROM Asset WHERE asset.account_id = ?1", nativeQuery = true)
   List<Asset> findAllAssetsByAccountId(String accountId);
+
+  @Query(value = "SELECT * FROM Asset,Account WHERE account.account_id = asset.account_id "
+          +
+          "and account.client_id = ?1", nativeQuery = true)
+  List<Asset> findAllforClient(String clientId);
 }

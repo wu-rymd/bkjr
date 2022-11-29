@@ -7,12 +7,15 @@ import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.model.Transaction;
+import com.ase.restservice.repository.AccountRepository;
 import com.ase.restservice.repository.TransactionRepository;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
 
 /**
  * Service for Transaction operations.
@@ -21,6 +24,8 @@ import org.springframework.stereotype.Service;
 public final class TransactionService implements TransactionServiceI {
   @Autowired
   private TransactionRepository transactionRepository;
+  @Autowired
+  private AccountRepository accountRepository;
   @Autowired private AssetService assetService;
   @Autowired private StockService stockService;
   @Autowired
@@ -28,6 +33,7 @@ public final class TransactionService implements TransactionServiceI {
 
   /**
    * Write a new transaction to the database.
+   * It checks wether transaction should be allowed by this client
    * @param transaction new Transaction
    * @return returns the asset that was created/affected by this transaction
    * @throws AccountNotFoundException if account is not found in database
@@ -38,8 +44,21 @@ public final class TransactionService implements TransactionServiceI {
   public Optional<Asset> createTransaction(Transaction transaction)
       throws AccountNotFoundException, ResourceNotFoundException,
       InvalidOrderTypeException, InvalidTransactionException {
-    transactionRepository.save(transaction);
-    return executeTransaction(transaction);
+
+      transactionRepository.save(transaction);
+      return executeTransaction(transaction);
+    //need to check if the client
+//    String accountId = transaction.getAccountId();
+//    Account account =  accountRepository.findAccountsByAccountId(accountId).orElseThrow(() ->
+//            new UsernameNotFoundException("Account Not Found with username: " + accountId));
+//
+//    String clientId = getUsernameOfClientLogged();
+//    if (account.getClientId().equals(clientId)) {
+//      transactionRepository.save(transaction);
+//      return executeTransaction(transaction);
+//    }
+//    throw new AccountNotFoundException("Bad client");
+
   }
 
   /**
@@ -149,6 +168,8 @@ public final class TransactionService implements TransactionServiceI {
    * @return list of all transactions
    */
   public List<Transaction> listAllTransactions() {
-    return transactionRepository.findAll();
+    //TODO change transactions so that it doesnt show other client stuff
+    String clientId = getUsernameOfClientLogged();
+    return transactionRepository.listAllTransactionsOfClient(clientId);
   }
 }
