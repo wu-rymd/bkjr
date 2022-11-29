@@ -103,7 +103,8 @@ public class AssetService implements com.ase.restservice.service.AssetServiceI {
   }
 
   /**
-   * Retrieve all assets own by the authenticated client or those owned by an account.
+   * Retrieve all assets own by the authenticated client or those owned by an
+   * account.
    *
    * @param accountId AccountID
    * @return List of assets
@@ -127,7 +128,7 @@ public class AssetService implements com.ase.restservice.service.AssetServiceI {
     if (accountId.isEmpty()) {
       return assetRepository.findAllAssetsByTradableType(tradableType);
     }
-    return assetRepository.findAllAssetsByTypeAndId(accountId, tradableType);
+    return assetRepository.findAllAssetsByAccountIdAndTradableType(accountId, tradableType);
   }
 
   /**

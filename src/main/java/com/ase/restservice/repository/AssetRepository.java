@@ -22,8 +22,8 @@ public interface AssetRepository extends JpaRepository<Asset, AssetId> {
    * @param tradableId   Tradable id
    * @return List of assets of the given (tradable_type, tradable_id)
    */
-  @Query(value = "SELECT * FROM Asset WHERE tradable_type = ?1 AND tradable_id = ?2",
-      nativeQuery = true)
+  @Query(value = "SELECT * FROM Asset WHERE tradable_type = ?1 "
+      + "AND tradable_id = ?2", nativeQuery = true)
   List<Asset> findAllAssetsByTypeAndId(String tradableType, String tradableId);
 
   /**
@@ -43,8 +43,13 @@ public interface AssetRepository extends JpaRepository<Asset, AssetId> {
    */
   @Query(value = "SELECT * FROM Asset WHERE tradable_type = ?1", nativeQuery = true)
   List<Asset> findAllAssetsByTradableType(String tradableType);
+
+  @Query(value = "SELECT * FROM Asset WHERE asset.account_id = ?1 "
+      + "AND tradable_type = ?2", nativeQuery = true)
+  List<Asset> findAllAssetsByAccountIdAndTradableType(String accountId, String tradableType);
+
   @Query(value = "SELECT * FROM Asset,Account WHERE account.account_id = asset.account_id "
-          +
-          "and account.client_id = ?1", nativeQuery = true)
+      +
+      "and account.client_id = ?1", nativeQuery = true)
   List<Asset> findAllforClient(String clientId);
 }
