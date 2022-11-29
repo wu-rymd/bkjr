@@ -2,14 +2,19 @@ package com.example.restservice.service;
 
 import com.ase.restservice.exception.AccountNotFoundException;
 import com.ase.restservice.exception.InvalidTransactionException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.exception.ResourceNotFoundException;
 import com.ase.restservice.model.Account;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.AssetId;
+import com.ase.restservice.model.Cryptocurrency;
+import com.ase.restservice.model.NFT;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.repository.AccountRepository;
 import com.ase.restservice.repository.AssetRepository;
 import com.ase.restservice.service.AssetService;
+import com.ase.restservice.service.CryptocurrencyService;
+import com.ase.restservice.service.NFTService;
 import com.ase.restservice.service.StockService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +45,10 @@ public final class AssetServiceTest {
   private StockService mockStockService;
   @Mock
   private AccountRepository mockAccountRepository;
+  @Mock
+  private NFTService mockNFTService;
+  @Mock
+  private CryptocurrencyService mockCryptoService;
   @InjectMocks
   private AssetService assetService;
 
@@ -48,6 +57,10 @@ public final class AssetServiceTest {
   private Float totalValueTruth;
   private Float pnlTruth;
   private Account user;
+
+  private NFT nft;
+  private Stock stock;
+  private Cryptocurrency crypto;
   private List<Asset> assets = new ArrayList<>();
   private List<Stock> stocks = new ArrayList<>();
   private String accountId = "testAccount";
@@ -56,21 +69,22 @@ public final class AssetServiceTest {
   @BeforeEach
   // Generate fake stock data, fake asset data
   public void setup() {
-    stocks.add(new Stock("AMZN", 103.11f));
-    assets.add(new Asset(accountId, "stock", "AMZN", 10f));
+    stock = new Stock("AMZN", 10f);
+    crypto = new Cryptocurrency("poocoin", 1.5F);
+    nft = new NFT("monke", 10.3F);
 
-    stocks.add(new Stock("GOOGL", 111.03f));
-    assets.add(new Asset(accountId, "stock", "GOOGL", 1.5f));
+    assets.add(new Asset(accountId, "stock", "AMZN", 1f));
+    assets.add(new Asset(accountId, "cryptocurrency", "poocoin", 2f));
+    assets.add(new Asset(accountId, "nft", "monke", 1.8f));
 
-    stocks.add(new Stock("META", 132.00f));
-    assets.add(new Asset(accountId, "stock", "META", 10.3f));
 
-    portfolioValueTruth = (103.11f * 10f) + (111.03f * 1.5f) + (132.00f * 10.3f);
 
     user = new Account(accountId, 50f, 100f, "binance");
     endingBalance = 50f;
     startingBalance = 100f;
-
+    portfolioValueTruth = stock.getPrice() * assets.get(0).getQuantity()
+        + crypto.getPrice() * assets.get(1).getQuantity()
+        + nft.getPrice() * assets.get(2).getQuantity();
     totalValueTruth = endingBalance + portfolioValueTruth;
     pnlTruth = (totalValueTruth - startingBalance) / startingBalance;
   }
@@ -84,9 +98,11 @@ public final class AssetServiceTest {
   @Test
   public void getPortfolioValue()
       throws AccountNotFoundException, ResourceNotFoundException {
-    for (Stock stock : stocks) {
-      doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
-    }
+
+    doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
+    doReturn(nft).when(mockNFTService).getNFTById(nft.getNftId());
+    doReturn(crypto).when(mockCryptoService).getCryptocurrencyById(crypto.getCryptocurrencyId());
+
     doReturn(assets).when(mockAssetRepository).findAllAssetsByAccountId(accountId);
     Float portfolioValue = assetService.getAccountPortfolioValue(accountId);
     assertEquals(portfolioValue, portfolioValueTruth);
@@ -95,7 +111,6 @@ public final class AssetServiceTest {
   @DisplayName("JUnit test for buyAsset when asset already exists for account")
   @Test
   public void buyExistingAsset() throws AccountNotFoundException, ResourceNotFoundException {
-    Stock stock = stocks.get(0);
     Asset asset = assets.get(0);
     Float buyAmount = 12.34f;
     // buyAsset() will update the asset in the database
@@ -107,14 +122,15 @@ public final class AssetServiceTest {
         asset.getTradableId(),
         asset.getQuantity() + buyAmount);
     doReturn(Optional.of(asset)).when(mockAssetRepository).findById(any());
-    Asset retAsset = assetService.buyAsset(accountId, "stock", stock.getStockId(), buyAmount);
+    Asset retAsset = assetService.buyAsset(accountId, "stock", stock.getStockId(),
+        buyAmount);
     assertEquals(retAsset, retAssetTruth);
   }
 
   @DisplayName("JUnit test for buyAsset when user does not already own shares of asset")
   @Test
   public void buyNewAsset() throws AccountNotFoundException, ResourceNotFoundException {
-    String stockId = stocks.get(0).getStockId();
+    String stockId = stock.getStockId();
     Float buyAmount = 12.34f;
 
     // buyAsset() will update the asset in the database
@@ -134,7 +150,7 @@ public final class AssetServiceTest {
   @DisplayName("JUnit test for buyAsset when stock id does not exist")
   @Test
   public void invalidBuyAsset() throws AccountNotFoundException, ResourceNotFoundException {
-    String stockId = stocks.get(0).getStockId();
+    String stockId = stock.getStockId();
     Float buyAmount = 12.34f;
 
     // buyAsset() will update the asset in the database
@@ -155,7 +171,6 @@ public final class AssetServiceTest {
       + "for user & user is not selling all of the asset")
   @Test
   public void sellPartialAsset() throws Exception {
-    Stock stock = stocks.get(0);
     Asset asset = assets.get(0);
     Float sellAmount = .9f;
     Asset updatedAssetTruth = new Asset(accountId, "stock", stock.getStockId(),
@@ -174,7 +189,6 @@ public final class AssetServiceTest {
       + "user and user is selling ALL OF the asset")
   @Test
   public void sellAllAsset() throws Exception {
-    Stock stock = stocks.get(0);
     Asset asset = assets.get(0);
     Float sellAmount = asset.getQuantity();
 
@@ -185,14 +199,14 @@ public final class AssetServiceTest {
     // Expected behavior is that sellAsset returns null when the asset is deleted
     assertFalse(updatedAsset.isPresent());
     // Confirm that deleteById was called
-    verify(mockAssetRepository).deleteById(new AssetId(accountId, "stock", stock.getStockId()));
+    verify(mockAssetRepository).deleteById(new AssetId(accountId, "stock",
+        stock.getStockId()));
   }
 
   @DisplayName("JUnit test for sellAsset when an account tries to sell more of "
       + "the asset than they own")
   @Test
   public void sellAssetInvalidAmount() {
-    Stock stock = stocks.get(0);
     Asset asset = assets.get(0);
     Float sellAmount = 100f; // an amount of shares > then stock.numShares()
 
@@ -211,7 +225,6 @@ public final class AssetServiceTest {
       + "an asst that they do not own")
   @Test
   public void invalidSellAsset() {
-    Stock stock = stocks.get(0);
     Float sellAmount = 1.23f;
     doReturn(Optional.empty()).when(mockAssetRepository).findById(
         new AssetId(accountId, "stock", stock.getStockId()));
@@ -230,9 +243,10 @@ public final class AssetServiceTest {
   @Test
   public void testAccountTotalValueSuccess()
       throws AccountNotFoundException, ResourceNotFoundException {
-    for (Stock stock : stocks) {
-      doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
-    }
+    doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
+    doReturn(nft).when(mockNFTService).getNFTById(nft.getNftId());
+    doReturn(crypto).when(mockCryptoService).getCryptocurrencyById(crypto.getCryptocurrencyId());
+
 
     doReturn(assets).when(mockAssetRepository).findAllAssetsByAccountId(accountId);
     doReturn(Optional.ofNullable(user)).when(mockAccountRepository).findById(accountId);
@@ -256,9 +270,10 @@ public final class AssetServiceTest {
   @Test
   public void testAccountPnlSuccess()
       throws AccountNotFoundException, ResourceNotFoundException {
-    for (Stock stock : stocks) {
-      doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
-    }
+    doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
+    doReturn(nft).when(mockNFTService).getNFTById(nft.getNftId());
+    doReturn(crypto).when(mockCryptoService).getCryptocurrencyById(crypto.getCryptocurrencyId());
+
     doReturn(assets).when(mockAssetRepository).findAllAssetsByAccountId(accountId);
     doReturn(Optional.ofNullable(user)).when(mockAccountRepository).findById(accountId);
     Float pnl = assetService.getAccountPnl(accountId);
@@ -275,5 +290,54 @@ public final class AssetServiceTest {
     String expectedMessage = "Account not found for accountId :: " + accountId;
     String actualMessage = exception.getMessage();
     assertTrue(actualMessage.contains(expectedMessage));
+  }
+
+  @DisplayName("Test successful createAsset")
+  @Test
+  public void createAssetSuccess() throws ResourceAlreadyExistsException {
+    Asset asset = assets.get(0);
+    doReturn(false).when(mockAssetRepository).existsById(asset.getAssetId());
+    doReturn(asset).when(mockAssetRepository).save(asset);
+    assetService.createAsset(asset);
+  }
+
+  @DisplayName("test createAsset when asset already exists")
+  @Test
+  public void createAssetAlreadyExists() {
+    Asset asset = assets.get(0);
+    doReturn(true).when(mockAssetRepository).existsById(asset.getAssetId());
+    ResourceAlreadyExistsException exception = assertThrows(ResourceAlreadyExistsException.class,
+        () -> {
+      assetService.createAsset(asset);
+    });
+    String expectedMessage = "Asset already exists";
+    String actualMessage = exception.getMessage();
+    assertEquals(actualMessage, expectedMessage);
+  }
+
+  @DisplayName("Test updateAsset when asset does not exist")
+  @Test
+  public void updateAssetDNE() {
+    Asset asset = assets.get(0);
+    doReturn(false).when(mockAssetRepository).existsById(asset.getAssetId());
+    ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+      assetService.updateAsset(asset);
+    });
+    String expectedMessage = "Asset does not exist";
+    String actualMessage = exception.getMessage();
+    assertEquals(actualMessage, expectedMessage);
+  }
+
+  @DisplayName("Test deleteAssetByID when asset DNE")
+  @Test
+  public void deleteAssetByIDDNE() {
+    Asset asset = assets.get(0);
+    doReturn(Optional.empty()).when(mockAssetRepository).findById(asset.getAssetId());
+    ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+      assetService.deleteAssetById(asset.getAssetId());
+    });
+    String expectedMessage = "Asset " + asset.getAssetId() + " does not exist";
+    String actualMessage = exception.getMessage();
+    assertEquals(actualMessage, expectedMessage);
   }
 }
