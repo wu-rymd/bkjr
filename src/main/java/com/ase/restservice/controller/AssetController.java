@@ -39,9 +39,10 @@ public final class AssetController {
    * @return every asset of the given type in the database
    */
   @Operation(summary = "Get list of all assets of a given type")
-  @GetMapping("/assets/{tradableType}")
-  public List<Asset> getAllAssetsByType(@PathVariable String tradableType) {
-    return assetService.listAssetsByType("", tradableType);
+  @GetMapping("/assets/{accountId}/{tradableType}")
+  public List<Asset> getAllAssetsByType(@PathVariable final String accountId,
+      @PathVariable final String tradableType) {
+    return assetService.listAssetsByType(accountId, tradableType);
   }
 
   /**
@@ -69,8 +70,8 @@ public final class AssetController {
   @Operation(summary = "Get asset given accountId and stockId")
   @GetMapping("/assets/{accountId}/{tradableType}/{tradableId}")
   public Asset getAsset(@PathVariable(value = "accountId") final String accountId,
-                        @PathVariable(value = "tradableType") final String tradableType,
-                        @PathVariable(value = "tradableId") final String tradableId)
+      @PathVariable(value = "tradableType") final String tradableType,
+      @PathVariable(value = "tradableId") final String tradableId)
       throws ResourceNotFoundException {
     return assetService.getAssetById(new AssetId(accountId, tradableType, tradableId));
   }
