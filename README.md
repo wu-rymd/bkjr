@@ -34,6 +34,15 @@ After registering their users' accounts and by keeping buy/sell transactions up-
 
 ## Static analysis
 
+### Branch coverage
+
+- We use the JaCoCo plugin in Maven to track branch coverage of our code base
+- To generate a report, run `./mvnw clean verify`
+  - The report is generated at `/target/site/jacoco/`
+  - We copied it to [`/jacoco`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/reports/jacoco) to comply with T5 requirements, since `target/` is git-ignored
+- **Note: `clean verify` clears the `target/` directory. This command regenerates checkstyle and generates JaCoCo reports.**
+  - **If you previously generated a FindBugs report (how-to below), you will have to regenerate it. Better yet, always generate the FindBugs report _last_.**
+  
 ### Bug finding
 
 - We use the FindBugs plugin in Maven to find bugs in our code base
@@ -42,13 +51,6 @@ After registering their users' accounts and by keeping buy/sell transactions up-
   - The report is generated at `/target/findbugsXml.xml`
   - We copied it to [`/reports/findbugs/findbugsXml.xml`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/reports/findbugs/findbugsXml.xml) to comply with T5 requirements, since `target/` is git-ignored
 - **_Developers:_** Use `./mvnw findbugs:gui` to open a GUI showing the report
-
-### Branch coverage
-
-- We use the JaCoCo plugin in Maven to track branch coverage of our code base
-- To generate a report, run `./mvnw clean verify`
-  - The report is generated at `/target/site/jacoco/`
-  - We copied it to [`/jacoco`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/reports/jacoco) to comply with T5 requirements, since `target/` is git-ignored
 
 ## Deployment
 
