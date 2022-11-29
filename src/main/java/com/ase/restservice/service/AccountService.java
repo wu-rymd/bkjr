@@ -4,7 +4,9 @@ import com.ase.restservice.exception.AccountAlreadyExistsException;
 import com.ase.restservice.exception.AccountNotFoundException;
 import com.ase.restservice.model.Account;
 import com.ase.restservice.repository.AccountRepository;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +35,7 @@ public class AccountService implements com.ase.restservice.service.AccountServic
 
       // reach here means the account already exists in database
       throw new AccountAlreadyExistsException(
-        "Account already exists with ID :: " + accountId
+          "Account already exists with ID :: " + accountId
       );
     } catch (AccountNotFoundException e) {
       // reach here means account does not already exist in database
@@ -110,8 +112,8 @@ public class AccountService implements com.ase.restservice.service.AccountServic
    * Method to increase or decrease a user's account balance.
    *
    * @param accountId Primary key of account
-   * @param amount dollar amount to change account balance by. If negative, will decrease the
-   *               account balance.
+   * @param amount    dollar amount to change account balance by. If negative, will decrease the
+   *                  account balance.
    * @return Returns the account with the updated balance
    * @throws AccountNotFoundException if account does not exist in the database
    */

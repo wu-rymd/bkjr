@@ -24,8 +24,9 @@ public class Stock {
 
   /**
    * Constructor for Stock.
+   *
    * @param stockId unique Id for stock
-   * @param price price of stock
+   * @param price   price of stock
    */
   public Stock(final String stockId, final Float price) {
     this.stockId = stockId;
@@ -34,6 +35,7 @@ public class Stock {
 
   /**
    * Getter for stockId.
+   *
    * @return stockID
    */
   @Id
@@ -43,6 +45,7 @@ public class Stock {
 
   /**
    * Setter for stockID.
+   *
    * @param stockId stockId
    */
   public void setStockId(final String stockId) {
@@ -51,6 +54,7 @@ public class Stock {
 
   /**
    * Getter for price.
+   *
    * @return price
    */
   @Column(name = "price", nullable = false)
@@ -60,6 +64,7 @@ public class Stock {
 
   /**
    * Setter for price.
+   *
    * @param price stock price
    */
   public void setPrice(final Float price) {
@@ -68,6 +73,7 @@ public class Stock {
 
   /**
    * Custom toString method.
+   *
    * @return string representation of stock
    */
   @Override

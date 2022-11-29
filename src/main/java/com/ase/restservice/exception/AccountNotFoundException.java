@@ -20,6 +20,7 @@ public class AccountNotFoundException extends Exception {
 
   /**
    * Custom error for when client requests an account that does not exist.
+   *
    * @param message error message
    */
   public AccountNotFoundException(String message) {

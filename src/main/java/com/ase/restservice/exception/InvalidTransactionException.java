@@ -20,6 +20,7 @@ public class InvalidTransactionException extends Exception {
 
   /**
    * Custom error for when the transaction requested is invalid (e.g. insufficient assets)
+   *
    * @param message error message
    */
   public InvalidTransactionException(String message) {

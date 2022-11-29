@@ -11,8 +11,11 @@ import com.ase.restservice.model.Stock;
 import com.ase.restservice.repository.TransactionRepository;
 import com.ase.restservice.service.AccountService;
 import com.ase.restservice.service.AssetService;
+import com.ase.restservice.service.StockService;
 import com.ase.restservice.service.TransactionService;
+
 import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +31,8 @@ public final class TransactionServiceTest {
   @Mock
   private AccountService mockAccountService;
   @Mock
+  private StockService mockStockService;
+  @Mock
   private TransactionRepository mockTransactionRepository;
   @InjectMocks
   private TransactionService transactionService;
@@ -36,45 +41,49 @@ public final class TransactionServiceTest {
   private Asset asset;
   private Stock stock;
   private String accountId = "jlamborn";
+  private String tradableType = "stock";
+
   @BeforeEach
   // Generate fake transactions
   public void setup() {
     buyTransaction = new Transaction(
         this.accountId,
+        this.tradableType,
         "AMZN",
         12.34f,
         "BUY",
-        "PENDING"
-        );
+        "PENDING");
     sellTransaction = new Transaction(
         this.accountId,
+        this.tradableType,
         "AMZN",
         23.45f,
         "SELL",
-        "PENDING"
-    );
-    asset = new Asset(accountId, "AMZN", 1234.5f);
+        "PENDING");
+    asset = new Asset(accountId, tradableType, "AMZN", 1234.5f);
     stock = new Stock("AMZN", 3.33f);
   }
+
   @DisplayName("Test for successful buyTransaction")
   @Test
   public void buyTransactionSuccess() throws Exception {
     // create expected updated asset
     Asset resultAssetTruth = new Asset(
         accountId,
+        tradableType,
         "AMZN",
-        asset.getNumShares() + buyTransaction.getNumShares());
+        asset.getQuantity() + buyTransaction.getQuantity());
     // mock asset service to return updated asset
     doReturn(resultAssetTruth).when(mockAssetService).buyAsset(
         asset.getAccountId(),
-        asset.getStockId(),
-        buyTransaction.getNumShares()
-        );
-
-    Asset resultAsset = transactionService.buyTransaction(buyTransaction, stock);
+        asset.getTradableType(),
+        asset.getTradableId(),
+        buyTransaction.getQuantity());
+    doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
+    Asset resultAsset = transactionService.buyTransaction(buyTransaction);
     // check accountBalance was called with the correct update amount
     verify(mockAccountService).updateAccountBalance(accountId,
-        -1 * (stock.getPrice() * buyTransaction.getNumShares()));
+        -1 * (stock.getPrice() * buyTransaction.getQuantity()));
     buyTransaction.setTransactionStatus("COMPLETED");
     // verify that transaction was updated to have transaction status "COMPLETED"
     verify(mockTransactionRepository).save(buyTransaction);
@@ -87,19 +96,21 @@ public final class TransactionServiceTest {
     // create expected updated asset
     Optional<Asset> resultAssetTruth = Optional.of(new Asset(
         accountId,
+        tradableType,
         "AMZN",
-        asset.getNumShares() - buyTransaction.getNumShares()));
+        asset.getQuantity() - buyTransaction.getQuantity()));
 
     // mock asset service to return updated asset
     doReturn(resultAssetTruth).when(mockAssetService).sellAsset(
         asset.getAccountId(),
-        asset.getStockId(),
-        sellTransaction.getNumShares()
-    );
-    Optional<Asset> resultAsset = transactionService.sellTransaction(sellTransaction, stock);
+        asset.getTradableType(),
+        asset.getTradableId(),
+        sellTransaction.getQuantity());
+    doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
+    Optional<Asset> resultAsset = transactionService.sellTransaction(sellTransaction);
     // check accountBalance was called with the correct update amount
     verify(mockAccountService).updateAccountBalance(accountId,
-        (stock.getPrice() * sellTransaction.getNumShares()));
+        (stock.getPrice() * sellTransaction.getQuantity()));
     sellTransaction.setTransactionStatus("COMPLETED");
     // verify that transaction was updated to have transaction status "COMPLETED"
     verify(mockTransactionRepository).save(sellTransaction);
@@ -112,12 +123,13 @@ public final class TransactionServiceTest {
   public void sellTransactionOfEntireAsset() throws Exception {
     doReturn(Optional.empty()).when(mockAssetService).sellAsset(
         asset.getAccountId(),
-        asset.getStockId(),
-        sellTransaction.getNumShares()
-    );
-    Optional<Asset> resultAsset = transactionService.sellTransaction(sellTransaction, stock);
+        asset.getTradableType(),
+        asset.getTradableId(),
+        sellTransaction.getQuantity());
+    doReturn(stock).when(mockStockService).getStockById(stock.getStockId());
+    Optional<Asset> resultAsset = transactionService.sellTransaction(sellTransaction);
     verify(mockAccountService).updateAccountBalance(accountId,
-        (stock.getPrice() * sellTransaction.getNumShares()));
+        (stock.getPrice() * sellTransaction.getQuantity()));
     sellTransaction.setTransactionStatus("COMPLETED");
     // verify that transaction was updated to have transaction status "COMPLETED"
     verify(mockTransactionRepository).save(sellTransaction);

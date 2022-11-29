@@ -9,6 +9,7 @@ import com.ase.restservice.service.AccountService;
 import com.ase.restservice.service.AssetService;
 import com.ase.restservice.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
+
 import java.util.List;
 import javax.validation.Valid;
 
@@ -43,7 +44,8 @@ public final class AccountController {
    *
    * @param account Account
    * @return Updated account
-   * @throws AccountAlreadyExistsException if account already exists in the database
+   * @throws AccountAlreadyExistsException if account already exists in the
+   *                                       database
    */
   @Operation(summary = "Create account given Account object")
   @PostMapping("/accounts")
@@ -91,7 +93,8 @@ public final class AccountController {
   @Operation(summary = "Update balance of account given accountId")
   @PutMapping("/accounts/{accountId}/balance")
   public Account updateAccountBalance(@PathVariable(value = "accountId") final String accountId,
-      @RequestParam(value = "amount", defaultValue = "0") final Float amount)
+                                      @RequestParam(value = "amount", defaultValue = "0")
+                                      final Float amount)
       throws AccountNotFoundException {
     return accountService.updateAccountBalance(accountId, amount);
   }
@@ -101,7 +104,7 @@ public final class AccountController {
    *
    * @param accountId AccountID
    * @return Portfolio value
-   * @throws AccountNotFoundException if account does not exist in the database
+   * @throws AccountNotFoundException  if account does not exist in the database
    * @throws ResourceNotFoundException if stock does not exist in the database
    */
   @Operation(summary = "Get portfolio value of account given accountId")
@@ -137,12 +140,14 @@ public final class AccountController {
   }
 
   /**
-   * * Get percent different between starting balance and current account value. This represents the
+   * * Get percent different between starting balance and current account value.
+   * This represents the
    * account's net profit/loss.
    *
    * @param accountId Unique Identifier for an account
-   * @return  Percent difference between account starting balance and current account value
-   * @throws AccountNotFoundException if account does not exist in the database
+   * @return Percent difference between account starting balance and current
+   * account value
+   * @throws AccountNotFoundException  if account does not exist in the database
    * @throws ResourceNotFoundException if stock does not exist in the database
    */
   @Operation(summary = "Get a profits/losses for an account given accountId")

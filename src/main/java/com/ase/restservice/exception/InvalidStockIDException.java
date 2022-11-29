@@ -20,6 +20,7 @@ public class InvalidStockIDException extends Exception {
 
   /**
    * Custom error for when the stock ID queried to some external service (e.g. API) is invalid.
+   *
    * @param message error message
    */
   public InvalidStockIDException(String message) {
