@@ -57,3 +57,8 @@ After registering their users' accounts and by keeping buy/sell transactions up-
   - The same API endpoints are available at this address
 - We deployed the PostgreSQL database to an AWS RDS Instance
   - The link and credentials are specified in [`src/main/resources/application.properties`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/src/main/resources/application.properties)
+
+### Client
+
+- The client is developed with Node.js and React
+- [Link to the client's GitHub repo](https://github.com/wu-rymd/kaiserschmarrn-client)
