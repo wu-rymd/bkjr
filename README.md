@@ -37,7 +37,7 @@ After registering their users' accounts and by keeping buy/sell transactions up-
 ### Bug finding
 
 - We use the FindBugs plugin in Maven to find bugs in our code base
-- First, run `./mvnw spring-boot:run` to generate the most up-to-date `.class` files in `target/`
+- First, run `./mvnw compile` to generate the most up-to-date `.class` files in `target/`
 - To generate a report, run `./mvnw findbugs:findbugs`
   - The report is generated at `/target/findbugsXml.xml`
   - We copied it to [`/reports/findbugs/findbugsXml.xml`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/reports/findbugs/findbugsXml.xml) to comply with T5 requirements, since `target/` is git-ignored
