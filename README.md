@@ -30,14 +30,25 @@ After registering their users' accounts and by keeping buy/sell transactions up-
 - We use the _checkstyle_ plugin from Maven to enforce a consistent style
 - To generate a report of style errors, run `./mvnw checkstyle:checkstyle`
   - The report is generated at `/target/checkstyle-result.xml`
-  - We copied it to [`/checkstyle/checkstyle-result.xml`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/checkstyle/checkstyle-result.xml) to comply with T3 requirements, since `target/` is git-ignored
+  - We copied it to [`/checkstyle/checkstyle-result.xml`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/reports/checkstyle/checkstyle-result.xml) to comply with T3 requirements, since `target/` is git-ignored
 
 ## Static analysis
 
-- We use the JaCoCo plugin in Maven to perform static analysis and track branch coverage of our code base
+### Bug finding
+
+- We use the FindBugs plugin in Maven to find bugs in our code base
+- First, run `./mvnw spring-boot:run` to generate the most up-to-date `.class` files in `target/`
+- To generate a report, run `./mvnw findbugs:findbugs`
+  - The report is generated at `/target/findbugsXml.xml`
+  - We copied it to [`/reports/findbugs/findbugsXml.xml`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/reports/findbugs/findbugsXml.xml) to comply with T5 requirements, since `target/` is git-ignored
+- **_Developers:_** Use `./mvnw findbugs:gui` to open a GUI showing the report
+
+### Branch coverage
+
+- We use the JaCoCo plugin in Maven to track branch coverage of our code base
 - To generate a report, run `./mvnw clean verify`
   - The report is generated at `/target/site/jacoco/`
-  - We copied it to [`/jacoco`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/jacoco) to comply with T5 requirements, since `target/` is git-ignored
+  - We copied it to [`/jacoco`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/reports/jacoco) to comply with T5 requirements, since `target/` is git-ignored
 
 ## Deployment
 

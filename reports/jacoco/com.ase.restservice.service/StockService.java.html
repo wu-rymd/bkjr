@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StockService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">rest-service-initial</a> &gt; <a href="index.source.html" class="el_package">com.ase.restservice.service</a> &gt; <span class="el_source">StockService.java</span></div><h1>StockService.java</h1><pre class="source lang-java linenums">package com.ase.restservice.service;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.model.Stock;
 import com.ase.restservice.repository.StockRepository;
 import java.util.List;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
  * Service for Stock operations.
  */
 @Service
-<span class="fc" id="L14">public class StockService implements StockServiceI {</span>
+<span class="fc" id="L15">public class StockService implements StockServiceI {</span>
 
   @Autowired
   private StockRepository stockRepository;
@@ -21,10 +22,14 @@ import org.springframework.stereotype.Service;
    *
    * @param stock Stock
    * @return Created stock
+   * @throws ResourceAlreadyExistsException if stock already exists
    */
-  public Stock createStock(Stock stock) {
-    // TODO: Throw exception if stock already exists
-<span class="nc" id="L27">    return stockRepository.save(stock);</span>
+  public Stock createStock(Stock stock) throws ResourceAlreadyExistsException {
+<span class="nc bnc" id="L28" title="All 2 branches missed.">    if (stockRepository.existsById(stock.getStockId())) {</span>
+<span class="nc" id="L29">      throw new ResourceAlreadyExistsException(</span>
+<span class="nc" id="L30">          &quot;Stock with ID &quot; + stock.getStockId() + &quot; already exists&quot;);</span>
+    }
+<span class="nc" id="L32">    return stockRepository.save(stock);</span>
   }
 
   /**
@@ -32,21 +37,29 @@ import org.springframework.stereotype.Service;
    *
    * @param stock Stock
    * @return Updated stock
+   * @throws ResourceNotFoundException if stock does not exist
    */
-  public Stock updateStock(Stock stock) {
-    // TODO: Throw exception if stock does not exist
-<span class="nc" id="L38">    return stockRepository.save(stock);</span>
+  public Stock updateStock(Stock stock) throws ResourceNotFoundException {
+<span class="nc bnc" id="L43" title="All 2 branches missed.">    if (!stockRepository.existsById(stock.getStockId())) {</span>
+<span class="nc" id="L44">      throw new ResourceNotFoundException(</span>
+<span class="nc" id="L45">          &quot;Stock with ID &quot; + stock.getStockId() + &quot; does not exist&quot;);</span>
+    }
+<span class="nc" id="L47">    return stockRepository.save(stock);</span>
   }
 
   /**
    * Deletes a stock in the database.
    *
    * @param stockId StockID
+   * @throws ResourceNotFoundException if stock does not exist
    */
-  public void deleteStockById(String stockId) {
-    // TODO: Throw exception if stock does not exist
-<span class="nc" id="L48">    stockRepository.deleteById(stockId);</span>
-<span class="nc" id="L49">  }</span>
+  public void deleteStockById(String stockId) throws ResourceNotFoundException {
+<span class="nc bnc" id="L57" title="All 2 branches missed.">    if (!stockRepository.existsById(stockId)) {</span>
+<span class="nc" id="L58">      throw new ResourceNotFoundException(</span>
+          &quot;Stock with ID &quot; + stockId + &quot; does not exist&quot;);
+    }
+<span class="nc" id="L61">    stockRepository.deleteById(stockId);</span>
+<span class="nc" id="L62">  }</span>
 
   /**
    * Gets a stock by stockId.
@@ -56,25 +69,24 @@ import org.springframework.stereotype.Service;
    * @throws ResourceNotFoundException if stock does not exist in the database
    */
   public Stock getStockById(String stockId) throws ResourceNotFoundException {
-<span class="nc" id="L59">    return stockRepository.findById(stockId)</span>
-<span class="nc" id="L60">        .orElseThrow(() -&gt; new ResourceNotFoundException(</span>
-            &quot;Stock not found for stockId :: &quot; + stockId
-        ));
+<span class="nc" id="L72">    return stockRepository.findById(stockId)</span>
+<span class="nc" id="L73">        .orElseThrow(() -&gt; new ResourceNotFoundException(</span>
+            &quot;Stock not found for stockId :: &quot; + stockId));
   }
 
   /**
    * Updates the price of a stock.
    *
    * @param stockId StockID
-   * @param price Stock price
+   * @param price   Stock price
    * @return Updated stock
    * @throws ResourceNotFoundException if stock does not exist in the database
    */
   public Stock updateStockPrice(String stockId, Float price) throws ResourceNotFoundException {
-<span class="nc" id="L74">    Stock stock = this.getStockById(stockId);</span>
-<span class="nc" id="L75">    stock.setPrice(price);</span>
-<span class="nc" id="L76">    final Stock updatedStock = this.updateStock(stock);</span>
-<span class="nc" id="L77">    return updatedStock;</span>
+<span class="nc" id="L86">    Stock stock = this.getStockById(stockId);</span>
+<span class="nc" id="L87">    stock.setPrice(price);</span>
+<span class="nc" id="L88">    final Stock updatedStock = this.updateStock(stock);</span>
+<span class="nc" id="L89">    return updatedStock;</span>
   }
 
   /**
@@ -83,7 +95,7 @@ import org.springframework.stereotype.Service;
    * @return List of stocks
    */
   public List&lt;Stock&gt; listStocks() {
-<span class="nc" id="L86">    return stockRepository.findAll();</span>
+<span class="nc" id="L98">    return stockRepository.findAll();</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -15,12 +15,16 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
+import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
 
 /**
  * Controller for /accounts endpoints.
@@ -126,12 +130,13 @@ public final class AccountController {
   /**
    * List all accounts.
    *
-   * @return List of all accounts
+   * @return List of all accounts that are owned by the client logged in
    */
-  @Operation(summary = "List all accounts")
+  @Operation(summary = "List all accounts owned by the client")
   @GetMapping("/accounts")
-  public List<Account> listAllAccounts() {
-    return accountService.listAllAccounts();
+  public List<Account> listAllAccountsByCLient() {
+    String clientId = getUsernameOfClientLogged();
+    return accountService.listAllAccountsOfClient(clientId);
   }
 
   /**
@@ -150,5 +155,12 @@ public final class AccountController {
   public Float getAccountPnl(@PathVariable(value = "accountId") String accountId)
       throws AccountNotFoundException, ResourceNotFoundException {
     return assetService.getAccountPnl(accountId);
+  }
+  @Operation(summary = "Account is deleted by the client")
+  @DeleteMapping("accounts/{accountId}")
+  public Void deleteAccount(@PathVariable(value = "accountId") String accountId)
+    throws AccountNotFoundException, ResourceNotFoundException {
+      accountService.deleteAccountById(accountId);
+      return null;
   }
 }

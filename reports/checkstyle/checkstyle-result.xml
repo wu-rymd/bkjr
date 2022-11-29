@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="9.3">
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/repository/TransactionRepository.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/repository/AccountRepository.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/repository/CryptocurrencyRepository.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/repository/NFTRepository.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/repository/StockRepository.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/repository/AssetRepository.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/controller/CryptocurrencyController.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/controller/FinanceController.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/controller/NFTController.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/controller/AccountController.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/controller/TransactionController.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/controller/AssetController.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/controller/StockController.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/model/Asset.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/model/NFT.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/model/Cryptocurrency.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/model/AssetId.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/model/Account.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/model/Stock.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/model/Transaction.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/RestServiceApplication.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/service/interface/CryptocurrencyServiceI.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/service/interface/StockServiceI.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/service/interface/AccountServiceI.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/service/interface/NFTServiceI.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/service/interface/FinanceServiceI.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/service/interface/TransactionServiceI.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/service/interface/AssetServiceI.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/service/StockService.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/service/AccountService.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/service/FinanceService.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/service/AssetService.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/service/NFTService.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/service/TransactionService.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/service/CryptocurrencyService.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/exception/ResourceNotFoundException.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/exception/ResourceAlreadyExistsException.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/exception/InvalidStockIDException.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/exception/AccountAlreadyExistsException.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/exception/AccountNotFoundException.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/exception/InvalidTransactionException.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/java/com/ase/restservice/exception/InvalidOrderTypeException.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/test/java/com/example/restservice/RestServiceApplicationTests.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/test/java/com/example/restservice/service/AssetServiceTest.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/test/java/com/example/restservice/service/TransactionServiceTest.java">
+</file>
+<file name="/Users/rjw/rjw/columbia/coursework/2022f/COMS-W4156/team-repo/src/main/resources/application.properties">
+</file>
+</checkstyle>

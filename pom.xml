@@ -49,6 +49,18 @@
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>1.6.12</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+
+
 
 		<dependency>
 			<groupId>com.yahoofinance-api</groupId>
@@ -70,6 +82,11 @@
 						</reports>
 					</reportSet>
 				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>3.0.4</version>
 			</plugin>
 		</plugins>
 	</reporting>
@@ -110,6 +127,14 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.8</version>
+				<configuration>
+					<excludes>
+						<exclude>com/ase/restservice/model/*</exclude>
+						<exclude>com/ase/restservice/controller/*</exclude>
+						<exclude>com/ase/restservice/exception/*</exclude>
+						<exclude>com/ase/restservice/RestServiceApplication.class</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>

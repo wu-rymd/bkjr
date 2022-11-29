@@ -1,6 +1,7 @@
 package com.ase.restservice.service;
 
 import com.ase.restservice.exception.InvalidStockIDException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.model.Stock;
 
 import java.io.IOException;
@@ -81,6 +82,8 @@ public class FinanceService implements FinanceServiceI {
       throw new InvalidStockIDException(e);
     } catch (IOException e) {
       throw new IOException(e);
+    } catch (ResourceAlreadyExistsException e) {
+      throw new RuntimeException(e);
     }
   }
 

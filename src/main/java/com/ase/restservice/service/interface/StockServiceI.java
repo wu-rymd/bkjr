@@ -1,6 +1,7 @@
 package com.ase.restservice.service;
 
 import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
 import com.ase.restservice.model.Stock;
 
 import java.util.List;
@@ -14,8 +15,9 @@ public interface StockServiceI {
    *
    * @param stock Stock
    * @return Created stock
+   * @throws ResourceAlreadyExistsException if stock already exists
    */
-  Stock createStock(Stock stock);
+  Stock createStock(Stock stock) throws ResourceAlreadyExistsException;
 
   /**
    * Retrieve all stocks.
@@ -29,13 +31,15 @@ public interface StockServiceI {
    *
    * @param stock Stock
    * @return Updated stock
+   * @throws ResourceNotFoundException if stock does not exist
    */
-  Stock updateStock(Stock stock);
+  Stock updateStock(Stock stock) throws ResourceNotFoundException;
 
   /**
    * Deletes a stock in the database.
    *
    * @param stockId StockID
+   * @throws ResourceNotFoundException if stock does not exist
    */
   void deleteStockById(String stockId) throws ResourceNotFoundException;
 
