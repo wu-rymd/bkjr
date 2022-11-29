@@ -4,17 +4,21 @@ import com.ase.restservice.exception.AccountNotFoundException;
 import com.ase.restservice.exception.InvalidOrderTypeException;
 import com.ase.restservice.exception.InvalidTransactionException;
 import com.ase.restservice.exception.ResourceNotFoundException;
+
+import com.ase.restservice.model.Account;
 import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Stock;
+import com.ase.restservice.model.Transaction;
 import com.ase.restservice.model.Cryptocurrency;
 import com.ase.restservice.model.NFT;
-import com.ase.restservice.model.Transaction;
+import com.ase.restservice.repository.AccountRepository;
 import com.ase.restservice.repository.TransactionRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
@@ -26,6 +30,9 @@ import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
 public final class TransactionService implements TransactionServiceI {
   @Autowired
   private TransactionRepository transactionRepository;
+  @Autowired
+  private AccountRepository accountRepository;
+
   @Autowired
   private AssetService assetService;
   @Autowired
@@ -51,19 +58,19 @@ public final class TransactionService implements TransactionServiceI {
       throws AccountNotFoundException, ResourceNotFoundException,
       InvalidOrderTypeException, InvalidTransactionException {
 
-      transactionRepository.save(transaction);
-      return executeTransaction(transaction);
-    //need to check if the client
-//    String accountId = transaction.getAccountId();
-//    Account account =  accountRepository.findAccountsByAccountId(accountId).orElseThrow(() ->
-//            new UsernameNotFoundException("Account Not Found with username: " + accountId));
-//
-//    String clientId = getUsernameOfClientLogged();
-//    if (account.getClientId().equals(clientId)) {
 //      transactionRepository.save(transaction);
 //      return executeTransaction(transaction);
-//    }
-//    throw new AccountNotFoundException("Bad client");
+    //need to check if the client
+    String accountId = transaction.getAccountId();
+    Account account =  accountRepository.findAccountsByAccountId(accountId).orElseThrow(() ->
+            new UsernameNotFoundException("Account Not Found with username: " + accountId));
+
+    String clientId = getUsernameOfClientLogged();
+    if (account.getClientId().equals(clientId)) {
+      transactionRepository.save(transaction);
+      return executeTransaction(transaction);
+    }
+    throw new AccountNotFoundException("Bad client");
 
   }
 
