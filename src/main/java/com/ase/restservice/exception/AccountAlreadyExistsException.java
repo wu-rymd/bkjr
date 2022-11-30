@@ -20,6 +20,7 @@ public class AccountAlreadyExistsException extends Exception {
 
   /**
    * Custom error for when client tries to create an account that already exists.
+   *
    * @param message error message
    */
   public AccountAlreadyExistsException(String message) {

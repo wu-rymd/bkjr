@@ -9,16 +9,22 @@ import com.ase.restservice.service.AccountService;
 import com.ase.restservice.service.AssetService;
 import com.ase.restservice.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
+
 import java.util.List;
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
+import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
 
 /**
  * Controller for /accounts endpoints.
@@ -38,7 +44,8 @@ public final class AccountController {
    *
    * @param account Account
    * @return Updated account
-   * @throws AccountAlreadyExistsException if account already exists in the database
+   * @throws AccountAlreadyExistsException if account already exists in the
+   *                                       database
    */
   @Operation(summary = "Create account given Account object")
   @PostMapping("/accounts")
@@ -86,7 +93,8 @@ public final class AccountController {
   @Operation(summary = "Update balance of account given accountId")
   @PutMapping("/accounts/{accountId}/balance")
   public Account updateAccountBalance(@PathVariable(value = "accountId") final String accountId,
-      @RequestParam(value = "amount", defaultValue = "0") final Float amount)
+                                      @RequestParam(value = "amount", defaultValue = "0")
+                                      final Float amount)
       throws AccountNotFoundException {
     return accountService.updateAccountBalance(accountId, amount);
   }
@@ -96,7 +104,7 @@ public final class AccountController {
    *
    * @param accountId AccountID
    * @return Portfolio value
-   * @throws AccountNotFoundException if account does not exist in the database
+   * @throws AccountNotFoundException  if account does not exist in the database
    * @throws ResourceNotFoundException if stock does not exist in the database
    */
   @Operation(summary = "Get portfolio value of account given accountId")
@@ -122,21 +130,24 @@ public final class AccountController {
   /**
    * List all accounts.
    *
-   * @return List of all accounts
+   * @return List of all accounts that are owned by the client logged in
    */
-  @Operation(summary = "List all accounts")
+  @Operation(summary = "List all accounts owned by the client")
   @GetMapping("/accounts")
-  public List<Account> listAllAccounts() {
-    return accountService.listAllAccounts();
+  public List<Account> listAllAccountsByCLient() {
+    String clientId = getUsernameOfClientLogged();
+    return accountService.listAllAccountsOfClient(clientId);
   }
 
   /**
-   * * Get percent different between starting balance and current account value. This represents the
+   * * Get percent different between starting balance and current account value.
+   * This represents the
    * account's net profit/loss.
    *
    * @param accountId Unique Identifier for an account
-   * @return  Percent difference between account starting balance and current account value
-   * @throws AccountNotFoundException if account does not exist in the database
+   * @return Percent difference between account starting balance and current
+   * account value
+   * @throws AccountNotFoundException  if account does not exist in the database
    * @throws ResourceNotFoundException if stock does not exist in the database
    */
   @Operation(summary = "Get a profits/losses for an account given accountId")
@@ -144,5 +155,12 @@ public final class AccountController {
   public Float getAccountPnl(@PathVariable(value = "accountId") String accountId)
       throws AccountNotFoundException, ResourceNotFoundException {
     return assetService.getAccountPnl(accountId);
+  }
+  @Operation(summary = "Account is deleted by the client")
+  @DeleteMapping("accounts/{accountId}")
+  public Void deleteAccount(@PathVariable(value = "accountId") String accountId)
+    throws AccountNotFoundException, ResourceNotFoundException {
+      accountService.deleteAccountById(accountId);
+      return null;
   }
 }

@@ -11,12 +11,9 @@ name: CI/CL
 on:
   push:
     branches: [ "**" ]
-  pull_request:
-    branches: [ "**" ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -27,18 +24,42 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: maven
+
+    - name: create target file
+      run: mkdir -p target
         
     - name: Run tests
       run: mvn test
-      
-    - name: Build project and generate coverage reports
-      run: ./mvnw spring-boot:run
-      
-    - name: move the generated reports from ./target to ./reports
-      run: 
-        cd target 
-        mv checkstyle-result.xml ../reports/checkstyle
-        
+
+    - name: Run build
+      run: ./mvnw compile 
+
+    - name: Run stylechecker
+      run: ./mvnw checkstyle:checkstyle
+
+    - name: Run bug finding
+      run: ./mvnw findbugs:findbugs
+
+    - name: copy the generated checkstyle report to ./reports
+      run: cp -R ./target/checkstyle-result.xml ./reports/checkstyle
+
+    - name: copy the generated findbugs report to ./reports
+      run: cp -R ./target/findbugsXml.xml ./reports/findbugs
+
+    - name: Run branch coverage
+      run: ./mvnw clean verify
+
+    - name: copy the generated jacoco report to ./reports
+      run: cp -R ./target/site/jacoco ./reports/jacoco
+
+    - name: Push changes
+      uses: devops-infra/action-commit-push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        commit_prefix: "[AUTO]"
+        commit_message: "Update reports"
+        force: true
+
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6

@@ -8,8 +8,10 @@ import com.ase.restservice.model.Asset;
 import com.ase.restservice.model.Transaction;
 import com.ase.restservice.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
+
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,9 +31,9 @@ public final class TransactionController {
    *
    * @param transaction Transaction
    * @return Asset
-   * @throws AccountNotFoundException if account is not found in database
-   * @throws ResourceNotFoundException if user does not have the asset
-   * @throws InvalidOrderTypeException when transaction type is not buy or sell
+   * @throws AccountNotFoundException    if account is not found in database
+   * @throws ResourceNotFoundException   if user does not have the asset
+   * @throws InvalidOrderTypeException   when transaction type is not buy or sell
    * @throws InvalidTransactionException if user does not have sufficient assets
    */
   @Operation(summary = "Create transaction given Transaction object")
@@ -41,6 +43,7 @@ public final class TransactionController {
       InvalidOrderTypeException, InvalidTransactionException {
     return transactionService.createTransaction(transaction);
   }
+
   @Operation(summary = "Return all transactions in database")
   @GetMapping("/transactions")
   public List<Transaction> listAllTransactions() {

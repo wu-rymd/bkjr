@@ -20,6 +20,7 @@ public class ResourceNotFoundException extends Exception {
 
   /**
    * Custom error for when client requests a resource that does not exist.
+   *
    * @param message error message
    */
   public ResourceNotFoundException(String message) {

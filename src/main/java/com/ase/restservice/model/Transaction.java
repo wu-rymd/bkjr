@@ -20,10 +20,12 @@ public final class Transaction {
   private UUID uuid;
   @Column(name = "account_id", nullable = false)
   private String accountId;
-  @Column(name = "stock_id", nullable = false)
-  private String stockId;
-  @Column(name = "num_shares", nullable = false)
-  private Float numShares;
+  @Column(name = "tradable_type", nullable = false)
+  private String tradableType;
+  @Column(name = "tradable_id", nullable = false)
+  private String tradableId;
+  @Column(name = "quantity", nullable = false)
+  private Float quantity;
   @Column(name = "transaction_type", nullable = false)
   private String transactionType;
   @Column(name = "transaction_status", nullable = false)
@@ -32,33 +34,37 @@ public final class Transaction {
   /**
    * Default constructor for Transaction.
    */
-  public Transaction() {  }
+  public Transaction() {
+  }
 
   /**
    * Constructor for Transaction.
    *
-   * @param accountId Unique ID for account
-   * @param stockId Unique ID for stockId
-   * @param numShares number of shares being bought/sold
-   * @param transactionType Buy or sell
+   * @param accountId         Unique ID for account
+   * @param tradableType      Tradable type
+   * @param tradableId        Tradable id
+   * @param quantity          Quantity of tradable
+   * @param transactionType   Buy or sell
    * @param transactionStatus status of transaction
    */
   public Transaction(
       final String accountId,
-      final String stockId,
-      final Float numShares,
+      final String tradableType,
+      final String tradableId,
+      final Float quantity,
       final String transactionType,
-      final String transactionStatus
-  ) {
+      final String transactionStatus) {
     this.accountId = accountId;
-    this.stockId = stockId;
-    this.numShares = numShares;
+    this.tradableType = tradableType;
+    this.tradableId = tradableId;
+    this.quantity = quantity;
     this.transactionType = transactionType;
     this.transactionStatus = transactionStatus;
   }
 
   /**
    * getter for UUID.
+   *
    * @return UUID
    */
   public UUID getUuid() {
@@ -67,6 +73,7 @@ public final class Transaction {
 
   /**
    * Getter for accountId.
+   *
    * @return accountId
    */
   public String getAccountId() {
@@ -74,23 +81,35 @@ public final class Transaction {
   }
 
   /**
-   * Getter for stockId.
-   * @return stockId.
+   * Getter for tradableType.
+   *
+   * @return tradableType
    */
-  public String getStockId() {
-    return stockId;
+  public String getTradableType() {
+    return tradableType;
   }
 
   /**
-   * Getter for numShares.
-   * @return numShares
+   * Getter for tradableId.
+   *
+   * @return tradableId.
    */
-  public Float getNumShares() {
-    return numShares;
+  public String getTradableId() {
+    return tradableId;
+  }
+
+  /**
+   * Getter for quantity.
+   *
+   * @return quantity
+   */
+  public Float getQuantity() {
+    return quantity;
   }
 
   /**
    * Getter for transactionType.
+   *
    * @return transactionType
    */
   public String getTransactionType() {
@@ -99,6 +118,7 @@ public final class Transaction {
 
   /**
    * Getter for transactionStatus.
+   *
    * @return transactionStatus
    */
   public String getTransactionStatus() {
@@ -107,6 +127,7 @@ public final class Transaction {
 
   /**
    * Setter for TransactionStatus.
+   *
    * @param transactionStatus transactionStatus
    */
   public void setTransactionStatus(final String transactionStatus) {
@@ -115,6 +136,7 @@ public final class Transaction {
 
   /**
    * Custom equals method.
+   *
    * @param o object to compare to this
    * @return true if o and this share the same attributes, false otherwise
    */
@@ -129,18 +151,21 @@ public final class Transaction {
     Transaction c = (Transaction) o;
     return Objects.equals(this.getUuid(), c.getUuid())
         && Objects.equals(this.getAccountId(), c.getAccountId())
-        && Objects.equals(this.getStockId(), c.getStockId())
-        && Objects.equals(this.getNumShares(), c.getNumShares())
+        && Objects.equals(this.getTradableType(), c.getTradableType())
+        && Objects.equals(this.getTradableId(), c.getTradableId())
+        && Objects.equals(this.getQuantity(), c.getQuantity())
         && Objects.equals(this.getTransactionType(), c.getTransactionType())
         && Objects.equals(this.getTransactionStatus(), c.getTransactionStatus());
   }
 
   /**
    * Custom hashcode method.
+   *
    * @return hashcode representation of a Transaction
    */
   @Override
   public int hashCode() {
-    return Objects.hash(uuid, accountId, stockId, numShares, transactionType, transactionStatus);
+    return Objects.hash(uuid, accountId, tradableType, tradableId, quantity, transactionType,
+        transactionStatus);
   }
 }

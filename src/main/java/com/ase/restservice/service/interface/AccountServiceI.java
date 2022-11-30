@@ -3,6 +3,7 @@ package com.ase.restservice.service;
 import com.ase.restservice.exception.AccountAlreadyExistsException;
 import com.ase.restservice.exception.AccountNotFoundException;
 import com.ase.restservice.model.Account;
+
 import java.util.List;
 
 /**
@@ -53,8 +54,8 @@ public interface AccountServiceI {
    * Method to increase or decrease a user's account balance.
    *
    * @param accountId Primary key of account
-   * @param amount dollar amount to change account balance by. If negative, will decrease the
-   *               account balance.
+   * @param amount    dollar amount to change account balance by. If negative, will decrease the
+   *                  account balance.
    * @return Returns the account with the updated balance
    * @throws AccountNotFoundException if account does not exist in the database
    */

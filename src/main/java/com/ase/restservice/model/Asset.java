@@ -15,7 +15,7 @@ public final class Asset {
 
   @EmbeddedId
   private AssetId assetId;
-  private Float numShares;
+  private Float quantity;
 
   /**
    * Default constructor.
@@ -26,13 +26,24 @@ public final class Asset {
   /**
    * Creates an asset object.
    *
-   * @param accountId unique identifier for account
-   * @param stockId   unique identifier for stock
-   * @param numShares number of shares of stock owned by account
+   * @param accountId    unique identifier for account
+   * @param tradableType type of tradable
+   * @param tradableId   unique identifier for tradable
+   * @param quantity     number of tradables
    */
-  public Asset(final String accountId, final String stockId, final Float numShares) {
-    this.assetId = new AssetId(accountId, stockId);
-    this.numShares = numShares;
+  public Asset(final String accountId, final String tradableType, final String tradableId,
+               final Float quantity) {
+    this.assetId = new AssetId(accountId, tradableType, tradableId);
+    this.quantity = quantity;
+  }
+
+  /**
+   * Getter for assetId.
+   *
+   * @return assetId
+   */
+  public AssetId getAssetId() {
+    return assetId;
   }
 
   /**
@@ -45,31 +56,40 @@ public final class Asset {
   }
 
   /**
-   * Getter for stockId.
+   * Getter for tradableType.
    *
-   * @return stockId
+   * @return tradableType
    */
-  public String getStockId() {
-    return assetId.getStockId();
+  public String getTradableType() {
+    return assetId.getTradableType();
   }
 
   /**
-   * Getter for numShares.
+   * Getter for tradableId.
    *
-   * @return Float number of shares
+   * @return tradableId
    */
-  @Column(name = "num_shares", nullable = false)
-  public Float getNumShares() {
-    return numShares;
+  public String getTradableId() {
+    return assetId.getTradableId();
   }
 
   /**
-   * Setter for numShares.
+   * Getter for quantity.
    *
-   * @param numShares Float number of shares
+   * @return Float number of tradables
    */
-  public void setNumShares(final Float numShares) {
-    this.numShares = numShares;
+  @Column(name = "quantity", nullable = false)
+  public Float getQuantity() {
+    return quantity;
+  }
+
+  /**
+   * Setter for quantity.
+   *
+   * @param quantity number of tradables
+   */
+  public void setQuantity(final Float quantity) {
+    this.quantity = quantity;
   }
 
   /**
@@ -88,13 +108,13 @@ public final class Asset {
     }
     Asset c = (Asset) o;
     return Objects.equals(this.getAccountId(), c.getAccountId())
-        && Objects.equals(this.getStockId(), c.getStockId())
-        && Objects.equals(this.getNumShares(), c.getNumShares());
-
+        && Objects.equals(this.getTradableType(), c.getTradableType())
+        && Objects.equals(this.getTradableId(), c.getTradableId())
+        && Objects.equals(this.getQuantity(), c.getQuantity());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(assetId, numShares);
+    return Objects.hash(assetId, quantity);
   }
 }

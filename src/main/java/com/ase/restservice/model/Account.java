@@ -15,6 +15,7 @@ public class Account {
   private String accountId;
   private Float balance;
   private Float startingBalance;
+  private String clientId;
 
   /**
    * Default constructor for Account.
@@ -28,15 +29,19 @@ public class Account {
    * @param accountId       ID of an account
    * @param balance         Account balance
    * @param startingBalance Starting balance of an account
+   * @param clientId ID of client
    */
-  public Account(final String accountId, final Float balance, final Float startingBalance) {
+  public Account(final String accountId, final Float balance,
+                 final Float startingBalance, final String clientId) {
     this.accountId = accountId;
     this.balance = balance;
     this.startingBalance = startingBalance;
+    this.clientId = clientId;
   }
 
   /**
    * Getter for accountId.
+   *
    * @return accountId
    */
   @Id
@@ -46,6 +51,7 @@ public class Account {
 
   /**
    * Setter for accountId.
+   *
    * @param accountId accountId
    */
   public void setAccountId(final String accountId) {
@@ -54,6 +60,7 @@ public class Account {
 
   /**
    * Getter for balance.
+   *
    * @return balance
    */
   @Column(name = "balance", nullable = false)
@@ -63,6 +70,7 @@ public class Account {
 
   /**
    * Setter for balance.
+   *
    * @param balance balance
    */
   public void setBalance(final Float balance) {
@@ -71,6 +79,7 @@ public class Account {
 
   /**
    * Getter for starting balance.
+   *
    * @return starting balance
    */
   @Column(name = "starting_balance", nullable = false)
@@ -80,6 +89,7 @@ public class Account {
 
   /**
    * Setter for starting balance.
+   *
    * @param startingBalance starting balance
    */
   public void setStartingBalance(final Float startingBalance) {
@@ -87,7 +97,25 @@ public class Account {
   }
 
   /**
+   * Getter for clientId.
+   * @return clientId.
+   */
+  @Column(name = "client_id", nullable = false)
+  public String getClientId() {
+    return clientId;
+  }
+
+  /**
+   * Setter for clientId.
+   * @param clientId clientId
+   */
+  public void setClientId(final String clientId) {
+    this.clientId = clientId;
+  }
+
+  /**
    * Custom toString method.
+   *
    * @return string representation of account
    */
   @Override
