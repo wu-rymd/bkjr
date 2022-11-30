@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AssetService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">rest-service-initial</a> &gt; <a href="index.source.html" class="el_package">com.ase.restservice.service</a> &gt; <span class="el_source">AssetService.java</span></div><h1>AssetService.java</h1><pre class="source lang-java linenums">package com.ase.restservice.service;
+
+import com.ase.restservice.exception.AccountNotFoundException;
+import com.ase.restservice.exception.InvalidTransactionException;
+import com.ase.restservice.exception.ResourceNotFoundException;
+import com.ase.restservice.exception.ResourceAlreadyExistsException;
+
+import com.ase.restservice.model.Account;
+import com.ase.restservice.model.Asset;
+import com.ase.restservice.model.AssetId;
+
+import com.ase.restservice.model.Stock;
+import com.ase.restservice.model.Cryptocurrency;
+import com.ase.restservice.model.NFT;
+
+import com.ase.restservice.repository.AccountRepository;
+import com.ase.restservice.repository.AssetRepository;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
+
+/**
+ * Service for Asset operations.
+ */
+@Service
+<span class="fc" id="L32">public class AssetService implements com.ase.restservice.service.AssetServiceI {</span>
+
+  @Autowired
+  private AssetRepository assetRepository;
+
+  @Autowired
+  private AccountRepository accountRepository;
+
+  @Autowired
+  private StockService stockService;
+
+  @Autowired
+  private CryptocurrencyService cryptocurrencyService;
+
+  @Autowired
+  private NFTService nftService;
+
+  /**
+   * Creates an asset in the database.
+   *
+   * @param asset Asset
+   * @return Created asset
+   * @throws ResourceAlreadyExistsException if asset already exists
+   */
+  public Asset createAsset(Asset asset) throws ResourceAlreadyExistsException {
+<span class="fc bfc" id="L57" title="All 2 branches covered.">    if (assetRepository.existsById(asset.getAssetId())) {</span>
+<span class="fc" id="L58">      throw new ResourceAlreadyExistsException(&quot;Asset already exists&quot;);</span>
+    }
+<span class="fc" id="L60">    return assetRepository.save(asset);</span>
+  }
+
+  /**
+   * Updates an asset in the database.
+   *
+   * @param asset Asset
+   * @return Updated asset
+   * @throws ResourceNotFoundException if asset does not exist
+   */
+  public Asset updateAsset(Asset asset) throws ResourceNotFoundException {
+<span class="fc bfc" id="L71" title="All 2 branches covered.">    if (!assetRepository.existsById(asset.getAssetId())) {</span>
+<span class="fc" id="L72">      throw new ResourceNotFoundException(&quot;Asset does not exist&quot;);</span>
+    }
+<span class="fc" id="L74">    return assetRepository.save(asset);</span>
+  }
+
+  /**
+   * Deletes an asset in the database.
+   *
+   * @param assetId AssetID
+   * @throws ResourceNotFoundException if asset is not found in database
+   */
+  public void deleteAssetById(AssetId assetId) throws ResourceNotFoundException {
+<span class="fc" id="L84">    Optional&lt;Asset&gt; asset = assetRepository.findById(assetId);</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">    if (asset.isPresent()) {</span>
+<span class="fc" id="L86">      assetRepository.deleteById(assetId);</span>
+    } else {
+<span class="fc" id="L88">      throw new ResourceNotFoundException(&quot;Asset &quot; + assetId + &quot; does not exist&quot;);</span>
+    }
+<span class="fc" id="L90">  }</span>
+
+  /**
+   * Gets an asset by assetId.
+   *
+   * @param assetId AssetID
+   * @return Asset
+   * @throws ResourceNotFoundException if asset does not exist in the database
+   */
+  public Asset getAssetById(AssetId assetId) throws ResourceNotFoundException {
+<span class="nc" id="L100">    return assetRepository.findById(assetId)</span>
+<span class="nc" id="L101">        .orElseThrow(() -&gt; new ResourceNotFoundException(</span>
+            &quot;Asset not found for assetId :: &quot; + assetId));
+  }
+
+  /**
+   * Retrieve all assets own by the authenticated client or those owned by an
+   * account.
+   *
+   * @param accountId AccountID
+   * @return List of assets
+   */
+  public List&lt;Asset&gt; listAssets(String accountId) {
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">    if (accountId.isEmpty()) {</span>
+<span class="nc" id="L114">      String username = getUsernameOfClientLogged();</span>
+<span class="nc" id="L115">      return assetRepository.findAllforClient(username);</span>
+    }
+<span class="fc" id="L117">    return assetRepository.findAllAssetsByAccountId(accountId);</span>
+  }
+
+  /**
+   * Retrieve all assets of given Tradable type or those owned by an account.
+   *
+   * @param accountId    AccountID
+   * @param tradableType Tradable type
+   * @return List of assets
+   */
+  public List&lt;Asset&gt; listAssetsByType(String accountId, String tradableType) {
+<span class="nc bnc" id="L128" title="All 2 branches missed.">    if (accountId.isEmpty()) {</span>
+<span class="nc" id="L129">      return assetRepository.findAllAssetsByTradableType(tradableType);</span>
+    }
+<span class="nc" id="L131">    return assetRepository.findAllAssetsByAccountIdAndTradableType(accountId, tradableType);</span>
+  }
+
+  /**
+   * Calculates the portfolio value of an account.
+   *
+   * @param accountId AccountID
+   * @return Portfolio value
+   * @throws AccountNotFoundException  if account does not exist in the database
+   * @throws ResourceNotFoundException if stock does not exist in the database
+   */
+  public Float getAccountPortfolioValue(String accountId)
+      throws AccountNotFoundException, ResourceNotFoundException {
+<span class="fc" id="L144">    List&lt;Asset&gt; userAssets = this.listAssets(accountId);</span>
+<span class="fc" id="L145">    float total = 0f;</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">    for (Asset asset : userAssets) {</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">      if (asset.getTradableType().equals(&quot;stock&quot;)) {</span>
+<span class="fc" id="L148">        Stock stock = stockService.getStockById(asset.getTradableId());</span>
+<span class="fc" id="L149">        total += stock.getPrice() * asset.getQuantity();</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">      } else if (asset.getTradableType().equals(&quot;cryptocurrency&quot;)) {</span>
+<span class="fc" id="L151">        Cryptocurrency crypto = cryptocurrencyService</span>
+<span class="fc" id="L152">            .getCryptocurrencyById(asset.getTradableId());</span>
+<span class="fc" id="L153">        total += crypto.getPrice() * asset.getQuantity();</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">      } else if (asset.getTradableType().equals(&quot;nft&quot;)) {</span>
+<span class="fc" id="L155">        NFT nft = nftService.getNFTById(asset.getTradableId());</span>
+<span class="fc" id="L156">        total += nft.getPrice() * asset.getQuantity();</span>
+<span class="fc" id="L157">      } else {</span>
+<span class="nc" id="L158">        throw new ResourceNotFoundException(&quot;pnl functions for asset type &quot;</span>
+<span class="nc" id="L159">            + asset.getTradableType() + &quot; not implemented&quot;);</span>
+      }
+<span class="fc" id="L161">    }</span>
+<span class="fc" id="L162">    return total;</span>
+  }
+
+  /**
+   * Calculate the total value of an account (portfolio value + cash balance).
+   *
+   * @param accountId Unique ID for the account
+   * @return Total value of an account
+   * @throws AccountNotFoundException  if account does not exist in the database
+   * @throws ResourceNotFoundException if stock does not exist in database
+   */
+  public Float getAccountTotalValue(String accountId)
+      throws AccountNotFoundException, ResourceNotFoundException {
+<span class="fc" id="L175">    Account account = accountRepository.findById(accountId)</span>
+<span class="fc" id="L176">        .orElseThrow(() -&gt; new AccountNotFoundException(</span>
+            &quot;Account not found for accountId :: &quot; + accountId));
+<span class="fc" id="L178">    Float portfolioValue = getAccountPortfolioValue(accountId);</span>
+<span class="fc" id="L179">    Float currentBalance = account.getBalance();</span>
+
+<span class="fc" id="L181">    return currentBalance + portfolioValue;</span>
+  }
+
+  /**
+   * Calculate and return the percent change between an account's starting balance
+   * and current value. If account has net losses, percent change will be
+   * negative,
+   * if account has net profit, percent change will be positive.
+   *
+   * @param accountId Unique ID for the account
+   * @return Percent change between starting balance and current account value
+   * @throws AccountNotFoundException  if account does not exist in the database
+   * @throws ResourceNotFoundException if stock does not exist in the database
+   */
+  public Float getAccountPnl(String accountId)
+      throws AccountNotFoundException, ResourceNotFoundException {
+<span class="fc" id="L197">    Account account = accountRepository.findById(accountId)</span>
+<span class="fc" id="L198">        .orElseThrow(() -&gt; new AccountNotFoundException(</span>
+            &quot;Account not found for accountId :: &quot; + accountId));
+<span class="fc" id="L200">    Float accountValue = getAccountTotalValue(accountId);</span>
+<span class="fc" id="L201">    Float startingBalance = account.getStartingBalance();</span>
+
+<span class="fc" id="L203">    return (accountValue - startingBalance) / startingBalance;</span>
+  }
+
+  /**
+   * Handles buying an asset for an account.
+   *
+   * @param accountId    UUID for which account this transaction belongs to
+   * @param tradableType Tradable type
+   * @param tradableId   UUID for which tradable this transaction belongs to
+   * @param quantity     Quantity of tradable to buy
+   * @return new Asset
+   */
+  public Asset buyAsset(String accountId, String tradableType, String tradableId, Float quantity)
+      throws AccountNotFoundException, ResourceNotFoundException {
+    // when buying an asset, first check if it already exists.
+    // If exists, then update the quantity
+    // If not exists, write a new asset
+<span class="fc" id="L220">    AssetId assetId = new AssetId(accountId, tradableType, tradableId);</span>
+<span class="fc" id="L221">    Optional&lt;Asset&gt; asset = assetRepository.findById(assetId);</span>
+<span class="fc bfc" id="L222" title="All 2 branches covered.">    if (asset.isPresent()) {</span>
+<span class="fc" id="L223">      Asset newAsset = asset.get();</span>
+<span class="fc" id="L224">      newAsset.setQuantity(newAsset.getQuantity() + quantity);</span>
+<span class="fc" id="L225">      assetRepository.save(newAsset);</span>
+<span class="fc" id="L226">      return newAsset;</span>
+    } else {
+<span class="fc" id="L228">      Asset newAsset = new Asset(accountId, tradableType, tradableId, quantity);</span>
+<span class="fc" id="L229">      assetRepository.save(newAsset);</span>
+<span class="fc" id="L230">      return newAsset;</span>
+    }
+
+  }
+
+  /**
+   * Handles selling an asset for an account.
+   *
+   * @param accountId    AccountID
+   * @param tradableType Tradable type
+   * @param tradableId   TradableID
+   * @param quantity     Quantity of tradable to sell
+   * @return Asset remaining in the account
+   * @throws ResourceNotFoundException   if the user does not have an asset of the
+   *                                     given type
+   * @throws InvalidTransactionException if the user does not have enough of the
+   *                                     asset to sell
+   */
+  public Optional&lt;Asset&gt; sellAsset(String accountId,
+      String tradableType,
+      String tradableId,
+      Float quantity)
+      throws ResourceNotFoundException, InvalidTransactionException {
+<span class="fc" id="L253">    Optional&lt;Asset&gt; asset = assetRepository.findById(</span>
+        new AssetId(accountId, tradableType, tradableId));
+<span class="fc bfc" id="L255" title="All 2 branches covered.">    if (asset.isPresent()) {</span>
+      // Check whether user is selling all of their asset
+<span class="fc" id="L257">      Asset userAsset = asset.get();</span>
+<span class="fc bfc" id="L258" title="All 2 branches covered.">      if (Objects.equals(userAsset.getQuantity(), quantity)) {</span>
+        // Delete the asset
+<span class="fc" id="L260">        this.deleteAssetById(new AssetId(accountId, tradableType, tradableId));</span>
+<span class="fc" id="L261">        return Optional.empty();</span>
+<span class="fc bfc" id="L262" title="All 2 branches covered.">      } else if (userAsset.getQuantity() &lt; quantity) {</span>
+<span class="fc" id="L263">        throw new InvalidTransactionException(&quot;Insufficient amount of asset to sell&quot;);</span>
+      } else {
+<span class="fc" id="L265">        userAsset.setQuantity(userAsset.getQuantity() - quantity);</span>
+<span class="fc" id="L266">        this.updateAsset(userAsset);</span>
+<span class="fc" id="L267">        return Optional.of(userAsset);</span>
+      }
+    } else {
+<span class="fc" id="L270">      throw new ResourceNotFoundException(&quot;Asset of the tradable type&quot;</span>
+          + tradableType + &quot;with the id &quot; + tradableId
+          + &quot; does not exist for the account: &quot;
+          + accountId);
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
