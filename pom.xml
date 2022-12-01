@@ -132,7 +132,11 @@
 						<exclude>com/ase/restservice/model/*</exclude>
 						<exclude>com/ase/restservice/controller/*</exclude>
 						<exclude>com/ase/restservice/exception/*</exclude>
+						<exclude>com/ase/restservice/jwt/*</exclude>
+						<exclude>com/ase/restservice/auth/*</exclude>
 						<exclude>com/ase/restservice/RestServiceApplication.class</exclude>
+						<exclude>com/ase/restservice/ApplicationSecurity.class</exclude>
+						<exclude>com/ase/restservice/CustomUserDetailsService.class</exclude>
 					</excludes>
 				</configuration>
 				<executions>
