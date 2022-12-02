@@ -28,8 +28,11 @@ jobs:
     - name: create target file
       run: mkdir -p target
         
-    - name: Run tests
+    - name: Run unit tests
       run: mvn test
+
+    - name: Run integration tests
+      run: ./mvnw clean verify -P integration-test
 
     - name: Run build
       run: ./mvnw compile 

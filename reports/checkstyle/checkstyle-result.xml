@@ -122,4 +122,6 @@
 </file>
 <file name="/home/runner/work/kaiserschmarrn/kaiserschmarrn/src/main/resources/application.properties">
 </file>
+<file name="/home/runner/work/kaiserschmarrn/kaiserschmarrn/src/main/resources/application-integration-test.properties">
+</file>
 </checkstyle>
