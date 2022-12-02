@@ -19,10 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 
 import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
 
@@ -134,7 +132,7 @@ public final class AccountController {
    */
   @Operation(summary = "List all accounts owned by the client")
   @GetMapping("/accounts")
-  public List<Account> listAllAccountsByCLient() {
+  public List<Account> listAllAccountsByClient() {
     String clientId = getUsernameOfClientLogged();
     return accountService.listAllAccountsOfClient(clientId);
   }
@@ -156,11 +154,17 @@ public final class AccountController {
       throws AccountNotFoundException, ResourceNotFoundException {
     return assetService.getAccountPnl(accountId);
   }
+
+  /**
+   * Deletes an account.
+   * @param accountId
+   * @throws AccountNotFoundException if account is not found
+   */
   @Operation(summary = "Account is deleted by the client")
-  @DeleteMapping("accounts/{accountId}")
-  public Void deleteAccount(@PathVariable(value = "accountId") String accountId)
-    throws AccountNotFoundException, ResourceNotFoundException {
+  @PostMapping("accounts/{accountId}")
+  public void deleteAccount(@PathVariable(value = "accountId") String accountId)
+    throws AccountNotFoundException {
+      System.out.println("YO");
       accountService.deleteAccountById(accountId);
-      return null;
   }
 }
