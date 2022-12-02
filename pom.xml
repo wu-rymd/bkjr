@@ -236,7 +236,7 @@
 				</executions>
 			</plugin>
 		</plugins>
-		
+
 		<resources>
 			<!--
           Placeholders that are found from the files located in the configured resource

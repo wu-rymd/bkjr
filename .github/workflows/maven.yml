@@ -47,7 +47,7 @@ jobs:
       run: cp -R ./target/findbugsXml.xml ./reports/findbugs
 
     - name: Run branch coverage
-      run: ./mvnw clean verify
+      run: ./mvnw clean verify -P integration-test
 
     - name: copy the generated jacoco report to ./reports
       run: cp -R ./target/site/jacoco ./reports/jacoco
