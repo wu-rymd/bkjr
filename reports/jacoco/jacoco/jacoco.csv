@@ -6,3 +6,4 @@ rest-service-initial,com.ase.restservice.service,CryptocurrencyService,5,88,0,6,
 rest-service-initial,com.ase.restservice.service,TransactionService,26,236,2,14,6,48,4,13,2,7
 rest-service-initial,com.ase.restservice.service,AccountService,9,116,1,1,2,27,3,7,2,7
 rest-service-initial,com.ase.restservice.service,StockService,12,107,0,6,0,20,1,10,1,7
+rest-service-initial,com.ase.restservice,RestServiceApplication.new WebMvcConfigurer() {...},0,18,0,0,0,3,0,2,0,2
