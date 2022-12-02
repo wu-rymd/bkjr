@@ -38,7 +38,7 @@ After registering their users' accounts and by keeping buy/sell transactions up-
 - We use the JaCoCo plugin in Maven to track branch coverage of our code base
 - To generate a report, run `./mvnw clean verify`
   - The report is generated at `/target/site/jacoco/`
-  - We copied it to [`/repropts/jacoco`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/reports/jacoco) to comply with T5 requirements, since `target/` is git-ignored
+  - We copied it to [`/reports/jacoco`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/reports/jacoco) to comply with T5 requirements, since `target/` is git-ignored
 - **Note: `clean verify` clears the `target/` directory. This command regenerates checkstyle and generates JaCoCo reports.**
   - **If you previously generated a FindBugs report (how-to below), you will have to regenerate it. Better yet, always generate the FindBugs report _last_.**
   
