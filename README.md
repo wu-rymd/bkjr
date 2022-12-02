@@ -2,7 +2,8 @@
 
 Team repo for Advanced Software Engineering (COMS W4156) / Fall 2022
 
-The repo for our client lives [here](https://github.com/wu-rymd/kaiserschmarrn-client).
+## Client
+- The repo for our client lives [here](https://github.com/wu-rymd/kaiserschmarrn-client).
 
 ## About
 
@@ -17,13 +18,11 @@ After registering their users' accounts and by keeping buy/sell transactions up-
 ## How to Run
 
 - Run `./mvnw spring-boot:run`
-- Go to [`http://localhost:8080/accounts/<ACCOUNT_ID>`](http://localhost:8080/accounts/boraelci)
+- Go to [`http://localhost:8080/accounts](http://localhost:8080/accounts)
 
 ## API Documentation with Swagger
 
-- Available at external link: [`https://app.swaggerhub.com/apis-docs/BORAELCI/kaiserschmarrn/v0`](https://app.swaggerhub.com/apis-docs/BORAELCI/kaiserschmarrn/v0)
-- Alternatively, you can visit [`http://localhost:8080/swagger-ui/index.html`](http://localhost:8080/swagger-ui/index.html) after running the service
-- Similarly, [`http://ec2-35-174-136-81.compute-1.amazonaws.com:8080/swagger-ui/index.html`](http://ec2-35-174-136-81.compute-1.amazonaws.com:8080/swagger-ui/index.html)
+- Visit [`https://app.swaggerhub.com/apis-docs/BORAELCI/kaiserschmarrn/v0`](https://app.swaggerhub.com/apis-docs/BORAELCI/kaiserschmarrn/v0)
 
 ## Style checker
 
@@ -52,10 +51,20 @@ After registering their users' accounts and by keeping buy/sell transactions up-
   - We copied it to [`/reports/findbugs/findbugsXml.xml`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/reports/findbugs/findbugsXml.xml) to comply with T5 requirements, since `target/` is git-ignored
 - **_Developers:_** Use `./mvnw findbugs:gui` to open a GUI showing the report
 
+## Tests
+
+### Unit Tests
+- Run `./mvnw test`
+  - Results: Tests run: 76, Failures: 0, Errors: 0, Skipped: 0
+
+### Integration Tests
+- Run `./mvnw clean verify -P integration-test`
+  - Results: Tests run: 10, Failures: 0, Errors: 0, Skipped: 0
+
 ## Deployment
 
 - We deployed the service to an AWS EC2 Instance
-  - Accessible at [`http://ec2-35-174-136-81.compute-1.amazonaws.com:8080/accounts/<ACCOUNT_ID>`](http://ec2-35-174-136-81.compute-1.amazonaws.com:8080/accounts/boraelci)
+  - Visit [`http://ec2-35-174-136-81.compute-1.amazonaws.com:8080/accounts`](http://ec2-35-174-136-81.compute-1.amazonaws.com:8080/accounts)
   - The same API endpoints are available at this address
 - We deployed the PostgreSQL database to an AWS RDS Instance
   - The link and credentials are specified in [`src/main/resources/application.properties`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/src/main/resources/application.properties)
