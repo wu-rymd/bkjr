@@ -10,59 +10,59 @@ name: CI/CL
 
 on:
   push:
-    branches: [ "**" ]
+    branches: ['**']
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 11
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: maven
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
 
-    - name: create target file
-      run: mkdir -p target
-        
-    - name: Run unit tests
-      run: mvn test
+      - name: create target file
+        run: mkdir -p target
 
-    - name: Run integration tests
-      run: ./mvnw clean verify -P integration-test
+      - name: Run unit tests
+        run: mvn test
 
-    - name: Run build
-      run: ./mvnw compile 
+      - name: Run integration tests
+        run: ./mvnw clean verify -P integration-test
 
-    - name: Run stylechecker
-      run: ./mvnw checkstyle:checkstyle
+      - name: Run build
+        run: ./mvnw compile
 
-    - name: Run bug finding
-      run: ./mvnw findbugs:findbugs
+      - name: Run stylechecker
+        run: ./mvnw checkstyle:checkstyle
 
-    - name: copy the generated checkstyle report to ./reports
-      run: cp -R ./target/checkstyle-result.xml ./reports/checkstyle
+      - name: Copy the checkstyle report to ./reports
+        run: cp -R ./target/site/ ./reports/checkstyle/
 
-    - name: copy the generated findbugs report to ./reports
-      run: cp -R ./target/findbugsXml.xml ./reports/findbugs
+      - name: Run bug finding
+        run: ./mvnw findbugs:findbugs
 
-    - name: Run branch coverage
-      run: ./mvnw clean verify
+      - name: copy the generated findbugs report to ./reports
+        run: cp -R ./target/findbugsXml.xml ./reports/findbugs
 
-    - name: copy the generated jacoco report to ./reports
-      run: cp -R ./target/site/jacoco ./reports/jacoco
+      - name: Run branch coverage
+        run: ./mvnw clean verify
 
-    - name: Push changes
-      uses: devops-infra/action-commit-push@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        commit_prefix: "[AUTO]"
-        commit_message: "Update reports"
-        force: true
+      - name: copy the generated jacoco report to ./reports
+        run: cp -R ./target/site/jacoco ./reports/
 
-    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
-    - name: Update dependency graph
-      uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
+      - name: Push changes
+        uses: devops-infra/action-commit-push@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          commit_prefix: '[AUTO]'
+          commit_message: 'Update reports'
+          force: true
+
+      # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+      - name: Update dependency graph
+        uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
