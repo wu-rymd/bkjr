@@ -18,7 +18,7 @@ After registering their users' accounts and by keeping buy/sell transactions up-
 ## How to Run
 
 - Run `./mvnw spring-boot:run`
-- Go to [`http://localhost:8080/accounts](http://localhost:8080/accounts)
+- Go to [`http://localhost:8080/accounts`](http://localhost:8080/accounts)
 
 ## API Documentation with Swagger
 
