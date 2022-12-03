@@ -3,6 +3,7 @@
 Team repo for Advanced Software Engineering (COMS W4156) / Fall 2022
 
 ## Client
+
 - The repo for our client lives [here](https://github.com/wu-rymd/kaiserschmarrn-client).
 
 ## About
@@ -24,24 +25,18 @@ After registering their users' accounts and by keeping buy/sell transactions up-
 
 - Visit [`https://app.swaggerhub.com/apis-docs/BORAELCI/kaiserschmarrn`](https://app.swaggerhub.com/apis-docs/BORAELCI/kaiserschmarrn)
 
-## Style checker
-
-- We use the _checkstyle_ plugin from Maven to enforce a consistent style
-- To generate a report of style errors, run `./mvnw checkstyle:checkstyle`
-  - The report is generated at `/target/checkstyle-result.xml`
-  - We copied it to [`/reports/checkstyle/checkstyle-result.xml`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/reports/checkstyle/checkstyle-result.xml) to comply with T3 requirements, since `target/` is git-ignored
-
 ## Static analysis
 
-### Branch coverage
+## Branch coverage
 
 - We use the JaCoCo plugin in Maven to track branch coverage of our code base
 - To generate a report, run `./mvnw clean verify`
   - The report is generated at `/target/site/jacoco/`
   - We copied it to [`/reports/jacoco`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/reports/jacoco) to comply with T5 requirements, since `target/` is git-ignored
-- **Note: `clean verify` clears the `target/` directory. This command regenerates checkstyle and generates JaCoCo reports.**
-  - **If you previously generated a FindBugs report (how-to below), you will have to regenerate it. Better yet, always generate the FindBugs report _last_.**
-  
+- **Note: `clean verify` clears the `target/` directory and generates the JaCoCo report.**
+  - **If you previously generated a FindBugs report (how-to below), you will have to regenerate it. Better yet, always generate the branch coverage report **first**.**
+  - **If you previously generated a checkstyle report (how-to below), you will have to regenerate it. Better yet, always generate the branch coverage report **first**.**
+
 ### Bug finding
 
 - We use the FindBugs plugin in Maven to find bugs in our code base
@@ -51,13 +46,22 @@ After registering their users' accounts and by keeping buy/sell transactions up-
   - We copied it to [`/reports/findbugs/findbugsXml.xml`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/reports/findbugs/findbugsXml.xml) to comply with T5 requirements, since `target/` is git-ignored
 - **_Developers:_** Use `./mvnw findbugs:gui` to open a GUI showing the report
 
+## Style checker
+
+- We use the _checkstyle_ plugin from Maven to enforce a consistent style
+- To generate a report of style errors, run `./mvnw checkstyle:checkstyle`
+  - The report is generated at `/target/checkstyle-result.xml`
+  - We copied it to [`/reports/checkstyle/checkstyle-result.xml`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/reports/checkstyle/checkstyle-result.xml) to comply with T3 requirements, since `target/` is git-ignored
+
 ## Tests
 
 ### Unit Tests
+
 - Run `./mvnw test`
   - Results: Tests run: 76, Failures: 0, Errors: 0, Skipped: 0
 
 ### Integration Tests
+
 - Run `./mvnw clean verify -P integration-test`
   - Results: Tests run: 10, Failures: 0, Errors: 0, Skipped: 0
 
