@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,8 @@ public final class TransactionService implements TransactionServiceI {
   private NFTService nftService;
   @Autowired
   private AccountService accountService;
+  @Value("${com.ase.restservice.ApplicationSecurity.production}")
+  private Boolean production;
 
   /**
    * Write a new transaction to the database.
@@ -61,17 +64,21 @@ public final class TransactionService implements TransactionServiceI {
 //      transactionRepository.save(transaction);
 //      return executeTransaction(transaction);
     //need to check if the client
-    String accountId = transaction.getAccountId();
-    Account account =  accountRepository.findAccountsByAccountId(accountId).orElseThrow(() ->
-            new UsernameNotFoundException("Account Not Found with username: " + accountId));
+    if (production) {
+      String accountId = transaction.getAccountId();
+      Account account = accountRepository.findAccountsByAccountId(accountId).orElseThrow(() ->
+          new UsernameNotFoundException("Account Not Found with username: " + accountId));
 
-    String clientId = getUsernameOfClientLogged();
-    if (account.getClientId().equals(clientId)) {
+      String clientId = getUsernameOfClientLogged();
+      if (account.getClientId().equals(clientId)) {
+        transactionRepository.save(transaction);
+        return executeTransaction(transaction);
+      }
+      throw new AccountNotFoundException("Bad client");
+    } else {
       transactionRepository.save(transaction);
       return executeTransaction(transaction);
     }
-    throw new AccountNotFoundException("Bad client");
-
   }
 
   /**
