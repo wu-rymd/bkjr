@@ -64,6 +64,9 @@ After registering their users' accounts and by keeping buy/sell transactions up-
 
 - Run `./mvnw clean verify -P integration-test`
   - Results: Tests run: 10, Failures: 0, Errors: 0, Skipped: 0
+  
+### End-to-End Tests
+- Documented at [`/reports/end-to-end-tests.txt`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/reports/end-to-end-tests.txt)
 
 ## Deployment
 
