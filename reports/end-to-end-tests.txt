@@ -1,0 +1,31 @@
+End-to-end tests
+
+Manual tests were conducted from the client-side. Then, the server logs and database entries were inspected to determine the result. Note: To see new changes take effect on the client's pages, use Ctrl+R or Command+R to refresh the page after modifying actions such as creating/deleting an account or a buy/sell transaction.
+
+Case #1: Different clients are able to login and view persistent data associated with them
+Result: Success
+Method: Used the credentials for ftx_exchange client and binance client on the login page. Accounts page showed those accounts associated with the correct client.
+
+Case #2: Create new accounts
+Result: Success
+Method: Used the create button on the accounts page to create a new account. Inputted the requires values and clicked the submit button. The accounts table in the database showed the new entry correctly.
+
+Case #3: Delete an account
+Result: Success
+Method: Selected an account on the accounts page and clicked the delete button. The entry was deleted from the database.
+
+Case #4: Stocks are refreshed with real-time prices
+Result: Success
+Method: Used the "Refresh" button on the Stocks page. Before clicking the button, AAPL showed the price as 147.81, and it showed 144.23 afterwards.
+
+Case #5: Assets show the correct amount after a transaction
+Result: Success
+Method: For account 'yigit', Assets table show 1 AMZN stock owned. Submitted a BUY transaction on the Invest page. Assets table is updated to show 2 AMZN stocks owned.
+
+Case #6: Balance is updated correctly after a transaction
+Result: Success
+Method: Created an account with a balance of 100. Submitted a BUY AMZN transaction on the Invest page while the price is shown to be 89.088 Accounts page showed the remaining balance as 10.912
+
+Case #7: An account is not able to sell a stock if it does not own any shares of that stock
+Result: Success
+Method: For account 'yigit', Assets table does not show an entry for GOOGL. Attempting to sell GOOGL on the Invest page logs a 404 error in the developer console.
