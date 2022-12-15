@@ -1,6 +1,6 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-rest-service-initial,com.ase.restservice.service,FinanceService,57,50,0,4,17,15,2,5,2,3
 rest-service-initial,com.ase.restservice.service,NFTService,5,94,0,10,1,20,1,12,1,7
+rest-service-initial,com.ase.restservice.service,FinanceService,57,50,0,4,17,15,2,5,2,3
 rest-service-initial,com.ase.restservice.service,AssetService,57,362,4,22,9,62,6,22,3,12
 rest-service-initial,com.ase.restservice.service,CryptocurrencyService,5,88,0,6,1,17,1,11,1,8
 rest-service-initial,com.ase.restservice.service,TransactionService,75,236,6,14,15,48,7,13,3,7
