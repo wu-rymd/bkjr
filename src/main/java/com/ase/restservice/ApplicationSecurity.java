@@ -75,12 +75,16 @@ public class ApplicationSecurity {
             "/accounts/{accountId}/**",
             "/assets/{accountId}/**"
     };
+    String[] noAuthNeeded = {
+            "/auth/login",
+            "/auth/signup"
+    };
     http.csrf().disable();
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
     if (production) {
       http.authorizeRequests()
-              .antMatchers("/auth/login")
+              .antMatchers(noAuthNeeded)
               .permitAll()
               .antMatchers(accountIdWhiteList)
               .access("@applicationSecurity.checkAccountId(authentication,#accountId)")

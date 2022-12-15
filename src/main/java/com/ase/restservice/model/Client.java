@@ -2,7 +2,6 @@ package com.ase.restservice.model;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -54,11 +53,17 @@ public class Client implements UserDetails {
     return password;
   }
   /**
-   * Setter for password.
+   * Setter for password. Uses
    * @param password password
    */
-  public void setPassword(final String password) {
+  public void setPassword(final String password) { //needs to use the auth thing
+    //TODO set password better prob.
+//    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//    String hashedPassword = passwordEncoder.encode(rawPassword);
+//    this.password = hashedPassword;
+
     this.password = password;
+
   }
 
   /**
