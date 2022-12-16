@@ -32,6 +32,7 @@ public class JwtTokenUtil {
     return Jwts.builder()
             .setSubject(String.format("%s", client.getClientId()))
             .setIssuer("Kaiserscmarnn")
+            .claim("role", client.getRole())//TODO temp!
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_DURATION))
             .signWith(SignatureAlgorithm.HS512, secretKey)
@@ -78,7 +79,7 @@ public class JwtTokenUtil {
    * @param token
    * @return parsed jwt
    */
-  private Claims parseClaims(String token) {
+  public Claims parseClaims(String token) {
     return Jwts.parser()
             .setSigningKey(secretKey)
             .parseClaimsJws(token)

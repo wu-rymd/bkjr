@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -79,15 +80,31 @@ public class ApplicationSecurity {
             "/auth/login",
             "/auth/signup"
     };
+    String[] forAdminPost = {//only for POST GETs are allowed for non Admin
+            "/stocks",
+            "/nfts",
+            "/cryptocurrencies"
+    };
+    String[] forAdminPut = {//only for PUT
+            "/stocks/{stockId}/{price}",
+            "/nfts/{nftId}",
+            "/cryptocurrencies/{cryptocurrencyId/{price}"
+    };
     http.csrf().disable();
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//    antMatchers(HttpMethod.POST, "/path").hasRole("ADMIN")
 
+    //more specific links should be placed first, order matters.
     if (production) {
       http.authorizeRequests()
               .antMatchers(noAuthNeeded)
               .permitAll()
               .antMatchers(accountIdWhiteList)
               .access("@applicationSecurity.checkAccountId(authentication,#accountId)")
+              .antMatchers(HttpMethod.POST, forAdminPost)
+              .hasRole("ADMIN")
+              .antMatchers(HttpMethod.PUT, forAdminPut)
+              .hasRole("ADMIN")
               .anyRequest().authenticated();
 
     } else {

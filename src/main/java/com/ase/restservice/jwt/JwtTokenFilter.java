@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.ase.restservice.model.Client;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -92,7 +93,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     UserDetails userDetails = getUserDetails(token);
 
     UsernamePasswordAuthenticationToken
-            authentication = new UsernamePasswordAuthenticationToken(userDetails, null, null);
+            authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities()
+    );
 
     authentication.setDetails(
             new WebAuthenticationDetailsSource().buildDetails(request));
@@ -107,11 +110,26 @@ public class JwtTokenFilter extends OncePerRequestFilter {
    */
   private UserDetails getUserDetails(String token) {
     Client userDetails = new Client();
-    String[] jwtSubject = jwtUtil.getSubject(token).split(",");
+
+    Claims claims = jwtUtil.parseClaims(token);
+    String subject = (String) claims.get(Claims.SUBJECT);
+    String roles = (String) claims.get("role");
+//    roles = roles.replace("[", "").replace("]", "");
+//    String[] roleNames = roles.split(",");
+
+//    for (String aRoleName : roleNames) {//TODO redundant because there is only one role
+////      userDetails.addRole(new Role(aRoleName));
+//      userDetails.setRole(aRoleName);
+//    }
+    userDetails.setRole(roles);
+
+    //getting subject multiple times
+    String[] jwtSubject = jwtUtil.getSubject(token).split(","); //no need for split
 
     userDetails.setClientId(jwtSubject[0]);
-//    userDetails.setUsername(jwtSubject[1]);
-
+    //wtSubject only has name right now.
+//    userDetails.setRole();
+    //role is not filled
     return userDetails;
   }
 }

@@ -42,6 +42,7 @@ public class AuthController {
     // https://stackoverflow.com/questions/26587082/http-status-code-for-username-
     // already-exists-when-registering-new-account
     //not ideal to call repository directly
+    //maybe we can use customUser Details Service
     if (clientRepository.findClientId(request.getClientId()).isPresent()) {
       return ResponseEntity.status(HttpStatus.CONFLICT)
               .body("This client_id is already being used.");
@@ -52,7 +53,8 @@ public class AuthController {
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     newClient.setPassword(passwordEncoder.encode(request.getPassword()));
     clientRepository.save(newClient);
-    return ResponseEntity.ok().body("Client has been created.");
+    return ResponseEntity.ok()
+            .body("Client has been created.");
 
   }
   /**
