@@ -64,6 +64,10 @@ public class ITStock {
     assertTrue(stockRepository.existsById(testStock.getStockId()));
     Optional<Stock> resStock = stockRepository.findById(testStock.getStockId());
     assertEquals(50, resStock.get().getPrice());
+
+    // clean up
+    stockRepository.deleteById(testStock.getStockId());
+
   }
 
   @DisplayName("Integration test for updateStockPrice endpoint when stock DNE verifying that "
