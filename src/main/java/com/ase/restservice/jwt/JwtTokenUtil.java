@@ -32,7 +32,7 @@ public class JwtTokenUtil {
     return Jwts.builder()
             .setSubject(String.format("%s", client.getClientId()))
             .setIssuer("Kaiserscmarnn")
-            .claim("role", client.getRole())//TODO temp!
+            .claim("role", client.getRole())
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_DURATION))
             .signWith(SignatureAlgorithm.HS512, secretKey)
@@ -75,11 +75,20 @@ public class JwtTokenUtil {
   }
 
   /**
+   * gets role of the token owner hidden in token.
+   * @param token
+   * @return role
+   */
+  public String getRole(String token) {
+    return (String) parseClaims(token).get("role");
+  }
+
+  /**
    * parses claims based on the token.
    * @param token
    * @return parsed jwt
    */
-  public Claims parseClaims(String token) {
+  private Claims parseClaims(String token) {
     return Jwts.parser()
             .setSigningKey(secretKey)
             .parseClaimsJws(token)

@@ -28,7 +28,6 @@ public class AuthController {
   private AuthenticationManager authManager;
   @Autowired
   private JwtTokenUtil jwtUtil;
-
   @Autowired
   private ClientRepository clientRepository;
 
@@ -83,7 +82,6 @@ public class AuthController {
 
   /**
    * Gets the logged in client.
-   * @param request
    * @return clientId
    */
   @GetMapping("/auth/client")

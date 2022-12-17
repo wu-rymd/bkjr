@@ -228,7 +228,6 @@ public final class TransactionService implements TransactionServiceI {
    * @return list of all transactions
    */
   public List<Transaction> listAllTransactions() {
-    //TODO change transactions so that it doesnt show other client stuff
     String clientId = getUsernameOfClientLogged();
     return transactionRepository.listAllTransactionsOfClient(clientId);
   }

@@ -88,7 +88,7 @@ public class ApplicationSecurity {
     String[] forAdminPut = {//only for PUT
             "/stocks/{stockId}/{price}",
             "/nfts/{nftId}",
-            "/cryptocurrencies/{cryptocurrencyId/{price}"
+            "/cryptocurrencies/{cryptocurrencyId}/{price}"
     };
     http.csrf().disable();
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

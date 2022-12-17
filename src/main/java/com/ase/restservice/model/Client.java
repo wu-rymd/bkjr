@@ -16,7 +16,7 @@ import java.util.List;
 @Table(name = "client")
 public class Client implements UserDetails {
 
-  private String rolePrefix = "ROLE_"; //used by Spring security internally
+  private String roleprefix = "ROLE_"; //used by Spring security internally
   private String clientId;
   private String password;
   private String role;
@@ -92,7 +92,7 @@ public class Client implements UserDetails {
 //    return null;
     List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
 
-    list.add(new SimpleGrantedAuthority(rolePrefix + role));
+    list.add(new SimpleGrantedAuthority(roleprefix + role));
 //    list.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
     return list;
   }
