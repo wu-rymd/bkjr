@@ -15,6 +15,7 @@ import com.ase.restservice.repository.AccountRepository;
 import com.ase.restservice.repository.TransactionRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
  * Service for Transaction operations.
  */
 @Service
-<span class="fc" id="L31">public final class TransactionService implements TransactionServiceI {</span>
+<span class="fc" id="L32">public final class TransactionService implements TransactionServiceI {</span>
   @Autowired
   private TransactionRepository transactionRepository;
   @Autowired
@@ -64,20 +65,20 @@ import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
 //      transactionRepository.save(transaction);
 //      return executeTransaction(transaction);
     //need to check if the client
-<span class="nc bnc" id="L67" title="All 2 branches missed.">    if (production) {</span>
-<span class="nc" id="L68">      String accountId = transaction.getAccountId();</span>
-<span class="nc" id="L69">      Account account = accountRepository.findAccountsByAccountId(accountId).orElseThrow(() -&gt;</span>
-<span class="nc" id="L70">          new UsernameNotFoundException(&quot;Account Not Found with username: &quot; + accountId));</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">    if (production) {</span>
+<span class="nc" id="L69">      String accountId = transaction.getAccountId();</span>
+<span class="nc" id="L70">      Account account = accountRepository.findAccountsByAccountId(accountId).orElseThrow(() -&gt;</span>
+<span class="nc" id="L71">          new UsernameNotFoundException(&quot;Account Not Found with username: &quot; + accountId));</span>
 
-<span class="nc" id="L72">      String clientId = getUsernameOfClientLogged();</span>
-<span class="nc bnc" id="L73" title="All 2 branches missed.">      if (account.getClientId().equals(clientId)) {</span>
-<span class="nc" id="L74">        transactionRepository.save(transaction);</span>
-<span class="nc" id="L75">        return executeTransaction(transaction);</span>
+<span class="nc" id="L73">      String clientId = getUsernameOfClientLogged();</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">      if (account.getClientId().equals(clientId)) {</span>
+<span class="nc" id="L75">        transactionRepository.save(transaction);</span>
+<span class="nc" id="L76">        return executeTransaction(transaction);</span>
       }
-<span class="nc" id="L77">      throw new AccountNotFoundException(&quot;Bad client&quot;);</span>
+<span class="nc" id="L78">      throw new AccountNotFoundException(&quot;Bad client&quot;);</span>
     } else {
-<span class="nc" id="L79">      transactionRepository.save(transaction);</span>
-<span class="nc" id="L80">      return executeTransaction(transaction);</span>
+<span class="nc" id="L80">      transactionRepository.save(transaction);</span>
+<span class="nc" id="L81">      return executeTransaction(transaction);</span>
     }
   }
 
@@ -88,9 +89,9 @@ import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
    * @param status      new status
    */
   public void updateTransactionStatus(Transaction transaction, String status) {
-<span class="fc" id="L91">    transaction.setTransactionStatus(status);</span>
-<span class="fc" id="L92">    transactionRepository.save(transaction);</span>
-<span class="fc" id="L93">  }</span>
+<span class="fc" id="L92">    transaction.setTransactionStatus(status);</span>
+<span class="fc" id="L93">    transactionRepository.save(transaction);</span>
+<span class="fc" id="L94">  }</span>
 
   /**
    * Executes transactions to buy/sell assets. Directs to helper methods based on
@@ -108,12 +109,12 @@ import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
   public Optional&lt;Asset&gt; executeTransaction(Transaction transaction)
       throws AccountNotFoundException, ResourceNotFoundException,
       InvalidOrderTypeException, InvalidTransactionException {
-<span class="fc bfc" id="L111" title="All 2 branches covered.">    if (transaction.getTransactionType().equals(&quot;BUY&quot;)) {</span>
-<span class="fc" id="L112">      return Optional.of(buyTransaction(transaction));</span>
-<span class="fc bfc" id="L113" title="All 2 branches covered.">    } else if (transaction.getTransactionType().equals(&quot;SELL&quot;)) {</span>
-<span class="fc" id="L114">      return sellTransaction(transaction);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">    if (transaction.getTransactionType().equals(&quot;BUY&quot;)) {</span>
+<span class="fc" id="L113">      return Optional.of(buyTransaction(transaction));</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">    } else if (transaction.getTransactionType().equals(&quot;SELL&quot;)) {</span>
+<span class="fc" id="L115">      return sellTransaction(transaction);</span>
     } else {
-<span class="fc" id="L116">      throw new InvalidOrderTypeException(&quot;Invalid transaction type&quot;);</span>
+<span class="fc" id="L117">      throw new InvalidOrderTypeException(&quot;Invalid transaction type&quot;);</span>
     }
   }
 
@@ -131,33 +132,33 @@ import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
       throws AccountNotFoundException, InvalidTransactionException, ResourceNotFoundException,
       InvalidOrderTypeException {
     // UPDATE/CREATE ASSET
-<span class="fc" id="L134">    Asset newAsset = assetService.buyAsset(transaction.getAccountId(),</span>
-<span class="fc" id="L135">        transaction.getTradableType(),</span>
-<span class="fc" id="L136">        transaction.getTradableId(),</span>
-<span class="fc" id="L137">        transaction.getQuantity());</span>
+<span class="fc" id="L135">    Asset newAsset = assetService.buyAsset(transaction.getAccountId(),</span>
+<span class="fc" id="L136">        transaction.getTradableType(),</span>
+<span class="fc" id="L137">        transaction.getTradableId(),</span>
+<span class="fc" id="L138">        transaction.getQuantity());</span>
 
     // UPDATE ACCOUNT BALANCE
     // send the (-) amount of total_cost so that the account service DECREASES
     // account's balance
     Float totalCost;
 
-<span class="fc bfc" id="L144" title="All 2 branches covered.">    if (transaction.getTradableType().equals(&quot;stock&quot;)) {</span>
-<span class="fc" id="L145">      Stock stock = stockService.getStockById(transaction.getTradableId());</span>
-<span class="fc" id="L146">      totalCost = stock.getPrice() * transaction.getQuantity();</span>
-<span class="fc bfc" id="L147" title="All 2 branches covered.">    } else if (transaction.getTradableType().equals(&quot;cryptocurrency&quot;)) {</span>
-<span class="fc" id="L148">      Cryptocurrency cryptocurrency = cryptocurrencyService</span>
-<span class="fc" id="L149">          .getCryptocurrencyById(transaction.getTradableId());</span>
-<span class="fc" id="L150">      totalCost = cryptocurrency.getPrice() * transaction.getQuantity();</span>
-<span class="pc bpc" id="L151" title="1 of 2 branches missed.">    } else if (transaction.getTradableType().equals(&quot;nft&quot;)) {</span>
-<span class="fc" id="L152">      NFT nft = nftService.getNFTById(transaction.getTradableId());</span>
-<span class="fc" id="L153">      totalCost = nft.getPrice() * transaction.getQuantity();</span>
-<span class="fc" id="L154">    } else {</span>
-<span class="nc" id="L155">      throw new InvalidOrderTypeException(&quot;Invalid tradable type&quot;);</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">    if (transaction.getTradableType().equals(&quot;stock&quot;)) {</span>
+<span class="fc" id="L146">      Stock stock = stockService.getStockById(transaction.getTradableId());</span>
+<span class="fc" id="L147">      totalCost = stock.getPrice() * transaction.getQuantity();</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">    } else if (transaction.getTradableType().equals(&quot;cryptocurrency&quot;)) {</span>
+<span class="fc" id="L149">      Cryptocurrency cryptocurrency = cryptocurrencyService</span>
+<span class="fc" id="L150">          .getCryptocurrencyById(transaction.getTradableId());</span>
+<span class="fc" id="L151">      totalCost = cryptocurrency.getPrice() * transaction.getQuantity();</span>
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">    } else if (transaction.getTradableType().equals(&quot;nft&quot;)) {</span>
+<span class="fc" id="L153">      NFT nft = nftService.getNFTById(transaction.getTradableId());</span>
+<span class="fc" id="L154">      totalCost = nft.getPrice() * transaction.getQuantity();</span>
+<span class="fc" id="L155">    } else {</span>
+<span class="nc" id="L156">      throw new InvalidOrderTypeException(&quot;Invalid tradable type&quot;);</span>
     }
 
-<span class="fc" id="L158">    accountService.updateAccountBalance(transaction.getAccountId(), -totalCost);</span>
-<span class="fc" id="L159">    updateTransactionStatus(transaction, &quot;COMPLETED&quot;);</span>
-<span class="fc" id="L160">    return newAsset;</span>
+<span class="fc" id="L159">    accountService.updateAccountBalance(transaction.getAccountId(), -totalCost);</span>
+<span class="fc" id="L160">    updateTransactionStatus(transaction, &quot;COMPLETED&quot;);</span>
+<span class="fc" id="L161">    return newAsset;</span>
   }
 
   /**
@@ -178,33 +179,33 @@ import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
       throws AccountNotFoundException, InvalidTransactionException, ResourceNotFoundException,
       InvalidOrderTypeException {
     // UPDATE/DELETE ASSET
-<span class="fc" id="L181">    Optional&lt;Asset&gt; newAsset = assetService.sellAsset(transaction.getAccountId(),</span>
-<span class="fc" id="L182">        transaction.getTradableType(),</span>
-<span class="fc" id="L183">        transaction.getTradableId(),</span>
-<span class="fc" id="L184">        transaction.getQuantity());</span>
+<span class="fc" id="L182">    Optional&lt;Asset&gt; newAsset = assetService.sellAsset(transaction.getAccountId(),</span>
+<span class="fc" id="L183">        transaction.getTradableType(),</span>
+<span class="fc" id="L184">        transaction.getTradableId(),</span>
+<span class="fc" id="L185">        transaction.getQuantity());</span>
 
     // UPDATE ACCOUNT BALANCE
     // SEND THE (+) amount of total_cost so tht the account service INCREASES
     // account's balance
     Float totalCost;
 
-<span class="fc bfc" id="L191" title="All 2 branches covered.">    if (transaction.getTradableType().equals(&quot;stock&quot;)) {</span>
-<span class="fc" id="L192">      Stock stock = stockService.getStockById(transaction.getTradableId());</span>
-<span class="fc" id="L193">      totalCost = stock.getPrice() * transaction.getQuantity();</span>
-<span class="fc bfc" id="L194" title="All 2 branches covered.">    } else if (transaction.getTradableType().equals(&quot;cryptocurrency&quot;)) {</span>
-<span class="fc" id="L195">      Cryptocurrency cryptocurrency = cryptocurrencyService</span>
-<span class="fc" id="L196">          .getCryptocurrencyById(transaction.getTradableId());</span>
-<span class="fc" id="L197">      totalCost = cryptocurrency.getPrice() * transaction.getQuantity();</span>
-<span class="pc bpc" id="L198" title="1 of 2 branches missed.">    } else if (transaction.getTradableType().equals(&quot;nft&quot;)) {</span>
-<span class="fc" id="L199">      NFT nft = nftService.getNFTById(transaction.getTradableId());</span>
-<span class="fc" id="L200">      totalCost = nft.getPrice() * transaction.getQuantity();</span>
-<span class="fc" id="L201">    } else {</span>
-<span class="nc" id="L202">      throw new InvalidOrderTypeException(&quot;Invalid tradable type&quot;);</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">    if (transaction.getTradableType().equals(&quot;stock&quot;)) {</span>
+<span class="fc" id="L193">      Stock stock = stockService.getStockById(transaction.getTradableId());</span>
+<span class="fc" id="L194">      totalCost = stock.getPrice() * transaction.getQuantity();</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">    } else if (transaction.getTradableType().equals(&quot;cryptocurrency&quot;)) {</span>
+<span class="fc" id="L196">      Cryptocurrency cryptocurrency = cryptocurrencyService</span>
+<span class="fc" id="L197">          .getCryptocurrencyById(transaction.getTradableId());</span>
+<span class="fc" id="L198">      totalCost = cryptocurrency.getPrice() * transaction.getQuantity();</span>
+<span class="pc bpc" id="L199" title="1 of 2 branches missed.">    } else if (transaction.getTradableType().equals(&quot;nft&quot;)) {</span>
+<span class="fc" id="L200">      NFT nft = nftService.getNFTById(transaction.getTradableId());</span>
+<span class="fc" id="L201">      totalCost = nft.getPrice() * transaction.getQuantity();</span>
+<span class="fc" id="L202">    } else {</span>
+<span class="nc" id="L203">      throw new InvalidOrderTypeException(&quot;Invalid tradable type&quot;);</span>
     }
 
-<span class="fc" id="L205">    accountService.updateAccountBalance(transaction.getAccountId(), totalCost);</span>
-<span class="fc" id="L206">    updateTransactionStatus(transaction, &quot;COMPLETED&quot;);</span>
-<span class="fc" id="L207">    return newAsset;</span>
+<span class="fc" id="L206">    accountService.updateAccountBalance(transaction.getAccountId(), totalCost);</span>
+<span class="fc" id="L207">    updateTransactionStatus(transaction, &quot;COMPLETED&quot;);</span>
+<span class="fc" id="L208">    return newAsset;</span>
   }
 
   /**
@@ -216,9 +217,9 @@ import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
    */
   public List&lt;Transaction&gt; listAccountTransactions(String accountId)
       throws AccountNotFoundException {
-<span class="fc" id="L219">    return transactionRepository.findByAccountId(accountId)</span>
-<span class="fc" id="L220">        .orElseThrow(</span>
-<span class="fc" id="L221">            () -&gt; new AccountNotFoundException(&quot;Account not found for accountId :: &quot;</span>
+<span class="fc" id="L220">    return transactionRepository.findByAccountId(accountId)</span>
+<span class="fc" id="L221">        .orElseThrow(</span>
+<span class="fc" id="L222">            () -&gt; new AccountNotFoundException(&quot;Account not found for accountId :: &quot;</span>
                 + accountId));
   }
 
@@ -229,8 +230,39 @@ import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
    */
   public List&lt;Transaction&gt; listAllTransactions() {
     //TODO change transactions so that it doesnt show other client stuff
-<span class="nc" id="L232">    String clientId = getUsernameOfClientLogged();</span>
-<span class="nc" id="L233">    return transactionRepository.listAllTransactionsOfClient(clientId);</span>
+<span class="nc" id="L233">    String clientId = getUsernameOfClientLogged();</span>
+<span class="nc" id="L234">    return transactionRepository.listAllTransactionsOfClient(clientId);</span>
+  }
+
+  public Optional&lt;Asset&gt; executeTransfer(Transaction transaction, String recipientId)
+      throws InvalidOrderTypeException, InvalidTransactionException, ResourceNotFoundException,
+      AccountNotFoundException {
+
+<span class="nc bnc" id="L241" title="All 2 branches missed.">    if (!Objects.equals(transaction.getTransactionType(), &quot;SELL&quot;)) {</span>
+<span class="nc" id="L242">      throw new InvalidOrderTypeException(&quot;Invalid transfer type&quot;);</span>
+    }
+    // add asset to recipient's account
+<span class="nc" id="L245">    assetService.buyAsset(</span>
+        recipientId,
+<span class="nc" id="L247">        transaction.getTradableType(),</span>
+<span class="nc" id="L248">        transaction.getTradableId(),</span>
+<span class="nc" id="L249">        transaction.getQuantity());</span>
+    // remove sender's asset, if it fails, undo the changes to recipient's account
+    try {
+<span class="nc" id="L252">      return assetService.sellAsset(transaction.getAccountId(),</span>
+<span class="nc" id="L253">          transaction.getTradableType(),</span>
+<span class="nc" id="L254">          transaction.getTradableId(),</span>
+<span class="nc" id="L255">          transaction.getQuantity());</span>
+<span class="nc" id="L256">    } catch (Exception e) {</span>
+      // undo buy asset for recipient if transfer was unsuccessful
+<span class="nc" id="L258">      assetService.sellAsset(</span>
+          recipientId,
+<span class="nc" id="L260">          transaction.getTradableType(),</span>
+<span class="nc" id="L261">          transaction.getTradableId(),</span>
+<span class="nc" id="L262">          transaction.getQuantity());</span>
+<span class="nc" id="L263">      throw e;</span>
+    }
+      // if the second half of the transfer was unsuccessful, need to undo the first half
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
