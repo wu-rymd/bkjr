@@ -15,6 +15,7 @@ import com.ase.restservice.repository.AccountRepository;
 import com.ase.restservice.repository.TransactionRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -231,5 +232,36 @@ public final class TransactionService implements TransactionServiceI {
     //TODO change transactions so that it doesnt show other client stuff
     String clientId = getUsernameOfClientLogged();
     return transactionRepository.listAllTransactionsOfClient(clientId);
+  }
+
+  public Optional<Asset> executeTransfer(Transaction transaction, String recipientId)
+      throws InvalidOrderTypeException, InvalidTransactionException, ResourceNotFoundException,
+      AccountNotFoundException {
+
+    if (!Objects.equals(transaction.getTransactionType(), "SELL")) {
+      throw new InvalidOrderTypeException("Invalid transfer type");
+    }
+    // add asset to recipient's account
+    assetService.buyAsset(
+        recipientId,
+        transaction.getTradableType(),
+        transaction.getTradableId(),
+        transaction.getQuantity());
+    // remove sender's asset, if it fails, undo the changes to recipient's account
+    try {
+      return assetService.sellAsset(transaction.getAccountId(),
+          transaction.getTradableType(),
+          transaction.getTradableId(),
+          transaction.getQuantity());
+    } catch (Exception e) {
+      // undo buy asset for recipient if transfer was unsuccessful
+      assetService.sellAsset(
+          recipientId,
+          transaction.getTradableType(),
+          transaction.getTradableId(),
+          transaction.getQuantity());
+      throw e;
+    }
+      // if the second half of the transfer was unsuccessful, need to undo the first half
   }
 }
