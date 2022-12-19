@@ -52,8 +52,8 @@ public class AuthController {
     newClient.setPassword(passwordEncoder.encode(request.getPassword()));
     newClient.setRole("USER");
     clientRepository.save(newClient);
-    return ResponseEntity.ok()
-            .body("Client has been created.");
+
+    return login(request);
 
   }
   /**
