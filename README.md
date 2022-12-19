@@ -84,7 +84,7 @@ After registering their users' accounts and by keeping buy/sell transactions up-
 ## Deployment
 
 - We deployed the service to an AWS EC2 Instance
-  - Use Postman to retrieve your access token from `http://ec2-35-174-136-81.compute-1.amazonaws.com:8080/auth/login`
+  - Use Postman to retrieve your access token from `http://ec2-3-83-151-62.compute-1.amazonaws.com:8080/auth/login`. Note: this link may go outdated
   - Visit other endpoints using Postman in the same way explained under the Start section
 - We deployed the PostgreSQL database to an AWS RDS Instance
   - The link and credentials are specified in [`src/main/resources/application.properties`](https://github.com/wu-rymd/kaiserschmarrn/blob/main/src/main/resources/application.properties)
