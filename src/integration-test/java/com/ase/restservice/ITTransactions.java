@@ -92,6 +92,21 @@ public class ITTransactions {
   }
   @AfterEach
   public void cleanup() {
+    List<Asset> assets = assetRepository.findAllAssetsByAccountId(testAccount.getAccountId());
+
+    // GET AND DELETE PREVIOUS ASSETS FOR TEST ACCOUNT
+    if (assets.size() > 0) {
+      for (Asset asset : assets
+      ) {assetRepository.deleteById(asset.getAssetId()); }
+    }
+    if (accountRepository.existsById(testAccount.getAccountId())) {
+      accountRepository.deleteById(testAccount.getAccountId());
+    }
+
+    testStock = new Stock("ce07363b-f", 13.44F);
+    if (stockRepository.existsById(testStock.getStockId())) {
+      stockRepository.deleteById(testStock.getStockId());
+    }
   }
   @DisplayName("Integration test between controller, service, and repo layers to verify sending a"
       + " buy transaction to the service results in a new asset being created, transaction being"
