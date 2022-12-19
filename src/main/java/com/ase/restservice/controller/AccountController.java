@@ -164,7 +164,6 @@ public final class AccountController {
   @PostMapping("accounts/{accountId}")
   public void deleteAccount(@PathVariable(value = "accountId") String accountId)
     throws AccountNotFoundException {
-      System.out.println("YO");
       accountService.deleteAccountById(accountId);
   }
 }

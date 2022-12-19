@@ -228,9 +228,8 @@ import static com.ase.restservice.ApplicationSecurity.getUsernameOfClientLogged;
    * @return list of all transactions
    */
   public List&lt;Transaction&gt; listAllTransactions() {
-    //TODO change transactions so that it doesnt show other client stuff
-<span class="nc" id="L232">    String clientId = getUsernameOfClientLogged();</span>
-<span class="nc" id="L233">    return transactionRepository.listAllTransactionsOfClient(clientId);</span>
+<span class="nc" id="L231">    String clientId = getUsernameOfClientLogged();</span>
+<span class="nc" id="L232">    return transactionRepository.listAllTransactionsOfClient(clientId);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

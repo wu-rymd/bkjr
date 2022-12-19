@@ -92,7 +92,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     UserDetails userDetails = getUserDetails(token);
 
     UsernamePasswordAuthenticationToken
-            authentication = new UsernamePasswordAuthenticationToken(userDetails, null, null);
+            authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities()
+    );
 
     authentication.setDetails(
             new WebAuthenticationDetailsSource().buildDetails(request));
@@ -107,10 +109,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
    */
   private UserDetails getUserDetails(String token) {
     Client userDetails = new Client();
-    String[] jwtSubject = jwtUtil.getSubject(token).split(",");
 
-    userDetails.setClientId(jwtSubject[0]);
-//    userDetails.setUsername(jwtSubject[1]);
+    String role = jwtUtil.getRole(token);
+    userDetails.setRole(role);
+
+    String jwtSubject = jwtUtil.getSubject(token);
+    userDetails.setClientId(jwtSubject);
 
     return userDetails;
   }
