@@ -46,11 +46,11 @@ public class AuthController {
       return ResponseEntity.status(HttpStatus.CONFLICT)
               .body("This client_id is already being used.");
     }
-    //TODO move these to service instead of client.
     Client newClient = new Client();
     newClient.setClientId(request.getClientId());
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     newClient.setPassword(passwordEncoder.encode(request.getPassword()));
+    newClient.setRole("USER");
     clientRepository.save(newClient);
     return ResponseEntity.ok()
             .body("Client has been created.");

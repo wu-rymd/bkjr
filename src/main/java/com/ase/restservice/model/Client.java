@@ -89,11 +89,8 @@ public class Client implements UserDetails {
   @Transient
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-//    return null;
     List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
-
     list.add(new SimpleGrantedAuthority(roleprefix + role));
-//    list.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
     return list;
   }
 

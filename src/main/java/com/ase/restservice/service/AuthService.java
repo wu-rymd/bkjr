@@ -8,7 +8,7 @@
 // * Service for Auth operations.
 // */
 //@Service
-//public class AuthService implements com.ase.restservice.service.AssetServiceI {
+//public class AuthService implements com.ase.restservice.service.AuthServiceI {
 //
 //  /**
 //   * Creates an asset in the database.
